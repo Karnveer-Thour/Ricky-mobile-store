@@ -1,6 +1,7 @@
 import { IsNumber, IsString } from "class-validator";
 import { BaseEntity } from "Common/Entities/Base.entity";
 import { Column, Entity, Index } from "typeorm";
+
 @Entity()
 @Index(["houseNumber", "streetNmber", "areaName", "city", "pincode","district", "state"])
 export class Address extends BaseEntity<Address> {
