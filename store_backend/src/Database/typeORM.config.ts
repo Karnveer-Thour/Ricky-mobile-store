@@ -9,7 +9,7 @@ export const dataSourceOptions: DataSourceOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   entities: [__dirname + '/../**/*.entity.{ts,js}'],
-  synchronize: process.env.DB_SYNCRONIZE==='true',
+  synchronize: process.env.DB_SYNCHRONIZE==='true',
   logging: process.env.DB_LOGGING==='true',
 };
 

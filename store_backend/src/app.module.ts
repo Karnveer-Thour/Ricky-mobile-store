@@ -8,6 +8,7 @@ import { AdminModule } from './Modules/Admin/admin.module';
 import { CustomerModule } from './Modules/Customer/customer.module';
 import { AddressModule } from './Modules/Address/address.module';
 import { AcceptedCitiesModule } from './Modules/Accepted_cities/accepted-cities.module';
+import { ProductModule } from './Modules/Product/product.module';
 
 @Module({
     imports: [
@@ -19,7 +20,8 @@ import { AcceptedCitiesModule } from './Modules/Accepted_cities/accepted-cities.
         AdminModule,
         CustomerModule,
         AddressModule,
-        AcceptedCitiesModule
+        AcceptedCitiesModule,
+        ProductModule
     ],
     controllers: [AppController],
     providers: [AppService],
