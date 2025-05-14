@@ -3,7 +3,7 @@ import { BaseEntity } from "Common/Entities/Base.entity";
 import { Column, Entity, Index } from "typeorm";
 
 @Entity()
-@Index(["houseNumber", "streetNmber", "areaName", "city", "pincode","district", "state"])
+@Index(["houseNumber", "streetNumber", "areaName", "city", "pincode","district", "state"])
 export class Address extends BaseEntity<Address> {
     @Column({name:"houseNumber",type:"varchar",length:"15",nullable:true})
     @IsString()
@@ -21,15 +21,15 @@ export class Address extends BaseEntity<Address> {
     @IsString()
     city:string;
 
-    @Column({name:"pincode",type:"number",length:"15",nullable:true})
+    @Column({name:"pincode",type:'numeric',nullable:true})
     @IsNumber()
     pincode:number;
 
-    @Column({name:"district",type:"string",length:"30",nullable:true})
+    @Column({name:"district",type:"varchar",length:"30",nullable:true})
     @IsString()
     district:string;
 
-    @Column({name:"state",type:"string",length:"20",nullable:false})
+    @Column({name:"state",type:"varchar",length:"20",nullable:false})
     @IsString()
     state:string;
 }

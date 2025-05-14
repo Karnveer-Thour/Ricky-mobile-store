@@ -1,4 +1,11 @@
-import { newDatasource } from "Database/typeORM";
-import { Address } from "Modules/Address/Entities/Address.entity";
+import { Injectable } from "@nestjs/common";
+import { BaseRepository } from "Common/Repositories/Base.repo";
+import { Address } from "../Entities/Address.entity";
+import { DataSource } from "typeorm";
 
-export const addressRepo=newDatasource.getRepository(Address);
+@Injectable()
+export class AdminRepository extends BaseRepository<Address> {
+  constructor(dataSource: DataSource) {
+    super(Address, dataSource);
+  }
+}

@@ -1,25 +1,30 @@
-// Admin/Dto/admin.dto.ts
-import { Expose, Transform } from 'class-transformer';
+import { Transform } from 'class-transformer';
+import { IsDateString, IsEmail, IsEmpty, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { BaseDto } from 'Common/Dto/base.dto';
 import { birthToAge } from 'Common/Utils/Utils';
 
 export class AdminDto extends BaseDto {
-  @Expose()
+  @IsString()
+  @IsNotEmpty()
   firstName: string;
 
-  @Expose()
+  @IsString()
+  @IsNotEmpty()
   lastName: string;
 
-  @Expose()
+  @IsEmail()
+  @IsNotEmpty()
   email: string;
 
-  @Expose()
+  @IsNumber()
+  @IsOptional()
   mobileNumber: string;
 
-  @Expose()
+  @IsDateString()
+  @IsOptional()
   dateBirth: Date;
 
-  @Expose()
+  @IsNumber()
   @Transform(({ obj }) => birthToAge(obj.dateBirth), { toClassOnly: true })
   age: number;
 }
