@@ -7,6 +7,7 @@ import { dataSourceOptions } from "Database/typeORM.config";
 import { AdminModule } from './Modules/Admin/admin.module';
 import { CustomerModule } from './Modules/Customer/customer.module';
 import { AddressModule } from './Modules/Address/address.module';
+import { AcceptedCitiesModule } from './Modules/Accepted_cities/accepted-cities.module';
 
 @Module({
     imports: [
@@ -17,7 +18,8 @@ import { AddressModule } from './Modules/Address/address.module';
         TypeOrmModule.forRoot(dataSourceOptions),
         AdminModule,
         CustomerModule,
-        AddressModule
+        AddressModule,
+        AcceptedCitiesModule
     ],
     controllers: [AppController],
     providers: [AppService],

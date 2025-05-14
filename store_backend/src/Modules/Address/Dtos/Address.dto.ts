@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { BaseDto } from "Common/Dto/Base.dto";
 
-export class AdminDto extends BaseDto {
+export class AddressDto extends BaseDto {
       @IsString()
       @IsOptional()
       houseNumber:string;
