@@ -5,6 +5,8 @@ import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { dataSourceOptions } from "Database/typeORM.config";
 import { AdminModule } from './Modules/Admin/admin.module';
+import { CustomerModule } from './Modules/Customer/customer.module';
+import { AddressModule } from './Modules/Address/address.module';
 
 @Module({
     imports: [
@@ -13,7 +15,9 @@ import { AdminModule } from './Modules/Admin/admin.module';
             envFilePath: '.env',
         }),
         TypeOrmModule.forRoot(dataSourceOptions),
-        AdminModule
+        AdminModule,
+        CustomerModule,
+        AddressModule
     ],
     controllers: [AppController],
     providers: [AppService],
