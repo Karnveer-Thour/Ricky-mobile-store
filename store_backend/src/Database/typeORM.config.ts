@@ -10,7 +10,7 @@ export const dataSourceOptions: DataSourceOptions = {
   database: process.env.DB_DATABASE,
   entities: [__dirname + '/../**/*.entity.{ts,js}'],
   synchronize: process.env.DB_SYNCRONIZE==='true',
-  logging: process.env.DB_LOGGING==='false',
+  logging: process.env.DB_LOGGING==='true',
 };
 
 const dataSource = new DataSource(dataSourceOptions);
