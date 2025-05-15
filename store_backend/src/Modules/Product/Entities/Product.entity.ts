@@ -1,4 +1,3 @@
-import { IsString } from "class-validator";
 import { BaseEntity } from "Common/Entities/Base.entity";
 import { Category } from "Modules/Category/Entities/Category.entity";
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
@@ -15,7 +14,6 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 ])
 export class Product extends BaseEntity<Product> {
     @Column({ name: "name", type: "varchar", length: "50", nullable: false })
-    @IsString()
     name: string;
 
     @ManyToOne(() => Category, (category) => category.products)
@@ -23,7 +21,6 @@ export class Product extends BaseEntity<Product> {
     category:Category;
 
     @Column({ name: "price", type: "varchar", length: "20", nullable: false })
-    @IsString()
     price: string;
 
     @Column({
@@ -33,7 +30,6 @@ export class Product extends BaseEntity<Product> {
         nullable: true,
         default: "0",
     })
-    @IsString()
     discount: string;
 
     @Column({
@@ -42,7 +38,6 @@ export class Product extends BaseEntity<Product> {
         length: "1500",
         nullable: true,
     })
-    @IsString()
     description: string;
 
     @Column({
@@ -51,7 +46,6 @@ export class Product extends BaseEntity<Product> {
         length: "1500",
         nullable: true,
     })
-    @IsString()
     specifications: string;
 
     @Column({
@@ -60,6 +54,5 @@ export class Product extends BaseEntity<Product> {
         length: "100",
         nullable: true,
     })
-    @IsString()
     warranty: string;
 }

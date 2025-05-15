@@ -1,5 +1,4 @@
 import { Exclude, Expose } from "class-transformer";
-import { IsDateString, IsEmail, IsNotEmpty, IsString } from "class-validator";
 import { BaseEntity } from "Common/Entities/Base.entity";
 import { birthToAge } from "Common/Utils/Utils";
 import { Address } from "../../Address/Entities/Address.entity";
@@ -21,7 +20,6 @@ export class Admin extends BaseEntity<Admin> {
         length: 25,
         nullable: false,
     })
-    @IsString()
     firstName: string;
 
     @Column({
@@ -30,7 +28,6 @@ export class Admin extends BaseEntity<Admin> {
         length: 25,
         nullable: false,
     })
-    @IsString()
     lastName: string;
 
     @Column({
@@ -39,7 +36,6 @@ export class Admin extends BaseEntity<Admin> {
         length: 225,
         nullable: false,
     })
-    @IsEmail()
     email: string;
 
     @Column({
@@ -48,7 +44,6 @@ export class Admin extends BaseEntity<Admin> {
         length: 25,
         nullable: true,
     })
-    @IsString()
     mobileNumber: string;
 
     @Column({
@@ -58,8 +53,6 @@ export class Admin extends BaseEntity<Admin> {
         nullable: false,
     })
     @Exclude()
-    @IsNotEmpty()
-    @IsString()
     password: string;
 
     @OneToOne(() => Address, { cascade: true, eager: true })
@@ -67,7 +60,6 @@ export class Admin extends BaseEntity<Admin> {
     address: Address;
 
     @Column({ name: "dateBirth", type: "date", nullable: false })
-    @IsDateString()
     dateBirth: Date;
 
     @Expose()

@@ -7,7 +7,6 @@ import { Column, Entity, Index, JoinColumn, OneToMany } from "typeorm";
 @Index(["name", "description"])
 export class Category extends BaseEntity<Category> {
     @Column({ name: "name", type: "varchar", length: "100", nullable: false })
-    @IsString()
     name: string;
 
     @Column({
@@ -16,7 +15,6 @@ export class Category extends BaseEntity<Category> {
         length: "550",
         nullable: false,
     })
-    @IsString()
     description: string;
 
     @OneToMany(() => Product, (Product) => Product.category)
