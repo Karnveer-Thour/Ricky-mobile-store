@@ -1,6 +1,7 @@
 import { BaseEntity } from "Common/Entities/Base.entity";
 import { Category } from "Modules/Category/Entities/Category.entity";
 import { ProductReview } from "Modules/Product_review/Entitities/ProductReview.entity";
+import { Sale } from "Modules/Sale/Entities/Sale.entity";
 import {
     Column,
     Entity,
@@ -67,4 +68,7 @@ export class Product extends BaseEntity<Product> {
     //Inverse relations
     @OneToMany(() => ProductReview, (reviews) => reviews.reviewedProduct)
     reviews: ProductReview[];
+
+    @OneToMany(()=>Sale,sale=>sale.product)
+    sales:Sale[];
 }

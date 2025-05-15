@@ -12,6 +12,7 @@ import {
 } from "typeorm";
 import { DeliveryAddress } from "Modules/Delivery_address/Entities/DeliveryAddress.entity";
 import { ProductReview } from "Modules/Product_review/Entitities/ProductReview.entity";
+import { Sale } from "Modules/Sale/Entities/Sale.entity";
 
 @Entity()
 @Index([
@@ -82,4 +83,7 @@ export class Customer extends BaseEntity<Customer> {
 
     @OneToMany(() => ProductReview, (reviews) => reviews.reviewedBy)
     reviews: ProductReview[];
+
+    @OneToMany(()=>Sale,sale=>sale.buyer)
+    sales:Sale[];
 }
