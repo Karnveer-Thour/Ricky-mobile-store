@@ -18,7 +18,7 @@ export class Product extends BaseEntity<Product> {
 
     @ManyToOne(() => Category, (category) => category.products)
     @JoinColumn({ name: "categoryId" })
-    category:Category;
+    category: Category;
 
     @Column({ name: "price", type: "varchar", length: "20", nullable: false })
     price: string;

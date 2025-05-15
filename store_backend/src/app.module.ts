@@ -9,7 +9,8 @@ import { CustomerModule } from "./Modules/Customer/customer.module";
 import { AddressModule } from "./Modules/Address/address.module";
 import { AcceptedCitiesModule } from "./Modules/Accepted_cities/accepted-cities.module";
 import { ProductModule } from "./Modules/Product/product.module";
-import { CategoryModule } from './Modules/Category/category.module';
+import { CategoryModule } from "./Modules/Category/category.module";
+import { DeliveryAddressModule } from "./Modules/Delivery_address/delivery-address.module";
 
 @Module({
     imports: [
@@ -24,6 +25,7 @@ import { CategoryModule } from './Modules/Category/category.module';
         AcceptedCitiesModule,
         ProductModule,
         CategoryModule,
+        DeliveryAddressModule,
     ],
     controllers: [AppController],
     providers: [AppService],

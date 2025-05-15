@@ -2,7 +2,15 @@ import { Exclude, Expose } from "class-transformer";
 import { BaseEntity } from "Common/Entities/Base.entity";
 import { birthToAge } from "Common/Utils/Utils";
 import { Address } from "../../Address/Entities/Address.entity";
-import { Column, Entity, Index, JoinColumn, OneToOne } from "typeorm";
+import {
+    Column,
+    Entity,
+    Index,
+    JoinColumn,
+    OneToMany,
+    OneToOne,
+} from "typeorm";
+import { DeliveryAddress } from "Modules/Delivery_address/Entities/DeliveryAddress.entity";
 
 @Entity()
 @Index([
@@ -66,4 +74,8 @@ export class Customer extends BaseEntity<Customer> {
     get age(): number | null {
         return birthToAge(this.dateBirth);
     }
+
+    // Inverse relations
+    @OneToMany(() => DeliveryAddress, (delivery) => delivery.customer)
+    deliveryAddress: DeliveryAddress[];
 }
