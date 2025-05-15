@@ -5,7 +5,7 @@ import { DataSource } from "typeorm";
 
 @Injectable()
 export class AddressRepository extends BaseRepository<Address> {
-  constructor(dataSource: DataSource) {
-    super(Address, dataSource);
-  }
+    constructor(dataSource: DataSource) {
+        super(Address, dataSource);
+    }
 }

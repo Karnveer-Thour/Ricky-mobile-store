@@ -4,8 +4,8 @@ import { Injectable } from "@nestjs/common";
 import { DataSource } from "typeorm";
 
 @Injectable()
-export class AcceptedCitiesRepository extends BaseRepository<AcceptedCities>{
-    constructor(private readonly dataSource:DataSource){
-        super(AcceptedCities,dataSource);
+export class AcceptedCitiesRepository extends BaseRepository<AcceptedCities> {
+    constructor(private readonly dataSource: DataSource) {
+        super(AcceptedCities, dataSource);
     }
 }

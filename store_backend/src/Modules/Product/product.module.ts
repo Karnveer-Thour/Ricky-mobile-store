@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { ProductRepository } from './Repositories/Product.repo';
+import { Module } from "@nestjs/common";
+import { ProductRepository } from "./Repositories/Product.repo";
 
 @Module({
-    providers:[ProductRepository]
+    providers: [ProductRepository],
 })
 export class ProductModule {}

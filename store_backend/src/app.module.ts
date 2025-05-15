@@ -4,24 +4,26 @@ import { AppService } from "./app.service";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { dataSourceOptions } from "Database/typeORM.config";
-import { AdminModule } from './Modules/Admin/admin.module';
-import { CustomerModule } from './Modules/Customer/customer.module';
-import { AddressModule } from './Modules/Address/address.module';
-import { AcceptedCitiesModule } from './Modules/Accepted_cities/accepted-cities.module';
-import { ProductModule } from './Modules/Product/product.module';
+import { AdminModule } from "./Modules/Admin/admin.module";
+import { CustomerModule } from "./Modules/Customer/customer.module";
+import { AddressModule } from "./Modules/Address/address.module";
+import { AcceptedCitiesModule } from "./Modules/Accepted_cities/accepted-cities.module";
+import { ProductModule } from "./Modules/Product/product.module";
+import { CategoryModule } from './Modules/Category/category.module';
 
 @Module({
     imports: [
         ConfigModule.forRoot({
             isGlobal: true, // Makes config available app-wide
-            envFilePath: '.env',
+            envFilePath: ".env",
         }),
         TypeOrmModule.forRoot(dataSourceOptions),
         AdminModule,
         CustomerModule,
         AddressModule,
         AcceptedCitiesModule,
-        ProductModule
+        ProductModule,
+        CategoryModule,
     ],
     controllers: [AppController],
     providers: [AppService],

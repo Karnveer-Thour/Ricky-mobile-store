@@ -1,14 +1,13 @@
 import moment from "moment";
 
-
 // function that converts date to UTC
 export const dateToUTC = (date = null) => {
     return (date ? moment(date) : moment()).utc().toDate();
 };
 
 // function that converts date of birth to age
-export const birthToAge=(dateBirth:Date):number|null=>{
-    if(!dateBirth){
+export const birthToAge = (dateBirth: Date): number | null => {
+    if (!dateBirth) {
         return null;
     }
     const today = new Date();
@@ -17,8 +16,8 @@ export const birthToAge=(dateBirth:Date):number|null=>{
     const m = today.getMonth() - birthDate.getMonth();
 
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
+        age--;
     }
 
     return age;
-}
+};
