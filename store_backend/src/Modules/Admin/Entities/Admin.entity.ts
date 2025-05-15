@@ -33,7 +33,7 @@ export class Admin extends BaseEntity<Admin> {
     @Column({
         name: "email",
         type: "varchar",
-        length: 225,
+        length: 254,
         nullable: false,
     })
     email: string;

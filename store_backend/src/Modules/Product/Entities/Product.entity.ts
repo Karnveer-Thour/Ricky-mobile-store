@@ -21,7 +21,7 @@ import {
     "warranty",
 ])
 export class Product extends BaseEntity<Product> {
-    @Column({ name: "name", type: "varchar", length: "50", nullable: false })
+    @Column({ name: "name", type: "varchar", length: "150", nullable: false })
     name: string;
 
     @ManyToOne(() => Category, (category) => category.products)
