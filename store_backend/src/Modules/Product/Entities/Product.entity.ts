@@ -1,6 +1,14 @@
 import { BaseEntity } from "Common/Entities/Base.entity";
 import { Category } from "Modules/Category/Entities/Category.entity";
-import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import { ProductReview } from "Modules/Product_review/Entitities/ProductReview.entity";
+import {
+    Column,
+    Entity,
+    Index,
+    JoinColumn,
+    ManyToOne,
+    OneToMany,
+} from "typeorm";
 
 @Entity()
 @Index([
@@ -55,4 +63,8 @@ export class Product extends BaseEntity<Product> {
         nullable: true,
     })
     warranty: string;
+
+    //Inverse relations
+    @OneToMany(() => ProductReview, (reviews) => reviews.reviewedProduct)
+    reviews: ProductReview[];
 }

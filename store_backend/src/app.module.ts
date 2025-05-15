@@ -11,6 +11,7 @@ import { AcceptedCitiesModule } from "./Modules/Accepted_cities/accepted-cities.
 import { ProductModule } from "./Modules/Product/product.module";
 import { CategoryModule } from "./Modules/Category/category.module";
 import { DeliveryAddressModule } from "./Modules/Delivery_address/delivery-address.module";
+import { ProductReviewModule } from "./Modules/Product_review/product-review.module";
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { DeliveryAddressModule } from "./Modules/Delivery_address/delivery-addre
         ProductModule,
         CategoryModule,
         DeliveryAddressModule,
+        ProductReviewModule,
     ],
     controllers: [AppController],
     providers: [AppService],

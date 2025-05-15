@@ -11,6 +11,7 @@ import {
     OneToOne,
 } from "typeorm";
 import { DeliveryAddress } from "Modules/Delivery_address/Entities/DeliveryAddress.entity";
+import { ProductReview } from "Modules/Product_review/Entitities/ProductReview.entity";
 
 @Entity()
 @Index([
@@ -78,4 +79,7 @@ export class Customer extends BaseEntity<Customer> {
     // Inverse relations
     @OneToMany(() => DeliveryAddress, (delivery) => delivery.customer)
     deliveryAddress: DeliveryAddress[];
+
+    @OneToMany(() => ProductReview, (reviews) => reviews.reviewedBy)
+    reviews: ProductReview[];
 }
