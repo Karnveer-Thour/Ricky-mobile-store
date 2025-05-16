@@ -13,6 +13,7 @@ import { CategoryModule } from "./Modules/Category/category.module";
 import { DeliveryAddressModule } from "./Modules/Delivery_address/delivery-address.module";
 import { ProductReviewModule } from "./Modules/Product_review/product-review.module";
 import { SaleModule } from './Modules/Sale/sale.module';
+import { ChatModule } from './Modules/Chat/chat.module';
 
 @Module({
     imports: [
@@ -30,6 +31,7 @@ import { SaleModule } from './Modules/Sale/sale.module';
         DeliveryAddressModule,
         ProductReviewModule,
         SaleModule,
+        ChatModule,
     ],
     controllers: [AppController],
     providers: [AppService],
