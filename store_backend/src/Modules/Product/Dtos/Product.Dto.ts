@@ -62,7 +62,7 @@ export class ProductDto extends BaseDto {
   })
   specifications: string;
 
-   @ApiProperty({
+  @ApiProperty({
     description: 'Enter Product warranty',
     example: 'one year',
     type: 'string',
