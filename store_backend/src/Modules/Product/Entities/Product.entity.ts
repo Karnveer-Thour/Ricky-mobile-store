@@ -1,4 +1,5 @@
 import { BaseEntity } from "Common/Entities/Base.entity";
+import { Cart } from "Modules/Cart/Entities/Cart.entity";
 import { Category } from "Modules/Category/Entities/Category.entity";
 import { ProductReview } from "Modules/Product_review/Entitities/ProductReview.entity";
 import { Sale } from "Modules/Sale/Entities/Sale.entity";
@@ -7,6 +8,8 @@ import {
     Entity,
     Index,
     JoinColumn,
+    JoinTable,
+    ManyToMany,
     ManyToOne,
     OneToMany,
 } from "typeorm";
@@ -71,4 +74,7 @@ export class Product extends BaseEntity<Product> {
 
     @OneToMany(()=>Sale,sales=>sales.product)
     sales:Sale[];
+
+    @ManyToMany(()=>Cart,carts=>carts.items,{onDelete:'CASCADE'})
+    carts:Cart[];
 }

@@ -7,6 +7,7 @@ import { DeliveryAddress } from "Modules/Delivery_address/Entities/DeliveryAddre
 import { ProductReview } from "Modules/Product_review/Entitities/ProductReview.entity";
 import { Sale } from "Modules/Sale/Entities/Sale.entity";
 import { Chat } from "Modules/Chat/Entities/Chat.entity";
+import { Cart } from "Modules/Cart/Entities/Cart.entity";
 
 export enum role{
     Admin="Admin",
@@ -85,6 +86,9 @@ export class User extends BaseEntity<User> {
     }
 
     // Inverse relations
+    @OneToOne(()=>Cart,cart=>cart.cartOwner)
+    cart:Cart;
+
     @OneToMany(() => DeliveryAddress, deliveryAddress => deliveryAddress.customer)
     deliveryAddress: DeliveryAddress[];
 

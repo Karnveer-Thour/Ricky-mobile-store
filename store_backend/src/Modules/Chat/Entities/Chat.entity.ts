@@ -1,6 +1,6 @@
 import { BaseEntity } from "Common/Entities/Base.entity";
 import { User } from "Modules/User/Entities/User.entity";
-import { Column, Entity, Index, ManyToOne } from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 
 @Entity()
 @Index([
@@ -17,10 +17,10 @@ export class Chat extends BaseEntity<Chat> {
     fileUrl: string;
 
     @ManyToOne(()=>User,senderId=>senderId.sendedChats,{eager:true})
-    @Column({ name: "senderId", type: "uuid", nullable: false })
+    @JoinColumn({ name: "senderId"})
     senderId: User;
 
     @ManyToOne(()=>User,receiverId=>receiverId.recievedMessages,{eager:true})
-    @Column({ name: "receiverId", type: "uuid", nullable: false })
+    @JoinColumn({ name: "receiverId"})
     receiverId: string;
 }
