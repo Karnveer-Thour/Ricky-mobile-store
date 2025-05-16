@@ -1,19 +1,13 @@
 import { BaseEntity } from "Common/Entities/Base.entity";
-import { Column, Entity, Index } from "typeorm";
-
-export enum userType {
-    Admin = "Admin",
-    Customer = "Customer",
-}
+import { User } from "Modules/User/Entities/User.entity";
+import { Column, Entity, Index, ManyToOne } from "typeorm";
 
 @Entity()
 @Index([
     "message",
     "fileUrl",
     "senderId",
-    "senderType",
     "receiverId",
-    "receiverType",
 ])
 export class Chat extends BaseEntity<Chat> {
     @Column({ name: "message", type: "text", nullable: true })
@@ -22,25 +16,11 @@ export class Chat extends BaseEntity<Chat> {
     @Column({ name: "fileUrl", type: "varchar", length: 255, nullable: true })
     fileUrl: string;
 
+    @ManyToOne(()=>User,senderId=>senderId.sendedChats,{eager:true})
     @Column({ name: "senderId", type: "uuid", nullable: false })
-    senderId: string;
+    senderId: User;
 
-    @Column({
-        name: "senderType",
-        type: "enum",
-        enum: userType,
-        nullable: false,
-    })
-    senderType: userType;
-
+    @ManyToOne(()=>User,receiverId=>receiverId.recievedMessages,{eager:true})
     @Column({ name: "receiverId", type: "uuid", nullable: false })
     receiverId: string;
-
-    @Column({
-        name: "receiverType",
-        type: "enum",
-        enum: userType,
-        nullable: false,
-    })
-    receiverType: string;
 }

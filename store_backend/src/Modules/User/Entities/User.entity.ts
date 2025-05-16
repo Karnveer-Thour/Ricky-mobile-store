@@ -2,17 +2,16 @@ import { Exclude, Expose } from "class-transformer";
 import { BaseEntity } from "Common/Entities/Base.entity";
 import { birthToAge } from "Common/Utils/Utils";
 import { Address } from "../../Address/Entities/Address.entity";
-import {
-    Column,
-    Entity,
-    Index,
-    JoinColumn,
-    OneToMany,
-    OneToOne,
-} from "typeorm";
+import { Column, Entity, Index, JoinColumn, OneToMany, OneToOne } from "typeorm";
 import { DeliveryAddress } from "Modules/Delivery_address/Entities/DeliveryAddress.entity";
 import { ProductReview } from "Modules/Product_review/Entitities/ProductReview.entity";
 import { Sale } from "Modules/Sale/Entities/Sale.entity";
+import { Chat } from "Modules/Chat/Entities/Chat.entity";
+
+export enum role{
+    Admin="Admin",
+    Customer="Customer"
+}
 
 @Entity()
 @Index([
@@ -21,9 +20,11 @@ import { Sale } from "Modules/Sale/Entities/Sale.entity";
     "email",
     "mobileNumber",
     "password",
+    "pictureUrl",
+    "role",
     "dateBirth",
 ])
-export class Customer extends BaseEntity<Customer> {
+export class User extends BaseEntity<User> {
     @Column({
         name: "firstName",
         type: "varchar",
@@ -43,7 +44,7 @@ export class Customer extends BaseEntity<Customer> {
     @Column({
         name: "email",
         type: "varchar",
-        length: 225,
+        length: 254,
         nullable: false,
     })
     email: string;
@@ -65,6 +66,12 @@ export class Customer extends BaseEntity<Customer> {
     @Exclude()
     password: string;
 
+    @Column({name:"pictureUrl",type:"varchar",length:255,nullable:true})
+    pictureUrl:string;
+
+    @Column({name:"role",type:"enum",enum:role,nullable:false})
+    role:role;
+
     @OneToOne(() => Address, { cascade: true, eager: true })
     @JoinColumn({ name: "addressId" }) // this should match the foreign key column name
     address: Address;
@@ -78,12 +85,18 @@ export class Customer extends BaseEntity<Customer> {
     }
 
     // Inverse relations
-    @OneToMany(() => DeliveryAddress, (delivery) => delivery.customer)
+    @OneToMany(() => DeliveryAddress, deliveryAddress => deliveryAddress.customer)
     deliveryAddress: DeliveryAddress[];
 
     @OneToMany(() => ProductReview, (reviews) => reviews.reviewedBy)
     reviews: ProductReview[];
 
-    @OneToMany(()=>Sale,sale=>sale.buyer)
+    @OneToMany(()=>Sale,sales=>sales.buyer)
     sales:Sale[];
+
+    @OneToMany(()=>Chat,sendedChats=>sendedChats.senderId)
+    sendedChats:Chat[];
+    
+    @OneToMany(()=>Chat,recievedMessages=>recievedMessages.receiverId)
+    recievedMessages:Chat[];
 }

@@ -4,8 +4,6 @@ import { AppService } from "./app.service";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { dataSourceOptions } from "Database/typeORM.config";
-import { AdminModule } from "./Modules/Admin/admin.module";
-import { CustomerModule } from "./Modules/Customer/customer.module";
 import { AddressModule } from "./Modules/Address/address.module";
 import { AcceptedCitiesModule } from "./Modules/Accepted_cities/accepted-cities.module";
 import { ProductModule } from "./Modules/Product/product.module";
@@ -14,6 +12,7 @@ import { DeliveryAddressModule } from "./Modules/Delivery_address/delivery-addre
 import { ProductReviewModule } from "./Modules/Product_review/product-review.module";
 import { SaleModule } from './Modules/Sale/sale.module';
 import { ChatModule } from './Modules/Chat/chat.module';
+import { UserModule } from "Modules/User/User.module";
 
 @Module({
     imports: [
@@ -22,8 +21,7 @@ import { ChatModule } from './Modules/Chat/chat.module';
             envFilePath: ".env",
         }),
         TypeOrmModule.forRoot(dataSourceOptions),
-        AdminModule,
-        CustomerModule,
+        UserModule,
         AddressModule,
         AcceptedCitiesModule,
         ProductModule,

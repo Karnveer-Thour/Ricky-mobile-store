@@ -1,6 +1,6 @@
 import { BaseEntity } from "Common/Entities/Base.entity";
-import { Customer } from "Modules/Customer/Entities/Customer.entity";
 import { Product } from "Modules/Product/Entities/Product.entity";
+import { User } from "Modules/User/Entities/User.entity";
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 
 export enum status{
@@ -19,9 +19,9 @@ export enum status{
 @Index(["buyer","product","status"])
 export class Sale extends BaseEntity<Sale>{
 
-    @ManyToOne(()=>Customer,customer=>customer.sales,{eager:true})
+    @ManyToOne(()=>User,buyer=>buyer.sales,{eager:true})
     @JoinColumn({name:"buyerId"})
-    buyer:Customer;
+    buyer:User;
 
     @ManyToOne(()=>Product,product=>product.sales,{eager:true})
     @JoinColumn({name:"productId"})

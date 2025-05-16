@@ -1,6 +1,6 @@
 import { BaseEntity } from "Common/Entities/Base.entity";
 import { Address } from "Modules/Address/Entities/Address.entity";
-import { Customer } from "Modules/Customer/Entities/Customer.entity";
+import { User } from "Modules/User/Entities/User.entity";
 import {
     Column,
     Entity,
@@ -22,9 +22,9 @@ export class DeliveryAddress extends BaseEntity<DeliveryAddress> {
     @JoinColumn({ name: "addressId" })
     address: Address;
 
-    @ManyToOne(() => Customer, (customer) => customer.deliveryAddress)
+    @ManyToOne(() => User, (customer) => customer.deliveryAddress)
     @JoinColumn({ name: "customer" })
-    customer: Customer[];
+    customer: User;
 
     @Column({
         name: "isDefault",

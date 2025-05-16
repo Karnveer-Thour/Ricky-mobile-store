@@ -1,6 +1,6 @@
 import { BaseEntity } from "Common/Entities/Base.entity";
-import { Customer } from "Modules/Customer/Entities/Customer.entity";
 import { Product } from "Modules/Product/Entities/Product.entity";
+import { User } from "Modules/User/Entities/User.entity";
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 
 @Entity()
@@ -17,9 +17,9 @@ export class ProductReview extends BaseEntity<ProductReview> {
     })
     description: string;
 
-    @ManyToOne(() => Customer, (customer) => customer.reviews, { eager: true })
+    @ManyToOne(() => User, (customer) => customer.reviews, { eager: true })
     @JoinColumn({ name: "reviewedBy" })
-    reviewedBy: Customer;
+    reviewedBy: User;
 
     @ManyToOne(() => Product, (product) => product.reviews, { eager: true })
     @JoinColumn({ name: "reviewedProduct" })
