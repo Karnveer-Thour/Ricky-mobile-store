@@ -2,12 +2,13 @@ import { Exclude, Expose } from "class-transformer";
 import { BaseEntity } from "Common/Entities/Base.entity";
 import { birthToAge } from "Common/Utils/Utils";
 import { Address } from "../../Address/Entities/Address.entity";
-import { Column, Entity, Index, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne } from "typeorm";
 import { DeliveryAddress } from "Modules/Delivery_address/Entities/DeliveryAddress.entity";
 import { ProductReview } from "Modules/Product_review/Entitities/ProductReview.entity";
 import { Sale } from "Modules/Sale/Entities/Sale.entity";
 import { Chat } from "Modules/Chat/Entities/Chat.entity";
 import { Cart } from "Modules/Cart/Entities/Cart.entity";
+import { Wishlist } from "Modules/Wishlist/Entities/Wishlist.entity";
 
 export enum role{
     Admin="Admin",
@@ -103,4 +104,7 @@ export class User extends BaseEntity<User> {
     
     @OneToMany(()=>Chat,recievedMessages=>recievedMessages.receiverId)
     recievedMessages:Chat[];
+
+    @ManyToOne(()=>Wishlist,wishlists=>wishlists.wisher)
+    wishlists:Wishlist[];
 }

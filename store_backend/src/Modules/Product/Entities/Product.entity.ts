@@ -3,6 +3,7 @@ import { Cart } from "Modules/Cart/Entities/Cart.entity";
 import { Category } from "Modules/Category/Entities/Category.entity";
 import { ProductReview } from "Modules/Product_review/Entitities/ProductReview.entity";
 import { Sale } from "Modules/Sale/Entities/Sale.entity";
+import { Wishlist } from "Modules/Wishlist/Entities/Wishlist.entity";
 import {
     Column,
     Entity,
@@ -77,4 +78,7 @@ export class Product extends BaseEntity<Product> {
 
     @ManyToMany(()=>Cart,carts=>carts.items,{onDelete:'CASCADE'})
     carts:Cart[];
+
+    @ManyToOne(()=>Wishlist,wishlist=>wishlist.products,{onDelete:"CASCADE"})
+    wishlist:Wishlist;
 }

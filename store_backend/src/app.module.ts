@@ -14,6 +14,7 @@ import { SaleModule } from './Modules/Sale/sale.module';
 import { ChatModule } from './Modules/Chat/chat.module';
 import { UserModule } from "Modules/User/User.module";
 import { CartModule } from './Modules/Cart/cart.module';
+import { WishlistModule } from './Modules/Wishlist/wishlist.module';
 
 @Module({
     imports: [
@@ -32,6 +33,7 @@ import { CartModule } from './Modules/Cart/cart.module';
         SaleModule,
         ChatModule,
         CartModule,
+        WishlistModule,
     ],
     controllers: [AppController],
     providers: [AppService],
