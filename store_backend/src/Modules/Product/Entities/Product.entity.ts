@@ -73,12 +73,13 @@ export class Product extends BaseEntity<Product> {
     @OneToMany(() => ProductReview, (reviews) => reviews.reviewedProduct)
     reviews: ProductReview[];
 
-    @OneToMany(()=>Sale,sales=>sales.product)
-    sales:Sale[];
-
-    @ManyToMany(()=>Cart,carts=>carts.items,{onDelete:'CASCADE'})
-    carts:Cart[];
+    @ManyToOne(()=>Sale,sold=>sold.products)
+    @JoinColumn({name:"saleId"})
+    sold:Sale;
 
     @ManyToOne(()=>Wishlist,wishlist=>wishlist.products,{onDelete:"CASCADE"})
-    wishlist:Wishlist;
+    wishlist:Wishlist;    
+    
+    @ManyToMany(()=>Cart,carts=>carts.items,{onDelete:'CASCADE'})
+    carts:Cart[];
 }

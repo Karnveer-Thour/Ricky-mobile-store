@@ -9,6 +9,7 @@ import { Sale } from "Modules/Sale/Entities/Sale.entity";
 import { Chat } from "Modules/Chat/Entities/Chat.entity";
 import { Cart } from "Modules/Cart/Entities/Cart.entity";
 import { Wishlist } from "Modules/Wishlist/Entities/Wishlist.entity";
+import { Payment } from "Modules/Payment/Entities/Payment.entity";
 
 export enum role{
     Admin="Admin",
@@ -104,6 +105,9 @@ export class User extends BaseEntity<User> {
     
     @OneToMany(()=>Chat,recievedMessages=>recievedMessages.receiverId)
     recievedMessages:Chat[];
+
+    @OneToMany(()=>Payment,recievedAmounts=>recievedAmounts.buyer)
+    recievedAmounts:Payment[];
 
     @ManyToOne(()=>Wishlist,wishlists=>wishlists.wisher)
     wishlists:Wishlist[];

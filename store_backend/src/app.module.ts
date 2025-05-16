@@ -15,6 +15,7 @@ import { ChatModule } from './Modules/Chat/chat.module';
 import { UserModule } from "Modules/User/User.module";
 import { CartModule } from './Modules/Cart/cart.module';
 import { WishlistModule } from './Modules/Wishlist/wishlist.module';
+import { PaymentModule } from "Modules/Payment/payment.module";
 
 @Module({
     imports: [
@@ -34,6 +35,7 @@ import { WishlistModule } from './Modules/Wishlist/wishlist.module';
         ChatModule,
         CartModule,
         WishlistModule,
+        PaymentModule,
     ],
     controllers: [AppController],
     providers: [AppService],
