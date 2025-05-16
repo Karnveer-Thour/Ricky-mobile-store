@@ -18,7 +18,7 @@ export enum label {
 @Entity()
 @Index(["address", "customer", "isDefault", "label"])
 export class DeliveryAddress extends BaseEntity<DeliveryAddress> {
-    @OneToOne(() => Address, { cascade: true, eager: true })
+    @OneToOne(() => Address,address=>address.deliveryAddress, { cascade: true, eager: true })
     @JoinColumn({ name: "addressId" })
     address: Address;
 

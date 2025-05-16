@@ -75,7 +75,7 @@ export class User extends BaseEntity<User> {
     @Column({name:"role",type:"enum",enum:role,nullable:false})
     role:role;
 
-    @OneToOne(() => Address, { cascade: true, eager: true })
+    @OneToOne(() => Address,address=>address.userAddress, { cascade: true, eager: true })
     @JoinColumn({ name: "addressId" }) // this should match the foreign key column name
     address: Address;
 

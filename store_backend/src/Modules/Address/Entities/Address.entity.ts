@@ -1,5 +1,7 @@
 import { BaseEntity } from "Common/Entities/Base.entity";
-import { Column, Entity, Index } from "typeorm";
+import { DeliveryAddress } from "Modules/Delivery_address/Entities/DeliveryAddress.entity";
+import { User } from "Modules/User/Entities/User.entity";
+import { Column, Entity, Index, OneToOne } from "typeorm";
 
 @Entity()
 @Index([
@@ -47,4 +49,11 @@ export class Address extends BaseEntity<Address> {
 
     @Column({ name: "state", type: "varchar", length: "20", nullable: false })
     state: string;
+
+    //Inverse relations
+    @OneToOne(()=>DeliveryAddress,deliveryAddress=>deliveryAddress.address)
+    deliveryAddress:DeliveryAddress;
+
+    @OneToOne(()=>User,userAddress=>userAddress.address)
+    userAddress:User;
 }
