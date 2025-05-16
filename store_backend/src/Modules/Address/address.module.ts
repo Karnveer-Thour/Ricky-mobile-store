@@ -1,7 +1,7 @@
-import { Module } from "@nestjs/common";
-import { AddressRepository } from "./Repositories/Address.repo";
+import { Module } from '@nestjs/common';
+import { AddressRepository } from './Repositories/Address.repo';
 
 @Module({
-    providers: [AddressRepository],
+  providers: [AddressRepository],
 })
 export class AddressModule {}

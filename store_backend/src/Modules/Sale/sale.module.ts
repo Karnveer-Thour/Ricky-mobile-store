@@ -2,6 +2,6 @@ import { Module } from '@nestjs/common';
 import { SaleRepository } from './Repositories/Sale.repo';
 
 @Module({
-    providers:[SaleRepository]
+  providers: [SaleRepository],
 })
 export class SaleModule {}
