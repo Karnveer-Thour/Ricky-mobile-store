@@ -16,7 +16,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-@Index(['name', 'category', 'price', 'discount', 'description', 'specifications', 'warranty'])
+@Index(['name', 'category', 'price', 'discount', 'description',"quantity", 'specifications', 'warranty'])
 export class Product extends BaseEntity<Product> {
   @Column({ name: 'name', type: 'varchar', length: '150', nullable: false })
   name: string;
@@ -44,6 +44,13 @@ export class Product extends BaseEntity<Product> {
     nullable: true,
   })
   description: string;
+
+  @Column({
+    name: 'specifications',
+    type: 'numeric',
+    nullable: false,
+  })
+  quantity: number;
 
   @Column({
     name: 'specifications',

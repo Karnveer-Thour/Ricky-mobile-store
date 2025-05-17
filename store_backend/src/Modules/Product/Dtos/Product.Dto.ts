@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
 import { BaseDto } from 'Common/Dto/Base.dto';
 
 export class ProductDto extends BaseDto {
@@ -48,6 +48,16 @@ export class ProductDto extends BaseDto {
     message: 'Description must be at most 1500 characters long',
   })
   description: string;
+  
+  @ApiProperty({
+    description: 'Enter Product quantiy',
+    example: 35,
+    type: 'number',
+    required: true,
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  quantiy: string;
 
   @ApiProperty({
     description: 'Enter Product specifications',
