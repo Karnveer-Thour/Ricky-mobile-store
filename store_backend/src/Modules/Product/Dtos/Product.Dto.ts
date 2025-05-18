@@ -48,7 +48,7 @@ export class ProductDto extends BaseDto {
     message: 'Description must be at most 1500 characters long',
   })
   description: string;
-  
+
   @ApiProperty({
     description: 'Enter Product quantiy',
     example: 35,
