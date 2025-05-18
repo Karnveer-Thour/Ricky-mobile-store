@@ -10,11 +10,7 @@ import { Chat } from 'Modules/Chat/Entities/Chat.entity';
 import { Cart } from 'Modules/Cart/Entities/Cart.entity';
 import { Wishlist } from 'Modules/Wishlist/Entities/Wishlist.entity';
 import { Payment } from 'Modules/Payment/Entities/Payment.entity';
-
-export enum role {
-  Admin = 'Admin',
-  Customer = 'Customer',
-}
+import { role } from '../Model/Role.model';
 
 @Entity()
 @Index([

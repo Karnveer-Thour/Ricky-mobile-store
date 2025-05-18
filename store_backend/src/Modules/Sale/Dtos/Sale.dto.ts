@@ -1,7 +1,7 @@
 import { BaseDto } from 'Common/Dto/Base.dto';
-import { status } from '../Entities/Sale.entity';
 import { IsEnum, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { status } from '../Model/Status.enum';
 
 export class SaleDto extends BaseDto {
   @ApiProperty({

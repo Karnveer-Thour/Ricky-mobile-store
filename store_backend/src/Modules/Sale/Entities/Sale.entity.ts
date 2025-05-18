@@ -3,18 +3,7 @@ import { Payment } from 'Modules/Payment/Entities/Payment.entity';
 import { Product } from 'Modules/Product/Entities/Product.entity';
 import { User } from 'Modules/User/Entities/User.entity';
 import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
-
-export enum status {
-  PENDING = 'PENDING',
-  CONFIRMED = 'CONFIRMED',
-  SHIPPED = 'SHIPPED',
-  IN_TRANSIT = 'IN_TRANSIT',
-  DELIVERED = 'DELIVERED',
-  CANCELLED = 'CANCELLED',
-  RETURN_REQUESTED = 'RETURN_REQUESTED',
-  RETURNED = 'RETURNED',
-  FAILED = 'FAILED',
-}
+import { status } from '../Model/Status.enum';
 
 @Entity()
 @Index(['buyer', 'status'])

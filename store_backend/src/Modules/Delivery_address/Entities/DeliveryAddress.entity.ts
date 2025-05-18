@@ -2,11 +2,7 @@ import { BaseEntity } from 'Common/Entities/Base.entity';
 import { Address } from 'Modules/Address/Entities/Address.entity';
 import { User } from 'Modules/User/Entities/User.entity';
 import { Column, Entity, Index, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
-
-export enum label {
-  Home = 'Home',
-  Work = 'Work',
-}
+import { label } from '../Model/Label.model';
 
 @Entity()
 @Index(['address', 'customer', 'isDefault', 'label'])

@@ -13,8 +13,8 @@ import {
 } from 'class-validator';
 import { BaseDto } from 'Common/Dto/base.dto';
 import { birthToAge } from 'Common/Utils/Utils';
-import { role } from '../Entities/User.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { role } from '../Model/Role.model';
 
 export class UserDto extends BaseDto {
   @ApiProperty({

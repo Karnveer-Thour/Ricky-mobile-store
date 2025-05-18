@@ -1,7 +1,7 @@
 import { BaseDto } from 'Common/Dto/Base.dto';
-import { label } from '../Entities/DeliveryAddress.entity';
 import { IsBoolean, IsEnum, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { label } from '../Model/Label.model';
 
 export class DeliveryAddressDto extends BaseDto {
   @ApiProperty({
