@@ -16,6 +16,8 @@ import { UserModule } from 'Modules/User/User.module';
 import { CartModule } from './Modules/Cart/cart.module';
 import { WishlistModule } from './Modules/Wishlist/wishlist.module';
 import { PaymentModule } from 'Modules/Payment/payment.module';
+import { UserController } from './Modules/User/user.controller';
+import { UserService } from './Modules/User/user.service';
 
 @Module({
   imports: [
@@ -37,7 +39,7 @@ import { PaymentModule } from 'Modules/Payment/payment.module';
     WishlistModule,
     PaymentModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, UserController],
+  providers: [AppService, UserService],
 })
 export class AppModule {}
