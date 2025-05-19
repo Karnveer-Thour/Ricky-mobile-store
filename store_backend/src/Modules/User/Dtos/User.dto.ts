@@ -97,12 +97,12 @@ export class UserDto extends BaseDto {
 
   @ApiProperty({
     description: 'Enter the Birth date of user',
-    example: '31/12/1975',
+    example: '1975-11-20',
     type: 'string',
     required: false,
   })
-  @IsDateString()
   @IsOptional()
+  @IsDateString()
   dateBirth: Date;
 
   @IsNumber()

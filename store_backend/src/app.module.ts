@@ -39,7 +39,7 @@ import { UserService } from './Modules/User/user.service';
     WishlistModule,
     PaymentModule,
   ],
-  controllers: [AppController, UserController],
-  providers: [AppService, UserService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
