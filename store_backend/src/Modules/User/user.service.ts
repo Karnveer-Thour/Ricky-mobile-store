@@ -1,19 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserRepository } from './Repositories/User.repo';
 import { UserDto } from './Dtos/User.dto';
-import { User } from './Entities/User.entity';
 import { AddressDto } from 'Modules/Address/Dtos/Address.dto';
-import { AddressRepository } from 'Modules/Address/Repositories/Address.repo';
+import { Address } from 'Modules/Address/Entities/Address.entity';
+import { CreateUserDto } from './Dtos/CreateUser.dto';
 
 @Injectable()
 export class UserService {
-    constructor(private userRepository:UserRepository,private AddressRepository:AddressRepository){}
+    constructor(private userRepository:UserRepository){}
 
-    async registerUser(User:UserDto,Address:AddressDto){
+    async registerUser(user:UserDto, address:AddressDto): Promise<string | UserDto> {
         try{
-            const savedAdress=await this.AddressRepository.save(Address);
-            User.Address=savedAdress.id;
-           return await  this.userRepository.save(User);
+            if(user.mobileNumber){
+                const existedUser=await this.userRepository.find({where:{mobileNumber:user.mobileNumber}});
+                if(existedUser.length!==0){
+                    return "User already exists";
+                }
+            }
+            const existedUser=await this.userRepository.find({where:{email:user.email}});
+            console.log(existedUser);
+            if(existedUser.length!==0){
+                return "User already exists";
+            }
+           return await this.userRepository.save({...user,address});
         }catch(err){
             throw new Error(err);
         }

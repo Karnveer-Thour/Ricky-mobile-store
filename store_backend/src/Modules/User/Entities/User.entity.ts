@@ -2,7 +2,7 @@ import { Exclude, Expose } from 'class-transformer';
 import { BaseEntity } from 'Common/Entities/Base.entity';
 import { birthToAge } from 'Common/Utils/Utils';
 import { Address } from '../../Address/Entities/Address.entity';
-import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne, Unique } from 'typeorm';
 import { DeliveryAddress } from 'Modules/Delivery_address/Entities/DeliveryAddress.entity';
 import { ProductReview } from 'Modules/Product_review/Entitities/ProductReview.entity';
 import { Sale } from 'Modules/Sale/Entities/Sale.entity';
@@ -11,6 +11,7 @@ import { Cart } from 'Modules/Cart/Entities/Cart.entity';
 import { Wishlist } from 'Modules/Wishlist/Entities/Wishlist.entity';
 import { Payment } from 'Modules/Payment/Entities/Payment.entity';
 import { role } from '../Model/Role.model';
+import * as bcrypt from 'bcrypt'
 
 @Entity()
 @Index([
@@ -21,6 +22,7 @@ import { role } from '../Model/Role.model';
   'password',
   'pictureUrl',
   'role',
+  'address',
   'dateBirth',
 ])
 export class User extends BaseEntity<User> {
@@ -45,6 +47,7 @@ export class User extends BaseEntity<User> {
     type: 'varchar',
     length: 254,
     nullable: false,
+    unique:true,
   })
   email: string;
 
@@ -65,6 +68,12 @@ export class User extends BaseEntity<User> {
   @Exclude()
   password: string;
 
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword() {
+  this.password = await bcrypt.hash(this.password+process.env.PASSWORD_PEPPER, 10);
+  }
+
   @Column({
     name: 'pictureUrl',
     type: 'varchar',
@@ -84,12 +93,7 @@ export class User extends BaseEntity<User> {
   address: Address;
 
   @Column({ name: 'dateBirth', type: 'date', nullable: false })
-  dateBirth: Date;
-
-  @Expose()
-  get age(): number | null {
-    return birthToAge(this.dateBirth);
-  }
+  dateBirth: string;
 
   // Inverse relations
   @OneToOne(() => Cart, (cart) => cart.cartOwner)
