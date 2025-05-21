@@ -4,6 +4,8 @@ import { UserDto } from './Dtos/User.dto';
 import { AddressDto } from 'Modules/Address/Dtos/Address.dto';
 import { Address } from 'Modules/Address/Entities/Address.entity';
 import { CreateUserDto } from './Dtos/CreateUser.dto';
+import { User } from './Entities/User.entity';
+import { role } from './Model/Role.model';
 
 @Injectable()
 export class UserService {
@@ -25,6 +27,14 @@ export class UserService {
            return await this.userRepository.save({...user,address});
         }catch(err){
             throw new Error(err);
+        }
+    }
+
+    async getCustomers():Promise<User[]>{
+        try {
+            return await this.userRepository.find({where:{role:role.Customer}});
+        } catch (error) {
+         throw  new Error(error);   
         }
     }
 }
