@@ -55,7 +55,7 @@ export class Product extends BaseEntity<Product> {
   description: string;
 
   @Column({
-    name: 'specifications',
+    name: 'quantity',
     type: 'numeric',
     nullable: false,
   })

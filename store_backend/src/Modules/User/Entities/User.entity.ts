@@ -1,6 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
 import { BaseEntity } from 'Common/Entities/Base.entity';
-import { birthToAge } from 'Common/Utils/Utils';
 import { Address } from '../../Address/Entities/Address.entity';
 import { BeforeInsert, BeforeUpdate, Column, Entity, Index, JoinColumn, ManyToOne, OneToMany, OneToOne, Unique } from 'typeorm';
 import { DeliveryAddress } from 'Modules/Delivery_address/Entities/DeliveryAddress.entity';
@@ -11,7 +10,6 @@ import { Cart } from 'Modules/Cart/Entities/Cart.entity';
 import { Wishlist } from 'Modules/Wishlist/Entities/Wishlist.entity';
 import { Payment } from 'Modules/Payment/Entities/Payment.entity';
 import { role } from '../Model/Role.model';
-import * as bcrypt from 'bcrypt'
 
 @Entity()
 @Index([
@@ -67,12 +65,6 @@ export class User extends BaseEntity<User> {
   })
   @Exclude()
   password: string;
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  async hashPassword() {
-  this.password = await bcrypt.hash(this.password+process.env.PASSWORD_PEPPER, 10);
-  }
 
   @Column({
     name: 'pictureUrl',
