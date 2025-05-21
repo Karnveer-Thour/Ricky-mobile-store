@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import {  ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto } from './Dtos/CreateUser.dto';
@@ -15,8 +15,14 @@ export class UserController {
         return await this.userService.registerUser(userData.user,userData.address);
     }
 
-    @Get()
+    @Get('/customers')
     async getCustomers():Promise<User[]>{
         return await this.userService.getCustomers();
     }
+
+    @Get('/:id')
+    async getById(@Param(':id')id:string):Promise<User>{
+        return await this.userService.getById(id);
+    }
+
 }

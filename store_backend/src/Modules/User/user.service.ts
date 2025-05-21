@@ -2,14 +2,9 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserRepository } from './Repositories/User.repo';
 import { UserDto } from './Dtos/User.dto';
 import { AddressDto } from 'Modules/Address/Dtos/Address.dto';
-<<<<<<< HEAD
-import { Address } from 'Modules/Address/Entities/Address.entity';
-import { CreateUserDto } from './Dtos/CreateUser.dto';
 import { User } from './Entities/User.entity';
 import { role } from './Model/Role.model';
-=======
 import * as bcrypt from 'bcrypt';
->>>>>>> 54c164736c328489622da174a9584647e9425ce4
 
 @Injectable()
 export class UserService {
@@ -37,6 +32,14 @@ export class UserService {
     async getCustomers():Promise<User[]>{
         try {
             return await this.userRepository.find({where:{role:role.Customer}});
+        } catch (error) {
+         throw  new Error(error);   
+        }
+    }
+
+    async getById(id:string):Promise<User>{
+        try {
+            return await this.userRepository.findOne({where:{id:id}});
         } catch (error) {
          throw  new Error(error);   
         }
