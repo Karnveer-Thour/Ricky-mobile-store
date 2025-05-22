@@ -9,6 +9,6 @@ import { AddressRepository } from 'Modules/Address/Repositories/Address.repo';
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [UserController],
-  providers: [UserService, UserRepository,AddressRepository],
+  providers: [UserService, UserRepository, AddressRepository],
 })
 export class UserModule {}
