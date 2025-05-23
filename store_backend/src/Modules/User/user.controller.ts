@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto } from './Dtos/CreateUser.dto';
@@ -28,6 +28,11 @@ export class UserController {
 
   @Patch('/:id')
   async update(@Param(':id') id:string,updateData:updateUserDto):Promise<any>{
-    return "";
+    return this.userService.update(id,updateData);
+  }
+
+  @Delete('/:id')
+  async softDeleteById(@Param(':id')id:string):Promise<any>{
+    return this.userService.softDeleteById(id);
   }
 }

@@ -67,4 +67,17 @@ export class UserService {
       throw new Error(error);
     }
   }
+
+  async  softDeleteById(id:string):Promise<any>{
+    try{
+      const result=await this.userRepository.softDelete(id);
+       return {
+        code:204,
+        status:true,
+        data:result,
+      }
+    }catch(error){
+      throw new Error(error);
+    }
+  }
 }
