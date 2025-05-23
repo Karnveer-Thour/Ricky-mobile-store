@@ -40,7 +40,7 @@ export class UserService {
     }
   }
 
-   async getById(id: string): Promise<User> {
+  async getById(id: string): Promise<User> {
     try {
       return await this.userRepository.findOne({ where: { id: id } });
     } catch (error) {
@@ -48,35 +48,35 @@ export class UserService {
     }
   }
 
-  async update(id:string,updateUserData:updateUserDto):Promise<any>{
+  async update(id: string, updateUserData: updateUserDto): Promise<any> {
     try {
-      const user=await this.userRepository.findOne({where:{id}});
-      if(!user){
+      const user = await this.userRepository.findOne({ where: { id } });
+      if (!user) {
         throw new InternalServerErrorException('User not found');
       }
-      for(let key in updateUserData){
-        updateUserData[key]=updateUserData[key]??user[key];
+      for (let key in updateUserData) {
+        updateUserData[key] = updateUserData[key] ?? user[key];
       }
-      const result=await this.userRepository.update(id,updateUserData);
+      const result = await this.userRepository.update(id, updateUserData);
       return {
-        code:204,
-        status:true,
-        data:result,
-      }
+        code: 204,
+        status: true,
+        data: result,
+      };
     } catch (error) {
       throw new Error(error);
     }
   }
 
-  async  softDeleteById(id:string):Promise<any>{
-    try{
-      const result=await this.userRepository.softDelete(id);
-       return {
-        code:204,
-        status:true,
-        data:result,
-      }
-    }catch(error){
+  async softDeleteById(id: string): Promise<any> {
+    try {
+      const result = await this.userRepository.softDelete(id);
+      return {
+        code: 204,
+        status: true,
+        data: result,
+      };
+    } catch (error) {
       throw new Error(error);
     }
   }

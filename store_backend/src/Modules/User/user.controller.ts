@@ -27,12 +27,12 @@ export class UserController {
   }
 
   @Patch('/:id')
-  async update(@Param(':id') id:string,updateData:updateUserDto):Promise<any>{
-    return this.userService.update(id,updateData);
+  async update(@Param(':id') id: string, updateData: updateUserDto): Promise<any> {
+    return this.userService.update(id, updateData);
   }
 
   @Delete('/:id')
-  async softDeleteById(@Param(':id')id:string):Promise<any>{
+  async softDeleteById(@Param(':id') id: string): Promise<any> {
     return this.userService.softDeleteById(id);
   }
 }
