@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto } from './Dtos/CreateUser.dto';
 import { UserDto } from './Dtos/User.dto';
 import { User } from './Entities/User.entity';
+import { updateUserDto } from './Dtos/UpdateUser.dto';
 
 @Controller('user')
 @ApiTags('User')
@@ -23,5 +24,10 @@ export class UserController {
   @Get('/:id')
   async getById(@Param(':id') id: string): Promise<User> {
     return await this.userService.getById(id);
+  }
+
+  @Patch('/:id')
+  async update(@Param(':id') id:string,updateData:updateUserDto):Promise<any>{
+    return "";
   }
 }

@@ -1,8 +1,58 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
-import { BaseDto } from 'Common/Dto/Base.dto';
+import {
+  IsDateString,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
+import { BaseDto } from 'Common/Dto/base.dto';
+import { role } from '../Model/Role.model';
 
-export class AddressDto extends BaseDto {
+export class updateUserDto extends BaseDto {
+  @ApiProperty({ example: 'Ricky', required: true })
+  @IsString()
+  @IsOptional()
+  @MaxLength(25)
+  firstName?: string;
+
+  @ApiProperty({ example: 'makol', required: true })
+  @IsString()
+  @IsOptional()
+  @MaxLength(25)
+  lastName?: string;
+
+  @ApiProperty({ example: 'Ricky@gmail.com', required: true })
+  @IsEmail()
+  @IsOptional()
+  @MaxLength(254)
+  email?: string;
+
+  @ApiProperty({ example: '22.jpg', required: false })
+  @IsString()
+  @IsOptional()
+  pictureUrl?: string;
+
+  @ApiProperty({ example: role.Admin, required: true })
+  @IsEnum(role)
+  @IsNotEmpty()
+  role?: role;
+
+  @ApiProperty({ example: '9456862378', required: false })
+  @IsString()
+  @IsOptional()
+  mobileNumber?: string;
+
+  @ApiProperty({ example: '1975-11-20', format: 'date', required: false })
+  @IsOptional()
+  @IsDateString()
+  dateBirth?: string;
+
   @ApiProperty({
     description: 'Enter your house number',
     example: 'L-34',
