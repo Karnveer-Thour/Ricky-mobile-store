@@ -2,16 +2,16 @@ import { BadRequestException, Injectable, InternalServerErrorException } from '@
 import { UserRepository } from './Repositories/User.repo';
 import { UserDto } from './Dtos/User.dto';
 import { AddressDto } from 'Modules/Address/Dtos/Address.dto';
-import { User } from './Entities/User.entity';
 import { role } from './Model/Role.model';
 import * as bcrypt from 'bcrypt';
 import { updateUserDto } from './Dtos/UpdateUser.dto';
+import { baseResponseDto } from 'Common/Dto/BaseResponse.dto';
 
 @Injectable()
 export class UserService {
   constructor(private userRepository: UserRepository) {}
 
-  async registerUser(user: UserDto, address: AddressDto): Promise<string | UserDto> {
+  async registerUser(user: UserDto, address: AddressDto): Promise<string | baseResponseDto> {
     try {
       if (user.mobileNumber) {
         const existedUser = await this.userRepository.find({
@@ -26,29 +26,44 @@ export class UserService {
         return 'User already exists';
       }
       user.password = await bcrypt.hash(user.password + process.env.PASSWORD_PEPPER, 10);
-      return await this.userRepository.save({ ...user, address });
+      const result = await this.userRepository.save({ ...user, address });
+      return {
+        code: 201,
+        status: true,
+        data: result,
+      };
     } catch (err) {
       throw new InternalServerErrorException(err);
     }
   }
 
-  async getCustomers(): Promise<User[]> {
+  async getCustomers(): Promise<baseResponseDto> {
     try {
-      return await this.userRepository.find({ where: { role: role.Customer } });
+      const result = await this.userRepository.find({ where: { role: role.Customer } });
+      return {
+        code: 201,
+        status: true,
+        data: result,
+      };
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
 
-  async getById(id: string): Promise<User> {
+  async getById(id: string): Promise<baseResponseDto> {
     try {
-      return await this.userRepository.findOne({ where: { id: id } });
+      const result = await this.userRepository.findOne({ where: { id: id } });
+      return {
+        code: 200,
+        status: true,
+        data: result,
+      };
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
 
-  async update(id: string, updateUserData: updateUserDto): Promise<any> {
+  async update(id: string, updateUserData: updateUserDto): Promise<baseResponseDto> {
     try {
       const user = await this.userRepository.findOne({ where: { id } });
       if (!user) {
@@ -64,11 +79,11 @@ export class UserService {
         data: result,
       };
     } catch (error) {
-      throw new Error(error);
+      throw new InternalServerErrorException(error);
     }
   }
 
-  async softDeleteById(id: string): Promise<any> {
+  async softDeleteById(id: string): Promise<baseResponseDto> {
     try {
       const result = await this.userRepository.softDelete(id);
       return {
@@ -77,7 +92,7 @@ export class UserService {
         data: result,
       };
     } catch (error) {
-      throw new Error(error);
+      throw new InternalServerErrorException(error);
     }
   }
 }
