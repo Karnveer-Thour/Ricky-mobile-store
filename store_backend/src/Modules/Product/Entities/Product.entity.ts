@@ -84,8 +84,8 @@ export class Product extends BaseEntity<Product> {
   @OneToMany(() => ProductReview, (reviews) => reviews.reviewedProduct)
   reviews: ProductReview[];
 
-  @OneToMany(()=>ProductColor,colors=>colors.product)
-  colors:ProductColor[];
+  @OneToMany(() => ProductColor, (colors) => colors.product)
+  colors: ProductColor[];
 
   @ManyToOne(() => Sale, (sold) => sold.products)
   @JoinColumn({ name: 'saleId' })
