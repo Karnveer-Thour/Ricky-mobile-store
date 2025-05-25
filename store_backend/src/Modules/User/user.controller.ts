@@ -15,9 +15,9 @@ export class UserController {
     return await this.userService.registerUser(userData.user, userData.address);
   }
 
-  @Get('/customers')
-  async getCustomers(): Promise<baseResponseDto> {
-    return await this.userService.getCustomers();
+  @Get()
+  async getUsers(): Promise<baseResponseDto> {
+    return await this.userService.getUsers();
   }
 
   @Get('/:id')

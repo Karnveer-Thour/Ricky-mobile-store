@@ -37,7 +37,7 @@ export class UserService {
     }
   }
 
-  async getCustomers(): Promise<baseResponseDto> {
+  async getUsers(): Promise<baseResponseDto> {
     try {
       const result = await this.userRepository.find({ where: { role: role.Customer } });
       return {
