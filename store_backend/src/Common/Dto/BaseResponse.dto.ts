@@ -1,12 +1,11 @@
-import { IsBoolean, IsNumber, IsObject } from "class-validator"
+import { IsBoolean, IsNumber, IsObject } from 'class-validator';
 
-export class baseResponseDto{
-        @IsNumber()
-        code: number;
+export class baseResponseDto {
+  @IsNumber()
+  code: number;
 
-        @IsBoolean()
-        status: boolean;
+  @IsBoolean()
+  status: boolean;
 
-        data: any;
-      
+  data: any;
 }

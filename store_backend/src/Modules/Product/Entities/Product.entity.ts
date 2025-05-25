@@ -14,6 +14,8 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
+import { ProductColor } from './ProductColor.entity';
+import { IsOptional } from 'class-validator';
 
 @Entity()
 @Index([
@@ -57,8 +59,9 @@ export class Product extends BaseEntity<Product> {
   @Column({
     name: 'quantity',
     type: 'numeric',
-    nullable: false,
+    nullable: true,
   })
+  @IsOptional()
   quantity: number;
 
   @Column({
@@ -80,6 +83,9 @@ export class Product extends BaseEntity<Product> {
   //Inverse relations
   @OneToMany(() => ProductReview, (reviews) => reviews.reviewedProduct)
   reviews: ProductReview[];
+
+  @OneToMany(()=>ProductColor,colors=>colors.product)
+  colors:ProductColor[];
 
   @ManyToOne(() => Sale, (sold) => sold.products)
   @JoinColumn({ name: 'saleId' })
