@@ -18,6 +18,7 @@ import { WishlistModule } from './Modules/Wishlist/wishlist.module';
 import { PaymentModule } from 'Modules/Payment/payment.module';
 import { UserController } from './Modules/User/user.controller';
 import { UserService } from './Modules/User/user.service';
+import { WhatsappDetailsModule } from './Modules/Whatsapp_details/whatsapp_details.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { UserService } from './Modules/User/user.service';
     CartModule,
     WishlistModule,
     PaymentModule,
+    WhatsappDetailsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
