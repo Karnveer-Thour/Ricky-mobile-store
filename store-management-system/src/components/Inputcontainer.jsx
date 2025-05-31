@@ -3,7 +3,7 @@ import React from "react";
 function Inputcontainer({ type,children,error }) {
   
   return (
-    <div className="mb-5">
+    <div className="mb-5 w-[90%]">
       <label htmlFor={type} className="block text-sm/6 text-[1rem] font-semibold text-gray-900 ms-1">
         &nbsp;{type[0].toUpperCase()+type.slice(1)}
       </label>
