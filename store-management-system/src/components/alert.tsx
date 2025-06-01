@@ -6,7 +6,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 const Alert = () => {
   const [isVisible, setVisible] = useState(true);
-  const { type, message,id } = useSelector((store: storeType) => store.Alert||{});
+  const { type, message, id } = useSelector(
+    (store: storeType) => store.Alert || {},
+  );
   console.log(id);
   const dispatchAlert = useDispatch();
 
@@ -14,7 +16,7 @@ const Alert = () => {
     success: "bg-green-100 border-green-400 text-green-700",
     error: "bg-red-100 border-red-400 text-red-700",
   };
-  
+
   const handleClose = () => {
     setVisible(false);
     dispatchAlert(CLOSEALERT(null));
@@ -25,8 +27,8 @@ const Alert = () => {
       const timer = setTimeout(() => {
         setVisible(false);
         setTimeout(() => {
-          setVisible(prev=>!prev);
-          dispatchAlert(CLOSEALERT(null))
+          setVisible((prev) => !prev);
+          dispatchAlert(CLOSEALERT(null));
         }, 1000);
       }, 3000);
 
@@ -41,7 +43,9 @@ const Alert = () => {
           className={`z-100 border px-4 py-3 rounded mt-5 w-[90%] md:w-[30%] h-[%] mx-auto overflow-hidden fixed bottom-5 right-5 max-md:left-5 max-md:right-0 flex items-center ${
             alertStyles[type]
           } transition-all duration-1000 ease-in-out ${
-            isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full"
+            isVisible
+              ? "opacity-100 translate-x-0"
+              : "opacity-0 translate-x-full"
           }`}
           role="alert"
           aria-live="assertive"
@@ -69,4 +73,3 @@ const Alert = () => {
 };
 
 export default Alert;
- 

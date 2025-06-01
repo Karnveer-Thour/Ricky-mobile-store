@@ -1,12 +1,16 @@
-import React from 'react'
+import React from "react";
 
-function layout({children}: {children: React.ReactNode}): React.JSX.Element {
+function layout({
+  children,
+}: {
+  children: React.ReactNode;
+}): React.JSX.Element {
   return (
     <div>
       Navbar
       {children}
     </div>
-  )
+  );
 }
 
-export default layout
+export default layout;

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 function page() {
   return <>Hi everyone, this is the dashboard page.</>;
