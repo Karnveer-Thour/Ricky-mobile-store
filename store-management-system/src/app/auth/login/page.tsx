@@ -89,7 +89,7 @@ export default function Login() {
             />
           </form>
         </Formcontainer>
-        <h1 className="mt-8 text-white">© Copyrights Alectify 2025. All Rights Reserved.</h1>
+        <h1 className="mt-8 text-white">© Copyrights Karanveer Thour 2025. All Rights Reserved.</h1>
       </Maincontainer>
     </>
   );
