@@ -38,7 +38,7 @@ export default function Login() {
       {/* Render login form when not loading */}
 
       <Maincontainer>
-        <Formcontainer className="max-w-xl p-8">
+        <Formcontainer className="max-w-xl p-8 mt-18">
           <div className="h-32 flex justify-center items-center">
             <img src="/assets/images/logo.png" alt="loading" className=" border-2 h-full" />
           </div>
