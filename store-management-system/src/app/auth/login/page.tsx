@@ -39,7 +39,7 @@ export default function Login() {
   return (
     <>
       <Maincontainer>
-        <Formcontainer className="max-w-xl p-8 mt-28">
+        <Formcontainer className="max-w-xl p-8 mt-42">
           <div className="h-32 flex justify-center items-center">
             <img
               src="/assets/images/logo.png"
