@@ -3,18 +3,14 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
-
-// Import UI components
 import Inputcontainer from "@/components/Inputcontainer";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-
-// Import Redux actions and validation schema
-import Maincontainer from "@/UI/Maincontainer";
-import Formcontainer from "@/UI/Formcontainer";
 import { Loginvalidationschema } from "@/library/yup/login.yup";
 import { Eye, EyeClosed } from "lucide-react";
 import { SUCCESSALERT } from "@/store/slices/alert.slice";
+import Formcontainer from "@/ui/Formcontainer";
+import Maincontainer from "@/ui/Maincontainer";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -30,7 +26,6 @@ export default function Login() {
   const submitForm = () => {
     try {
       dispatch(SUCCESSALERT("Login Successfully"));
-      console.log("Form submitted");
     } catch (error) {
       throw new Error(String(error));
     }
@@ -39,7 +34,7 @@ export default function Login() {
   return (
     <>
       <Maincontainer>
-        <Formcontainer className="max-w-xl p-8 mt-42">
+        <Formcontainer className="max-w-xl p-8">
           <div className="h-32 flex justify-center items-center">
             <img
               src="/assets/images/logo.png"

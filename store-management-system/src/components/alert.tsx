@@ -9,7 +9,6 @@ const Alert = () => {
   const { type, message, id } = useSelector(
     (store: storeType) => store.Alert || {},
   );
-  console.log(id);
   const dispatchAlert = useDispatch();
 
   const alertStyles = {

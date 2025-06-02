@@ -1,6 +1,12 @@
 import React from "react";
 
-function Input({ id, placeholder, className = "", ...props }) {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  id?: string;
+  placeholder?: string;
+  className?: string;
+}
+
+function Input({ id, placeholder, className = "", ...props }: InputProps) {
   return (
     <input
       id={id}

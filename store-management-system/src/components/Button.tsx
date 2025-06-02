@@ -1,6 +1,14 @@
 import React from "react";
 
-function Button({ name, handler, value, className, ...props }) {
+type ButtonProps = {
+  name: string;
+  handler?: React.MouseEventHandler<HTMLButtonElement>;
+  value?: string | number | readonly string[];
+  className?: string;
+  [key: string]: any;
+};
+
+function Button({ name, handler, value, className, ...props }: ButtonProps) {
   return (
     <button
       type="submit"

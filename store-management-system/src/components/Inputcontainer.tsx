@@ -1,6 +1,12 @@
 import React from "react";
 
-function Inputcontainer({ type, children, error }) {
+interface InputContainerProps {
+  type: string;
+  children: React.ReactNode;
+  error?: { message?: string };
+}
+
+function Inputcontainer({ type, children, error }: InputContainerProps) {
   return (
     <div className="mb-5 w-[90%]">
       <label
