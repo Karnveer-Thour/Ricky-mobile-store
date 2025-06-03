@@ -23,7 +23,7 @@ interface NavbarProps {
 }
 
 function Navbar({ isOpen, setIsOpen }: NavbarProps) {
-//   const location = useLocation();
+  //   const location = useLocation();
   const [Menuvisible, setMenuvisible] = useState(false);
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -37,12 +37,12 @@ function Navbar({ isOpen, setIsOpen }: NavbarProps) {
       <div
         className={classNames(
           "h-screen bg-gray-900 text-white p-5 transition-all duration-300 flex flex-col justify-between",
-          isOpen ? "w-64" : "w-20 max-md:bg-transparent"
+          isOpen ? "w-64" : "w-20 max-md:bg-transparent",
         )}
       >
         <div className="overflow-hidden ">
           <button
-            className={`mb-6 flex items-center ${isOpen?"justify-end":"justify-center"} w-full text-gray-300 overflow-hidden transition-all duration-300`}
+            className={`mb-6 flex items-center ${isOpen ? "justify-end" : "justify-center"} w-full text-gray-300 overflow-hidden transition-all duration-300`}
             onClick={toggleSidebar}
           >
             {isOpen ? (
@@ -64,25 +64,31 @@ function Navbar({ isOpen, setIsOpen }: NavbarProps) {
             />
             <Navitem
               icon={<UserSearch size={24} />}
-              label="Customers"
+              label="Products"
               linkTo="/customers"
               isOpen={isOpen}
             />
             <Navitem
               icon={<User size={24} />}
-              label="Providers"
+              label="Categories"
               linkTo="/providers"
               isOpen={isOpen}
             />
             <Navitem
               icon={<ClipboardList size={24} />}
-              label="Jobs"
+              label="Sales"
               linkTo="/jobs"
               isOpen={isOpen}
             />
             <Navitem
               icon={<UserCog size={24} />}
-              label="Services"
+              label="Cities"
+              linkTo="/services"
+              isOpen={isOpen}
+            />
+            <Navitem
+              icon={<UserCog size={24} />}
+              label="Whatsapp message"
               linkTo="/services"
               isOpen={isOpen}
             />
@@ -119,6 +125,7 @@ function Navbar({ isOpen, setIsOpen }: NavbarProps) {
                 isOpen={isOpen}
                 linkTo="/profile"
                 menu={toggleMenuvisibility}
+                label={""}
               />
             </nav>
           )}

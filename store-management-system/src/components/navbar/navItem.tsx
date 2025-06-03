@@ -11,7 +11,7 @@ interface NavitemProps {
 }
 
 function Navitem({ icon, label, isOpen, menu, linkTo }: NavitemProps) {
-//   const location = useLocation();
+  //   const location = useLocation();
 
   return (
     <div
