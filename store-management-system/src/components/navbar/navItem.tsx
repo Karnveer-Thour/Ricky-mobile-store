@@ -1,27 +1,36 @@
-"use client";
-import React from "react";
-// import { NavLink, useLocation } from "react-router-dom";
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import React, { ReactNode, MouseEventHandler } from 'react';
 
 interface NavitemProps {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   isOpen: boolean;
-  menu?: React.MouseEventHandler<HTMLDivElement>;
-  linkTo?: string;
+  menu?: MouseEventHandler<HTMLAnchorElement>;
+  linkTo: string;
 }
 
-function Navitem({ icon, label, isOpen, menu, linkTo }: NavitemProps) {
-  //   const location = useLocation();
+const Navitem: React.FC<NavitemProps> = ({ icon, label, isOpen, menu, linkTo }) => {
+  const pathname = usePathname();
+
+  const isActive =
+    (label !== 'Profile' || ['/profile', '/logout'].includes(pathname)) &&
+    pathname === linkTo;
 
   return (
-    <div
-      className={`flex items-center gap-4 p-3 rounded-lg hover:bg-gray-700 cursor-pointer overflow-hidden`}
-      onClick={menu || undefined}
+    <Link
+      href={linkTo || pathname}
+      onClick={menu}
+      className={`flex items-center gap-4 p-3 rounded-lg hover:bg-gray-700 cursor-pointer overflow-hidden ${
+        isActive ? 'bg-gray-700' : ''
+      }`}
     >
       {icon}
       {isOpen && <span>{label}</span>}
-    </div>
+    </Link>
   );
-}
+};
 
 export default Navitem;

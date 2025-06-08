@@ -47,24 +47,24 @@ const ProductTable = () => {
 
   const columns = [
     {
-      header: "ID",
-      id: "ID",
-      accessorKey: "_id",
-    },
-    {
       header: "Name",
       id: "Name",
       accessorKey: "name",
     },
     {
-      header: "Email",
-      id: "Email",
-      accessorKey: "email",
+      header: "Category",
+      id: "Category",
+      accessorKey: "category",
     },
     {
-      header: "Rating",
-      id: "Rating",
-      accessorKey: "rating",
+      header: "Price",
+      id: "Price",
+      accessorKey: "price",
+    },
+    {
+      header: "Quantity",
+      id: "Quantity",
+      accessorKey: "quantity",
     },
     {
       header: "Actions",
@@ -133,7 +133,14 @@ const ProductTable = () => {
       )}
       <Table
         columns={columns}
-        data={[]}
+        data={[
+          {
+            name: "Product 1",
+            category: "Category 1",
+            price: 100,
+            quantity: 10,
+          }
+        ]}
         columnVisibility={columnVisibility}
         setColumnVisibility={setColumnVisibility}
       />

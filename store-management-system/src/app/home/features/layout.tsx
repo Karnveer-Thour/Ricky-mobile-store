@@ -15,7 +15,7 @@ function layout({
           <Actionbuttons unreadMessages={30} unreadNotifications={12} />
         </div>
         <Topactionbar />
-        <div className="flex-1 overflow-y-auto p-5 bg-gray-100 transition-all duration-300">
+        <div className="overflow-y-auto flex flex-col justify-center bg-gray-100 transition-all duration-300">
           {children}
         </div>
       </div>

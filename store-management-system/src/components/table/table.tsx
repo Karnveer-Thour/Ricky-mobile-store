@@ -59,7 +59,7 @@ function Table({
     },
   });
   return (
-    <div className="p-1 h-full w-full m-auto">
+    <div className="h-full w-full ms-[-1.97%]">
       <div className=" p-3 hidden md:flex justify-between items-center ">
         <GlobalFilter setGlobalFilter={setGlobalFilter} />
         <div className="w-45 h-12">
