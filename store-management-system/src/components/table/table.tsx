@@ -59,7 +59,7 @@ function Table({
     },
   });
   return (
-    <div className="h-full w-full ms-[-1.97%]">
+    <div className="h-full w-[90vw] ms-[-1.97%]">
       <div className=" p-3 hidden md:flex justify-between items-center ">
         <GlobalFilter setGlobalFilter={setGlobalFilter} />
         <div className="w-45 h-12">
@@ -97,8 +97,8 @@ function Table({
               ))}
             </thead>
 
-            <tbody>
-              {table.getRowModel().rows.map((row) => (
+            <tbody className="text-center">
+              {table.getRowModel().rows.map((row:any) => (
                 <Row row={row} key={row.id} />
               ))}
             </tbody>

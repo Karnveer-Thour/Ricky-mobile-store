@@ -1,7 +1,7 @@
 "use client";
 import Table from "@/components/table/table";
 import { Edit, TrashIcon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Update from "./update";
 import Delete from "./Delete";
 
@@ -88,33 +88,28 @@ const ProductTable = () => {
     },
   ];
 
-  type ColumnKey = "ID" | "Name" | "Email" | "Rating" | "Actions";
+  type ColumnKey = "Name" | "Category" | "Price" | "Quantity"| "Actions";
   const [columnVisibility, setColumnVisibility] = useState<
     Record<ColumnKey, boolean>
   >({
-    ID: true,
     Name: true,
-    Email: true,
-    Rating: true,
+    Category: true,
+    Price: true,
+    Quantity: true,
     Actions: true,
   });
 
-  //   useEffect(() => {
-  //     for (let key in columnVisibility) {
-  //       if (key === "Actions") continue;
-  //       if (columnVisibility[key as ColumnKey] === true) {
-  //         isAction = true;
-  //         break;
-  //       }
-  //     }
-  //     }
-  //     setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-  //   }, [
-  //     columnVisibility.ID,
-  //     columnVisibility.Name,
-  //     columnVisibility.Email,
-  //     columnVisibility.Rating,
-  //   ]);
+  useEffect(() => {
+    let isAction = false;
+    for (let key in columnVisibility) {
+      if (key === "Actions") continue;
+      if (columnVisibility[key as ColumnKey] === true) {
+        isAction = true;
+        break;
+      }
+      }
+      setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
+    }, [columnVisibility]);
 
   return (
     <div className="w-[95%] sm:ms-7">

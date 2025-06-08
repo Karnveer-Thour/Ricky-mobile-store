@@ -20,24 +20,24 @@ function ColumnVisibility({
 }: ColumnVisibilityProps) {
   return (
     <Multiselect Heading="Select Columns">
-      {columns.map(
-        (header) =>
-          header.id !== "Actions" && (
-            <div
-              className="w-full flex items-center justify-start gap-2 border-b-2 p-2"
-              key={header.id}
-            >
-              <input
-                className="h-full"
-                type="checkbox"
-                id={header.id}
-                onClick={(e) => handleColumnVisibility(header.id)}
-                defaultChecked={columnVisibility[header.id] ? true : false}
-              />
-              <label htmlFor={header.id}>{header.header}</label>
-            </div>
-          ),
-      )}
+      {columns
+        .filter((column) => column.id !== "Actions")
+        .map((column) => (
+          
+          <div
+            className="w-full flex items-center justify-start gap-2 border-b-2 p-2"
+            key={column.id}
+          >
+            <input
+              className="h-full"
+              type="checkbox"
+              id={column.id}
+              onClick={() => handleColumnVisibility(column.id)}
+              defaultChecked={columnVisibility[column.id] ? true : false}
+            />
+            <label htmlFor={column.id}>{column.header}</label>
+          </div>
+        ))}
     </Multiselect>
   );
 }
