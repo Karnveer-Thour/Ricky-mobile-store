@@ -20,12 +20,12 @@ function MobileCards({ data }: MobileCardsProps) {
           No customers found
         </div>
       ) : (
-        <div className="md:hidden space-y-4 ms-8">
+        <div className="md:hidden space-y-4 w-[85vw] mt-3">
           {data.map((customer) => (
             <div key={customer._id} className="bg-white p-4 rounded-lg shadow">
               <div className="grid grid-cols-2 gap-2">
                 <div className="font-medium">ID:</div>
-                <div className="truncate">{customer._id}</div>
+                <div className="truncate">{customer.name}</div>
 
                 <div className="font-medium">Name:</div>
                 <div className="truncate">{customer.name}</div>

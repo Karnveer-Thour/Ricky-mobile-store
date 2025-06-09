@@ -109,10 +109,10 @@ const ProductTable = () => {
       }
       }
       setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-    }, [columnVisibility]);
+    }, [columnVisibility.Name,]);
 
   return (
-    <div className="w-[95%] sm:ms-7">
+    <div className="w-[95%] mr-10 sm:ms-7">
       {customerDeleting && (
         <Delete
           handleDelete={() => handleDelete(customerData)}

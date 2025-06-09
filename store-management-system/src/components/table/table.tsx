@@ -59,8 +59,8 @@ function Table({
     },
   });
   return (
-    <div className="h-full w-[90vw] ms-[-1.97%]">
-      <div className=" p-3 hidden md:flex justify-between items-center ">
+    <div className="h-full w-[100%]">
+      <div className=" p-3 hidden md:flex justify-between items-center">
         <GlobalFilter setGlobalFilter={setGlobalFilter} />
         <div className="w-45 h-12">
           <ColumnVisibility
