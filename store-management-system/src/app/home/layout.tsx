@@ -19,7 +19,7 @@ function layout({
         className={classNames(
           "flex-1 h-auto overflow-y-auto p-5 transition-all duration-300",
           isOpen ? "md:ml-64" : "md:ml-20",
-          isDark ? "bg-gray-500" : "bg-gray-100"
+          isDark ? "bg-gray-500" : "bg-gray-100",
         )}
       >
         {children}

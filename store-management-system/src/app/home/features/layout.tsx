@@ -17,7 +17,11 @@ function layout({
         className={`flex-1 h-[95vh]  transition-all bg-transparent duration-300`}
       >
         <div className="h-[2%] w-20 flex items-center justify-evenly ms-5 gap-5 sm:hidden ">
-          <Actionbuttons unreadMessages={30} unreadNotifications={12} isDark={isDark} />
+          <Actionbuttons
+            unreadMessages={30}
+            unreadNotifications={12}
+            isDark={isDark}
+          />
         </div>
         <Topactionbar isDark={isDark} />
         <div

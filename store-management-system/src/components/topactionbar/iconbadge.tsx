@@ -9,7 +9,11 @@ interface IconbadgeProps {
   isDark: boolean;
 }
 
-function Iconbadge({ children, unreadcount, isDark }: IconbadgeProps): React.JSX.Element {
+function Iconbadge({
+  children,
+  unreadcount,
+  isDark,
+}: IconbadgeProps): React.JSX.Element {
   return (
     <div
       className={`sm:outline w-15 h-[80%] rounded-xl flex items-center justify-center ${

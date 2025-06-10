@@ -9,7 +9,7 @@ type RowProps<TData> = {
   isDark?: boolean;
 };
 
-function Row<TData>({ row,isDark=false }: RowProps<TData>) {
+function Row<TData>({ row, isDark = false }: RowProps<TData>) {
   return (
     <tr className={"border-t"}>
       {row.getVisibleCells().map((cell) => (

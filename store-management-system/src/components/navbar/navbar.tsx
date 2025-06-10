@@ -50,7 +50,7 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
       <div
         className={cn(
           "h-screen bg-gray-900 text-white p-5 transition-all duration-300 flex flex-col justify-between",
-          isOpen ? "w-64" : "w-20 max-md:bg-transparent"
+          isOpen ? "w-64" : "w-20 max-md:bg-transparent",
         )}
       >
         <div className="overflow-hidden">

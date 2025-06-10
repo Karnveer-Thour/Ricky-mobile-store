@@ -5,8 +5,8 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 function DarkModeToggle() {
-  const isDark=useSelector((state: storeType) => state.DarkMode?.isDarkMode);
-  const dispatch= useDispatch();
+  const isDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
+  const dispatch = useDispatch();
 
   return (
     <div className="flex items-center max-lg:hidden max-md:ms-3">
@@ -20,7 +20,7 @@ function DarkModeToggle() {
         <div
           className={`w-12 h-6 rounded-full transition-colors duration-300 ${
             isDark ? "bg-gray-700" : "bg-gray-300"
-          } ${isDark?"border-2 border-white p-3":""}`}
+          } ${isDark ? "border-2 border-white p-3" : ""}`}
         ></div>
         <div
           className={`absolute w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${

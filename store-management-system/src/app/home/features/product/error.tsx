@@ -9,9 +9,12 @@ function Error() {
         <div className="flex justify-center mb-4">
           <AlertTriangle className="text-red-500" size={48} />
         </div>
-        <h1 className="text-3xl font-semibold text-gray-800 mb-2">Oops! Something went wrong</h1>
+        <h1 className="text-3xl font-semibold text-gray-800 mb-2">
+          Oops! Something went wrong
+        </h1>
         <p className="text-gray-600 mb-6">
-          We couldn’t load the product data right now. Please try again or check your internet connection.
+          We couldn’t load the product data right now. Please try again or check
+          your internet connection.
         </p>
         <button
           onClick={() => window.location.reload()}

@@ -17,7 +17,7 @@ interface PaginationProps {
   isDark?: boolean;
 }
 
-function Pagination({ table,isDark=false }: PaginationProps) {
+function Pagination({ table, isDark = false }: PaginationProps) {
   return (
     <>
       {/* Pagination Controls */}

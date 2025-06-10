@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import Update from "./update";
 import Delete from "./Delete";
 
-const ProductTable = ({isDark=false}) => {
+const ProductTable = ({ isDark = false }) => {
   //   const navigate = useNavigate();
   //   const location = useLocation();
   //   const reduxData = useSelector((store) => store.customer?.customers);
@@ -88,7 +88,7 @@ const ProductTable = ({isDark=false}) => {
     },
   ];
 
-  type ColumnKey = "Name" | "Category" | "Price" | "Quantity"| "Actions";
+  type ColumnKey = "Name" | "Category" | "Price" | "Quantity" | "Actions";
   const [columnVisibility, setColumnVisibility] = useState<
     Record<ColumnKey, boolean>
   >({
@@ -107,9 +107,9 @@ const ProductTable = ({isDark=false}) => {
         isAction = true;
         break;
       }
-      }
-      setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-    }, [columnVisibility.Name,]);
+    }
+    setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
+  }, [columnVisibility.Name]);
 
   return (
     <div className="w-[95%] mr-10 sm:ms-7">
@@ -134,7 +134,7 @@ const ProductTable = ({isDark=false}) => {
             category: "Category 1",
             price: 100,
             quantity: 10,
-          }
+          },
         ]}
         columnVisibility={columnVisibility}
         setColumnVisibility={setColumnVisibility}

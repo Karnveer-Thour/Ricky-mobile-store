@@ -25,7 +25,6 @@ function ColumnVisibility({
       {columns
         .filter((column) => column.id !== "Actions")
         .map((column) => (
-          
           <div
             className="w-full flex items-center justify-start gap-2 border-b-2 p-2 "
             key={column.id}

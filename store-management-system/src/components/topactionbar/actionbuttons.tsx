@@ -14,10 +14,8 @@ interface ActionbuttonsProps {
 function Actionbuttons({
   unreadMessages,
   unreadNotifications,
-  isDark
+  isDark,
 }: ActionbuttonsProps): React.JSX.Element {
-
-
   return (
     <>
       {/* Messages icon */}

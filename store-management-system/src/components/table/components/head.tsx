@@ -11,7 +11,12 @@ type HeadProps = {
   isDark?: boolean;
 };
 
-function Head({ header, handleColumnVisibility, setSorting,isDark=false }: HeadProps) {
+function Head({
+  header,
+  handleColumnVisibility,
+  setSorting,
+  isDark = false,
+}: HeadProps) {
   return (
     <th className="py-3 px-6 text-left">
       <div className="flex items-center justify-between w-full">

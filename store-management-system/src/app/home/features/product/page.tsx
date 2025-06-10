@@ -10,9 +10,7 @@ function page() {
   return (
     <>
       <div className=" w-[94%] overflow-hidden sm:ms-10 me-9 mt-8 max-sm:ms-4 h-auto flex max-sm:flex-col max-sm:justify-center items-center gap-4">
-        <p
-          className={`text-3xl ${isDark ? "text-white" : "text-gray-700"} `}
-        >
+        <p className={`text-3xl ${isDark ? "text-white" : "text-gray-700"} `}>
           Products
         </p>
         <hr
@@ -32,7 +30,7 @@ function page() {
           </div>
         </div>
         <div className="w-full h-[80%] ms-7 overflow-hidden flex justify-center items-center">
-        <ProductTable isDark={isDark}/>
+          <ProductTable isDark={isDark} />
         </div>
       </div>
     </>
