@@ -9,7 +9,7 @@ function DarkModeToggle() {
   const dispatch= useDispatch();
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center max-lg:hidden max-md:ms-3">
       <label className="relative inline-flex items-center cursor-pointer">
         <input
           type="checkbox"

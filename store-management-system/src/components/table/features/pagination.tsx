@@ -14,9 +14,10 @@ interface PaginationProps {
     getState: () => { pagination: { pageSize: number } };
     setPageSize: (size: number) => void;
   };
+  isDark?: boolean;
 }
 
-function Pagination({ table }: PaginationProps) {
+function Pagination({ table,isDark=false }: PaginationProps) {
   return (
     <>
       {/* Pagination Controls */}
@@ -46,6 +47,7 @@ function Pagination({ table }: PaginationProps) {
           <Select
             id="Pages"
             value={table.getState().pagination.pageSize}
+            isDark={isDark}
             onChange={(e) => {
               table.setPageSize(Number(e.target.value));
             }}

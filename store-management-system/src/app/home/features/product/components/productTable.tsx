@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import Update from "./update";
 import Delete from "./Delete";
 
-const ProductTable = () => {
+const ProductTable = ({isDark=false}) => {
   //   const navigate = useNavigate();
   //   const location = useLocation();
   //   const reduxData = useSelector((store) => store.customer?.customers);
@@ -138,6 +138,7 @@ const ProductTable = () => {
         ]}
         columnVisibility={columnVisibility}
         setColumnVisibility={setColumnVisibility}
+        isDark={isDark}
       />
     </div>
   );

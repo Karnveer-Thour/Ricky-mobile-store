@@ -14,7 +14,7 @@ function layout({
   return (
     <>
       <div
-        className={`flex-1 h-[95vh] ${isDark ? "bg-gray-500" : "bg-gray-100"} transition-all duration-300`}
+        className={`flex-1 h-[95vh]  transition-all bg-transparent duration-300`}
       >
         <div className="h-[2%] w-20 flex items-center justify-evenly ms-5 gap-5 sm:hidden ">
           <Actionbuttons unreadMessages={30} unreadNotifications={12} isDark={isDark} />

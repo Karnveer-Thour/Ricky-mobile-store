@@ -11,21 +11,23 @@ type ColumnVisibilityProps = {
   handleColumnVisibility: (id: string) => void;
   columnVisibility: Record<string, boolean>;
   columns: Column[];
+  isDark?: boolean;
 };
 
 function ColumnVisibility({
   handleColumnVisibility,
   columnVisibility,
   columns,
+  isDark = false,
 }: ColumnVisibilityProps) {
   return (
-    <Multiselect Heading="Select Columns">
+    <Multiselect Heading="Select Columns" isDark={isDark}>
       {columns
         .filter((column) => column.id !== "Actions")
         .map((column) => (
           
           <div
-            className="w-full flex items-center justify-start gap-2 border-b-2 p-2"
+            className="w-full flex items-center justify-start gap-2 border-b-2 p-2 "
             key={column.id}
           >
             <input

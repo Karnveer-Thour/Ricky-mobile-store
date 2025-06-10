@@ -8,9 +8,10 @@ type HeadProps = {
   header: Header<any, any>;
   handleColumnVisibility: (id: string) => void;
   setSorting: (sorting: Array<{ id: string; desc: boolean }>) => void;
+  isDark?: boolean;
 };
 
-function Head({ header, handleColumnVisibility, setSorting }: HeadProps) {
+function Head({ header, handleColumnVisibility, setSorting,isDark=false }: HeadProps) {
   return (
     <th className="py-3 px-6 text-left">
       <div className="flex items-center justify-between w-full">
@@ -26,6 +27,7 @@ function Head({ header, handleColumnVisibility, setSorting }: HeadProps) {
               handleColumnVisibility(header.id);
             }
           }}
+          isDark={isDark}
         >
           <option value="">Select</option>
           <option value="Asc">Ascending ⬆️</option>

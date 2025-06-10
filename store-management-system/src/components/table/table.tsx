@@ -22,6 +22,7 @@ interface TableProps {
   setColumnVisibility: React.Dispatch<
     React.SetStateAction<Record<string, boolean>>
   >;
+  isDark?: boolean;
 }
 
 function Table({
@@ -29,6 +30,7 @@ function Table({
   data,
   columnVisibility,
   setColumnVisibility,
+  isDark = false,
 }: TableProps) {
   const handleColumnVisibility = (columnId: string | number) => {
     setColumnVisibility((prev) => ({
@@ -59,26 +61,28 @@ function Table({
     },
   });
   return (
-    <div className="h-full w-[100%]">
-      <div className=" p-3 hidden md:flex justify-between items-center">
-        <GlobalFilter setGlobalFilter={setGlobalFilter} />
-        <div className="w-45 h-12">
-          <ColumnVisibility
-            columns={columns}
-            handleColumnVisibility={handleColumnVisibility}
-            columnVisibility={columnVisibility}
-          />
-        </div>
-      </div>
+        <div className={`h-full w-full bg-transparent`}>
       {/* Desktop Table */}
       {data?.length === 0 ? (
         <div className="text-center hidden md:block py-12 text-gray-500">
           No customers found
         </div>
       ) : (
+        <>
+        <div className=" p-3 hidden md:flex justify-between items-center">
+        <GlobalFilter setGlobalFilter={setGlobalFilter} isDark={isDark}/>
+        <div className="w-45 h-12">
+          <ColumnVisibility
+            columns={columns}
+            handleColumnVisibility={handleColumnVisibility}
+            columnVisibility={columnVisibility}
+            isDark={isDark}
+          />
+        </div>
+      </div>
         <div className="overflow-x-auto hidden md:block w-full p-2">
-          <table className=" bg-white shadow-md rounded-xl w-full">
-            <thead className="bg-gray-200">
+          <table className=" bg-white shadow-md rounded-b-xl w-full overflow-hidden">
+            <thead className={` ${isDark ? "text-white bg-gray-700" : "text-gray-700 bg-gray-200"}`}>
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id} className="">
                   {headerGroup.headers.map((header) =>
@@ -88,6 +92,7 @@ function Table({
                         header={header}
                         handleColumnVisibility={handleColumnVisibility}
                         setSorting={setSorting}
+                        isDark={isDark}
                       />
                     ) : (
                       <th key={header.id} className="py-3 px-6 text-left"></th>
@@ -97,14 +102,16 @@ function Table({
               ))}
             </thead>
 
-            <tbody className="text-center">
+            <tbody className={"text-center text-lg font-bold"+ (isDark ? " text-gray-800 bg-gray-300" : " text-gray-700") }
+            >
               {table.getRowModel().rows.map((row:any) => (
                 <Row row={row} key={row.id} />
               ))}
             </tbody>
           </table>
-          <Pagination table={table} />
+          <Pagination table={table} isDark={isDark}/>
         </div>
+        </>
       )}
 
       {/* Mobile Cards */}
