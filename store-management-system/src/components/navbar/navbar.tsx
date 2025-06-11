@@ -15,9 +15,6 @@ import {
 import cn from "classnames";
 import Navitem from "./navItem";
 import { usePathname } from "next/navigation";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
-import classNames from "classnames";
 
 interface NavbarProps {
   isOpen: boolean;
@@ -131,7 +128,7 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
               <Navitem
                 icon={
                   <img
-                    src={undefined}
+                    src={fallbackImage || "/default.jpg"}
                     alt="Profile Picture"
                     className="object-fill w-[30px] h-[24px]"
                   />

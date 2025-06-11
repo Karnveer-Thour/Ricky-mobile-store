@@ -2,8 +2,6 @@
 import React from "react";
 import Iconbadge from "./iconbadge";
 import { Bell, MessageCircleIcon } from "lucide-react";
-import { useSelector } from "react-redux";
-import { storeType } from "@/types/store.index";
 
 interface ActionbuttonsProps {
   unreadMessages: number;

@@ -1,7 +1,4 @@
 "use client";
-import { storeType } from "@/types/store.index";
-import React from "react";
-import { useSelector } from "react-redux";
 
 interface IconbadgeProps {
   children: React.ReactNode;

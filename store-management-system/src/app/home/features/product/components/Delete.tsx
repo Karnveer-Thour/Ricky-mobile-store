@@ -9,7 +9,6 @@ interface DeleteProps {
 }
 
 function Delete({ handleDelete, Id, Name }: DeleteProps) {
-  const dispatch = useDispatch();
   const handleDeleteApi = () => {
     // dispatch(deleteCustomer({ customerId: Id, handleDelete }));
   };

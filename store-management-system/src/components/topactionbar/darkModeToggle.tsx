@@ -1,7 +1,6 @@
 "use client";
 import { toggleDarkMode } from "@/store/slices/isDarkMode.slice";
 import { storeType } from "@/types/store.index";
-import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 function DarkModeToggle() {

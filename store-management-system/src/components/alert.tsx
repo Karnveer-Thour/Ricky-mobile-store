@@ -1,7 +1,7 @@
 "use client";
 import { CLOSEALERT } from "@/store/slices/alert.slice";
 import { storeType } from "@/types/store.index";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const Alert = () => {
@@ -16,23 +16,26 @@ const Alert = () => {
     error: "bg-red-100 border-red-400 text-red-700",
   };
 
-  const handleClose = () => {
-    setVisible(false);
-    dispatchAlert(CLOSEALERT(null));
-  };
-
-  useEffect(() => {
+  const closeAlertLogic=(closeTime?:number,reVisibleTime?:number)=>{
     if (type) {
       const timer = setTimeout(() => {
         setVisible(false);
         setTimeout(() => {
-          setVisible((prev) => !prev);
           dispatchAlert(CLOSEALERT(null));
-        }, 1000);
-      }, 3000);
+          setVisible(true);
+        }, reVisibleTime||1000);
+      },closeTime||3000);
 
       return () => clearTimeout(timer);
     }
+  }
+
+  const handleClose = () => {
+    closeAlertLogic(100,500);
+  };
+
+  useEffect(() => {
+    return closeAlertLogic(3000,1000);
   }, [id]);
 
   return (
@@ -52,6 +55,7 @@ const Alert = () => {
           <span className="block sm:inline">{message}</span>
           <button
             onClick={handleClose}
+            disabled={!isVisible}
             className="absolute top-0 bottom-0 right-0 px-4 py-3"
             aria-label="Close alert"
           >

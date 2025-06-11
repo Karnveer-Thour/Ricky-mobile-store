@@ -6,10 +6,9 @@ import type { Row as TableRow } from "@tanstack/react-table";
 
 type RowProps<TData> = {
   row: TableRow<TData>;
-  isDark?: boolean;
 };
 
-function Row<TData>({ row, isDark = false }: RowProps<TData>) {
+function Row<TData>({ row }: RowProps<TData>) {
   return (
     <tr className={"border-t"}>
       {row.getVisibleCells().map((cell) => (
