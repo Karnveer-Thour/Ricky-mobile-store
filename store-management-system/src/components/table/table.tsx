@@ -71,7 +71,7 @@ function Table({
         <>
           <div className=" p-3 hidden md:flex justify-between items-center">
             <GlobalFilter setGlobalFilter={setGlobalFilter} isDark={isDark} />
-            <div className="w-45 h-12">
+            <div className="w-45 h-12 ">
               <ColumnVisibility
                 columns={columns}
                 handleColumnVisibility={handleColumnVisibility}
