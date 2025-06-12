@@ -80,10 +80,10 @@ function Table({
               />
             </div>
           </div>
-          <div className="overflow-x-auto hidden md:block w-full p-2">
-            <table className=" bg-white shadow-md rounded-b-xl w-full overflow-hidden">
+          <div className="overflow-x-auto hidden md:flex w-full md:flex-col mt-5">
+            <table className=" bg-white shadow-md rounded-b-xl w-full shrink-3">
               <thead
-                className={` ${isDark ? "text-white bg-gray-700" : "text-gray-700 bg-gray-200"}`}
+                className={` ${isDark ? "text-white bg-gray-700" : "text-gray-700 bg-gray-200"} w-full`}
               >
                 {table.getHeaderGroups().map((headerGroup) => (
                   <tr key={headerGroup.id} className="">
@@ -109,7 +109,7 @@ function Table({
 
               <tbody
                 className={
-                  "text-center text-lg font-bold" +
+                  "text-center text-lg font-bold w-full" +
                   (isDark ? " text-gray-800 bg-gray-300" : " text-gray-700")
                 }
               >
