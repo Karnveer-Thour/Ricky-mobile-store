@@ -17,8 +17,11 @@ export const handleSaveFile = (fileData: object) => {
   URL.revokeObjectURL(url);
 };
 
-export const handleFileChange = (fileObject: any, SetFile: any) => {
+export const handleFileChange = (fileObject: any, SetFile: any,dispatch:any,action:any) => {
+  const input=fileObject.target;
+  fileObject.preventDefault();
   const file = fileObject.target.files?.[0];
+  console.log(file);
   if (!file) {
     SetFile(null);
     return;
@@ -26,7 +29,9 @@ export const handleFileChange = (fileObject: any, SetFile: any) => {
   if (file && file.type === "text/csv") {
     console.log(file);
   } else {
-    alert("Please upload a valid .csv file");
+    dispatch(action("Please upload a valid CSV file."));
+    input.value="";
+    return;
   }
   SetFile(file);
 };
@@ -44,6 +49,7 @@ export const handleDrop = (
   fileObject: any,
   SetFile: any,
   setIsDragging: any,
+  dispatch:any,action:any
 ) => {
   fileObject.preventDefault();
   setIsDragging(false);
@@ -56,7 +62,8 @@ export const handleDrop = (
   if (droppedFile?.type === "text/csv") {
     console.log(droppedFile);
   } else {
-    alert("Please upload a valid CSV file.");
+    dispatch(action("Please upload a valid CSV file."));
+    return;
   }
   SetFile(droppedFile);
 };

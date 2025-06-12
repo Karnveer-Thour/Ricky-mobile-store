@@ -17,7 +17,9 @@ export const Alertslice = createSlice({
         (state.id = Date.now());
     },
     ERRORALERT: (state, action) => {
-      (state.type = alertType.error), (state.message = action.payload);
+      (state.type = alertType.error),
+        (state.message = action.payload),
+        (state.id = Date.now());
     },
     CLOSEALERT: (state, action) => {
       (state.type = null), (state.message = null);

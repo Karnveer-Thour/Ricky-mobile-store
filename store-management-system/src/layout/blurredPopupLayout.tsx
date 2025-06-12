@@ -1,18 +1,18 @@
 import React from "react";
 
-interface FeatureLayoutProps {
+interface BlurredPopupLayoutProps {
   isDark?: boolean;
   children?: React.ReactNode;
   width?: string | number;
   height?: string | number;
 }
 
-function FeatureLayout({
+function BlurredPopupLayout({
   isDark = false,
   width,
   height,
   children,
-}: FeatureLayoutProps) {
+}: BlurredPopupLayoutProps) {
   return (
     <div className="fixed left-0 bottom-0 w-[100vw] h-[100vh] flex justify-center items-center backdrop-blur-sm z-10">
       <div
@@ -27,4 +27,4 @@ function FeatureLayout({
   );
 }
 
-export default FeatureLayout;
+export default BlurredPopupLayout;
