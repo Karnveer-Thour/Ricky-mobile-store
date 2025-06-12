@@ -26,8 +26,8 @@ function CsvUpload({
   const [isDragging, setIsDragging]: any = useState(false);
   const [file, setFile]: any = useState(null);
   const fileInputRef: any = useRef(null);
-  const dispatch=useDispatch();
-
+  const dispatch = useDispatch();
+  const textColor = isDark ? "text-white" : "text-gray-700";
   const openFileDialog = () => {
     fileInputRef?.current?.click();
   };
@@ -36,12 +36,16 @@ function CsvUpload({
     <BlurredPopupLayout isDark={isDark} width={"60%"} height={"50%"}>
       <p className="text-lg font-bold">Upload your CSV file here</p>
       <div
-        className={`flex flex-col justify-center items-center w-[80%] h-[80%] p-2 gap-4 border-2 border-dashed rounded-lg ${
-          isDragging ? "border-blue-400 bg-blue-50" : "border-gray-300 bg-white"
-        }`}
+        className={`flex flex-col justify-center items-center w-[80%] h-[80%] p-2 gap-4 border-2 border-dashed rounded-lg ${isDark && "bg-gray-500"}
+          ${
+          isDragging && (isDark? "border-black bg-gray-600":"border-blue-400 bg-blue-50" )
+        }
+        `}
         onDragOver={(e) => handleDragOver(e, setIsDragging)}
         onDragLeave={(e) => handleDragLeave(setIsDragging)}
-        onDrop={(fileObject) => handleDrop(fileObject, setFile, setIsDragging,dispatch,ERRORALERT)}
+        onDrop={(fileObject) =>
+          handleDrop(fileObject, setFile, setIsDragging, dispatch, ERRORALERT)
+        }
         onClick={openFileDialog}
       >
         <div className="flex justify-center w-full gap-10">
@@ -56,14 +60,16 @@ function CsvUpload({
           </div>
           {file && (
             <div className="mt-4 flex flex-col items-center gap-2">
-              <p className="text-sm text-gray-700">
+              <p className={`text-sm ${textColor}`}>
                 📄 <strong>{file.name}</strong>
               </p>
-              <p className="text-xs text-gray-500">
+              <p className={`text-xs ${textColor}`}>
                 Size: {(file.size / (1024 * 1024)).toFixed(2)} MB
               </p>
               <button
-                onClick={(fileObject) => handleFileChange(fileObject, setFile,dispatch,ERRORALERT)}
+                onClick={(fileObject) =>
+                  handleFileChange(fileObject, setFile, dispatch, ERRORALERT)
+                }
                 className="text-sm text-blue-600 hover:underline mt-1"
               >
                 Upload another file
@@ -71,16 +77,18 @@ function CsvUpload({
             </div>
           )}
         </div>
-        <p className="text-lg font-bold">
+        <p className={`text-lg font-bold ${textColor}`}>
           Upload product proper formatted spreadSheet
         </p>
-        <p className="text-lg">Maximum file size: 100 MB</p>
-        <p className="text-lg">Supported Format: .csv</p>
+        <p className={`text-lg ${textColor}`}>Maximum file size: 100 MB</p>
+        <p className={`text-lg ${textColor}`}>Supported Format: .csv</p>
         <input
           type="file"
           accept=".csv"
           ref={fileInputRef}
-          onChange={(fileObject) => handleFileChange(fileObject, setFile,dispatch,ERRORALERT)}
+          onChange={(fileObject) =>
+            handleFileChange(fileObject, setFile, dispatch, ERRORALERT)
+          }
           className="hidden"
         />
       </div>
