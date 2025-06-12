@@ -4,13 +4,15 @@ import { useState, useEffect } from "react";
 import {
   Menu,
   X,
-  Home,
-  User,
+  Home as Dashboard,
+  User as Profile,
   Settings,
-  UserSearch,
-  ClipboardList,
-  UserCog,
+  Building2 as Cities,
+  LayoutGrid as Whatsapp,
   LogOut,
+  ListCollapse as Products,
+  StretchHorizontal as Categories,
+  BadgeDollarSign as Sales
 } from "lucide-react";
 import cn from "classnames";
 import Navitem from "./navItem";
@@ -70,37 +72,37 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
             }`}
           >
             <Navitem
-              icon={<Home size={24} />}
+              icon={<Dashboard size={24} />}
               label="Dashboard"
               isOpen={isOpen}
               linkTo="/home/features/dashboard"
             />
             <Navitem
-              icon={<Home size={24} />}
+              icon={<Products size={24} />}
               label="Product"
               isOpen={isOpen}
               linkTo="/home/features/product"
             />
             <Navitem
-              icon={<UserSearch size={24} />}
+              icon={<Categories size={24} />}
               label="Categories"
               isOpen={isOpen}
               linkTo="/home/features/categories"
             />
             <Navitem
-              icon={<User size={24} />}
+              icon={<Cities size={24} />}
               label="Cities"
               isOpen={isOpen}
               linkTo="/home/features/cities"
             />
             <Navitem
-              icon={<ClipboardList size={24} />}
+              icon={<Sales size={24} />}
               label="sales"
               isOpen={isOpen}
               linkTo="/home/features/sales"
             />
             <Navitem
-              icon={<UserCog size={24} />}
+              icon={<Whatsapp size={24} />}
               label="whatsapp"
               isOpen={isOpen}
               linkTo="/home/features/whatsapp"
@@ -142,7 +144,7 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
           )}
 
           <Navitem
-            icon={<User size={24} />}
+            icon={<Profile size={24} />}
             label="Profile"
             isOpen={isOpen}
             linkTo={pathname}
