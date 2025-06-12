@@ -38,8 +38,9 @@ function CsvUpload({
       <div
         className={`flex flex-col justify-center items-center w-[80%] h-[80%] p-2 gap-4 border-2 border-dashed rounded-lg ${isDark && "bg-gray-500"}
           ${
-          isDragging && (isDark? "border-black bg-gray-600":"border-blue-400 bg-blue-50" )
-        }
+            isDragging &&
+            (isDark ? "border-black bg-gray-600" : "border-blue-400 bg-blue-50")
+          }
         `}
         onDragOver={(e) => handleDragOver(e, setIsDragging)}
         onDragLeave={(e) => handleDragLeave(setIsDragging)}

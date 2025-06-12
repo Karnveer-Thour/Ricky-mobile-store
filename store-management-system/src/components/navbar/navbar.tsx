@@ -12,7 +12,7 @@ import {
   LogOut,
   ListCollapse as Products,
   StretchHorizontal as Categories,
-  BadgeDollarSign as Sales
+  BadgeDollarSign as Sales,
 } from "lucide-react";
 import cn from "classnames";
 import Navitem from "./navItem";

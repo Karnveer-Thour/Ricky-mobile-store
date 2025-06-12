@@ -16,8 +16,8 @@ function page() {
   const [isDownloadingCsv, setIsDownloadingCsv] = React.useState(false);
   const [isUploadingCsv, setIsUploadingCsv] = React.useState(false);
   const [isAddingProduct, setIsAddingProduct] = React.useState(false);
-  const pathName=usePathname();
-  const router=useRouter();
+  const pathName = usePathname();
+  const router = useRouter();
 
   return (
     <>
@@ -50,7 +50,10 @@ function page() {
       <div className="w-[95%] h-[50vh] mt-8 ms-6 flex flex-col items-center justify-center">
         <div className=" w-full flex flex-row justify-between items-center">
           <div className="flex-1 overflow-hidden sm:ms-7 max-sm:ms-4 h-auto p-3 flex justify-center items-center">
-            <Button name={"Add Product"} handler={()=>router.push(`${pathName}/add`)}/>
+            <Button
+              name={"Add Product"}
+              handler={() => router.push(`${pathName}/add`)}
+            />
           </div>
           <div className="flex-1 overflow-hidden sm:ms-7 max-sm:ms-4 h-auto p-3 flex justify-center items-center">
             <Button

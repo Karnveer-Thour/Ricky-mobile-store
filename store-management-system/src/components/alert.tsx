@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 const Alert = () => {
   const [isVisible, setVisible] = useState(true);
   const { type, message, id } = useSelector(
-    (store: storeType) => store.Alert || {}
+    (store: storeType) => store.Alert || {},
   );
   const dispatchAlert = useDispatch();
 
