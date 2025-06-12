@@ -42,8 +42,10 @@ function Pagination({ table, isDark = false }: PaginationProps) {
             className={" disabled:cursor-not-allowed disabled:bg-indigo-300"}
           />
         </div>
-        <div className="flex items-center justify-between w-65 ">
-          <label htmlFor="Pages">Rows as per page</label>
+        <div className="flex items-center justify-between w-70 p-2 gap-5">
+          <label htmlFor="Pages" className=" whitespace-nowrap">
+            Rows as per page
+          </label>
           <Select
             id="Pages"
             value={table.getState().pagination.pageSize}
@@ -53,7 +55,7 @@ function Pagination({ table, isDark = false }: PaginationProps) {
             }}
           >
             {[10, 20, 30, 40, 50].map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
+              <option key={pageSize} value={pageSize} className="text-center">
                 {pageSize}
               </option>
             ))}

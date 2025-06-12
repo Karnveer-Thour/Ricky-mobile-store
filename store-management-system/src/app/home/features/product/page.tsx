@@ -5,30 +5,14 @@ import ProductTable from "./components/productTable";
 import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
 import CsvDownload from "./components/csvDownload";
-import Papa from "papaparse";
+import { handleSaveFile } from "./utils/fileFunctions";
+import CsvUpload from "./components/csvUpload";
 
 function page() {
   const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
   const [isDownloadingCsv, setIsDownloadingCsv] = React.useState(false);
   const [isUploadingCsv, setIsUploadingCsv] = React.useState(false);
   const [isAddingProduct, setIsAddingProduct] = React.useState(false);
-
-  const handleSaveFile = (fileData: object) => {
-    // Convert the object to CSV format
-    const csv = Papa.unparse([fileData]);
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-
-    // Create a link element to trigger the download
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "products.csv";
-    document.body.appendChild(link);
-    link.click();
-
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
 
   return (
     <>
@@ -41,6 +25,13 @@ function page() {
               email: "john@example.com",
             });
           }}
+          isDark={isDark}
+        />
+      )}
+      {isUploadingCsv && (
+        <CsvUpload
+          cancelUpload={() => setIsUploadingCsv(false)}
+          isDark={isDark}
         />
       )}
       <div className=" w-[94%] overflow-hidden sm:ms-10 me-9 mt-8 max-sm:ms-4 h-auto flex max-sm:flex-col max-sm:justify-center items-center gap-4">

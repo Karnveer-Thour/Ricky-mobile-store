@@ -19,7 +19,7 @@ export const Alertslice = createSlice({
     ERRORALERT: (state, action) => {
       (state.type = alertType.error), (state.message = action.payload);
     },
-    CLOSEALERT: (state,action) => {
+    CLOSEALERT: (state, action) => {
       (state.type = null), (state.message = null);
     },
   },

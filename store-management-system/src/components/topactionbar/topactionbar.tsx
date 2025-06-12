@@ -42,7 +42,7 @@ function Topactionbar({
           />
         </div>
         {/* Date */}
-        <div className="w-40 ms-4 h-[100%] px-3 flex items-center justify-center max-lg:hidden overflow-hidden">
+        <div className="w-50 ms-4 h-[100%] px-3 flex items-center justify-center max-lg:hidden overflow-hidden">
           <h3 className="font-semibold cursor-default text-white text-center">
             {formattedDate}
           </h3>

@@ -16,26 +16,26 @@ const Alert = () => {
     error: "bg-red-100 border-red-400 text-red-700",
   };
 
-  const closeAlertLogic=(closeTime?:number,reVisibleTime?:number)=>{
+  const closeAlertLogic = (closeTime?: number, reVisibleTime?: number) => {
     if (type) {
       const timer = setTimeout(() => {
         setVisible(false);
         setTimeout(() => {
           dispatchAlert(CLOSEALERT(null));
           setVisible(true);
-        }, reVisibleTime||1000);
-      },closeTime||3000);
+        }, reVisibleTime || 1000);
+      }, closeTime || 3000);
 
       return () => clearTimeout(timer);
     }
-  }
+  };
 
   const handleClose = () => {
-    closeAlertLogic(100,500);
+    closeAlertLogic(100, 500);
   };
 
   useEffect(() => {
-    return closeAlertLogic(3000,1000);
+    return closeAlertLogic(3000, 1000);
   }, [id]);
 
   return (

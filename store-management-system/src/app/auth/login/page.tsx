@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import Inputcontainer from "@/components/Inputcontainer";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
