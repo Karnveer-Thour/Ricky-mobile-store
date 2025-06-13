@@ -14,7 +14,7 @@ function Input({ id, placeholder, className = "", ...props }: InputProps) {
       className={`
         w-full px-3 py-2 
         rounded-md  
-        text-white 
+        text-gray-600
         appearance-none 
         shadow-none 
         transition 
