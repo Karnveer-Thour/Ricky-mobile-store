@@ -21,12 +21,13 @@ function addProduct() {
   return (
     <BlurredPopupLayout width={"60%"} height={"60%"}>
       <p className="text-2xl font-bold mt-5">Add Product</p>
-      <form action="" className="flex-1">
-        <Inputcontainer type={"email"} error={errors?.email}>
+      <form action="" className="flex-1 w-full p-3">
+        <Inputcontainer type={"Name"} error={errors?.name}>
                         <Input
-                          id="email"
-                          placeholder="Enter your email"
-                          {...register("email")}
+                          id="Name"
+                          placeholder="Enter product's name"
+                          {...register("name")}
+                          className="border-2 border-gray-500"
                         />
                       </Inputcontainer>
       </form>
