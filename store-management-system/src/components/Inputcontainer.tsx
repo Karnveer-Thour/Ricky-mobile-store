@@ -8,7 +8,7 @@ interface InputContainerProps {
 
 function Inputcontainer({ type, children, error }: InputContainerProps) {
   return (
-    <div className="mb-5 w-[full]">
+    <div className="mb-5 w-full">
       <label
         htmlFor={type}
         className="block text-sm/6 text-[1rem] font-semibold text-gray-600 ms-1"

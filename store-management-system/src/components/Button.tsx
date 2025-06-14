@@ -1,7 +1,7 @@
 import React from "react";
 
 type ButtonProps = {
-  name: string;
+  name: string|any;
   handler?: React.MouseEventHandler<HTMLButtonElement>;
   value?: string | number | readonly string[];
   className?: string;
