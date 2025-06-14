@@ -2,15 +2,13 @@
 import Table from "@/components/table/table";
 import { Edit, TrashIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import Update from "./update";
 import Delete from "./Delete";
+import { usePathname, useRouter } from "next/navigation";
 
 const ProductTable = ({ isDark = false }) => {
-  //   const navigate = useNavigate();
-  //   const location = useLocation();
-  //   const reduxData = useSelector((store) => store.customer?.customers);
-  //   const Customers = useMemo(() => reduxData || [], [reduxData]);
   const [customerDeleting, setCustomerDeleting] = useState(false);
+  const pathName=usePathname();
+  const router=useRouter();
   const [customerData, setCustomerData] = useState({
     id: "",
     Name: "",
@@ -72,7 +70,7 @@ const ProductTable = ({ isDark = false }) => {
       cell: ({ row }: { row: any }) => (
         <div className="flex gap-2">
           <button
-            onClick={() => handleUpdate(row.original)}
+            onClick={() => handleUpdate(router.push(`${pathName}/update`))}
             className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
           >
             <Edit />
@@ -118,12 +116,6 @@ const ProductTable = ({ isDark = false }) => {
           handleDelete={() => handleDelete(customerData)}
           Id={customerData?.id}
           Name={customerData?.Name}
-        />
-      )}
-      {location.pathname === "/customers/update" && (
-        <Update
-          handleUpdate={() => handleUpdate(customerData)}
-          data={customerData}
         />
       )}
       <Table
