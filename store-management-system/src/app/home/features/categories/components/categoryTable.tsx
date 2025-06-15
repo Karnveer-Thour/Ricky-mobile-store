@@ -2,10 +2,10 @@
 import Table from "@/components/table/table";
 import { Edit, TrashIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import Delete from "@/components/Delete";
 import { usePathname, useRouter } from "next/navigation";
+import Delete from "@/components/Delete";
 
-const ProductTable = ({ isDark = false }) => {
+const CategoryTable = ({ isDark = false }) => {
   const [customerDeleting, setCustomerDeleting] = useState(false);
   const pathName=usePathname();
   const router=useRouter();
@@ -136,4 +136,4 @@ const ProductTable = ({ isDark = false }) => {
   );
 };
 
-export default ProductTable;
+export default CategoryTable;

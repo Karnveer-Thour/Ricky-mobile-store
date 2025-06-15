@@ -1,4 +1,5 @@
 "use client";
+import BlurredPopupLayout from "@/layout/blurredPopupLayout";
 import React from "react";
 import { useDispatch } from "react-redux";
 
@@ -13,10 +14,7 @@ function Delete({ handleDelete, Id, Name }: DeleteProps) {
     // dispatch(deleteCustomer({ customerId: Id, handleDelete }));
   };
   return (
-    <div
-      className={`flex backdrop-blur-sm flex-col fixed top-0 z-50 w-screen h-screen items-center justify-center transition-all duration-300 rounded-lg overflow-hidden`}
-    >
-      <span className="border w-[40%] p-5 -ms-20 rounded-xl bg-gray-100  shadow-md">
+    <BlurredPopupLayout width={"30%"} height={"auto"}>
         <h2 className="text-xl font-bold mb-4 text-center">
           Delete a Customer
         </h2>
@@ -37,8 +35,7 @@ function Delete({ handleDelete, Id, Name }: DeleteProps) {
             Delete
           </button>
         </div>
-      </span>
-    </div>
+    </BlurredPopupLayout>
   );
 }
 
