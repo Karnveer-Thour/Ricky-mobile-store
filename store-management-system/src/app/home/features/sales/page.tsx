@@ -24,8 +24,7 @@ function page() {
         <div className=" w-full flex flex-row justify-between items-center">
           <div className="flex-1 overflow-hidden sm:ms-7 max-sm:ms-4 h-auto p-3 flex justify-center items-center">
             <Button
-              name={"Add City"}
-              handler={() => router.push(`${pathName}/add`)}
+              name={"Download Sale"}
             />
           </div>
         </div>
