@@ -107,7 +107,7 @@ const ProductTable = ({ isDark = false }) => {
       }
     }
     setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-  }, [columnVisibility.Name]);
+  }, [columnVisibility.Name,columnVisibility.Category,columnVisibility.Price,columnVisibility.Quantity]);
 
   return (
     <div className="w-[95%] mr-10 sm:ms-7">

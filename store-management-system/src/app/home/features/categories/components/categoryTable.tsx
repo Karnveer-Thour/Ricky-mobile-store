@@ -50,19 +50,9 @@ const CategoryTable = ({ isDark = false }) => {
       accessorKey: "name",
     },
     {
-      header: "Category",
-      id: "Category",
-      accessorKey: "category",
-    },
-    {
-      header: "Price",
-      id: "Price",
-      accessorKey: "price",
-    },
-    {
-      header: "Quantity",
-      id: "Quantity",
-      accessorKey: "quantity",
+      header: "Description",
+      id: "Description",
+      accessorKey: "description",
     },
     {
       header: "Actions",
@@ -86,14 +76,12 @@ const CategoryTable = ({ isDark = false }) => {
     },
   ];
 
-  type ColumnKey = "Name" | "Category" | "Price" | "Quantity" | "Actions";
+  type ColumnKey = "Name" | "Description" | "Actions";
   const [columnVisibility, setColumnVisibility] = useState<
     Record<ColumnKey, boolean>
   >({
     Name: true,
-    Category: true,
-    Price: true,
-    Quantity: true,
+    Description:true,
     Actions: true,
   });
 
@@ -107,7 +95,7 @@ const CategoryTable = ({ isDark = false }) => {
       }
     }
     setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-  }, [columnVisibility.Name]);
+  }, [columnVisibility.Name,columnVisibility.Description]);
 
   return (
     <div className="w-[95%] mr-10 sm:ms-7">
@@ -116,16 +104,15 @@ const CategoryTable = ({ isDark = false }) => {
           handleDelete={() => handleDelete(customerData)}
           Id={customerData?.id}
           Name={customerData?.Name}
+          isDark={isDark}
         />
       )}
       <Table
         columns={columns}
         data={[
           {
-            name: "Product 1",
-            category: "Category 1",
-            price: 100,
-            quantity: 10,
+            name: "Smartphone",
+            description: "Smart devices",
           },
         ]}
         columnVisibility={columnVisibility}
