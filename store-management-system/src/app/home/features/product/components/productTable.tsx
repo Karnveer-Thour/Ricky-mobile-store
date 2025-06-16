@@ -2,7 +2,7 @@
 import Table from "@/components/table/table";
 import { Edit, TrashIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import Delete from "@/components/Delete";
+import Delete from "./Delete";
 import { usePathname, useRouter } from "next/navigation";
 
 const ProductTable = ({ isDark = false }) => {
@@ -116,6 +116,7 @@ const ProductTable = ({ isDark = false }) => {
           handleDelete={() => handleDelete(customerData)}
           Id={customerData?.id}
           Name={customerData?.Name}
+          isDark={isDark}
         />
       )}
       <Table

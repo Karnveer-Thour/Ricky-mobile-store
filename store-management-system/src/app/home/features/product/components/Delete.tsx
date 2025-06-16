@@ -1,20 +1,21 @@
 "use client";
 import BlurredPopupLayout from "@/layout/blurredPopupLayout";
 import React from "react";
-import { useDispatch } from "react-redux";
+import Button from "../../../../../components/Button";
 
 interface DeleteProps {
   handleDelete: () => void;
   Id: string | number;
   Name: string;
+  isDark?:boolean;
 }
 
-function Delete({ handleDelete, Id, Name }: DeleteProps) {
+function Delete({ handleDelete, Id, Name,isDark=false }: DeleteProps) {
   const handleDeleteApi = () => {
     // dispatch(deleteCustomer({ customerId: Id, handleDelete }));
   };
   return (
-    <BlurredPopupLayout width={"30%"} height={"auto"}>
+    <BlurredPopupLayout width={"30%"} height={"auto"} isDark={isDark}>
         <h2 className="text-xl font-bold mb-4 text-center">
           Delete a Customer
         </h2>
@@ -22,18 +23,18 @@ function Delete({ handleDelete, Id, Name }: DeleteProps) {
           Really want to delete {Name} with id:{Id}
         </p>
         <div className="flex gap-7 justify-center">
-          <button
+          <Button
+          name={"Cancel"}
             onClick={() => handleDelete()}
             className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
           >
-            Cancel
-          </button>
-          <button
-            onClick={() => handleDeleteApi()}
-            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+          </Button>
+          <Button
+          name={"Submit"}
+            onClick={() => handleDelete()}
+            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
           >
-            Delete
-          </button>
+          </Button>
         </div>
     </BlurredPopupLayout>
   );

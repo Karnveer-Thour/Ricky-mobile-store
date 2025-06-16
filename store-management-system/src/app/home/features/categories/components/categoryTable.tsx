@@ -3,7 +3,7 @@ import Table from "@/components/table/table";
 import { Edit, TrashIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Delete from "@/components/Delete";
+import Delete from "./Delete";
 
 const CategoryTable = ({ isDark = false }) => {
   const [customerDeleting, setCustomerDeleting] = useState(false);
