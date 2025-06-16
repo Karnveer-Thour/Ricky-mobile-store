@@ -56,24 +56,24 @@ export default function Login() {
               submitForm();
             })}
           >
-            <Inputcontainer type={"email"} error={errors?.email}>
+            <Inputcontainer type={"email"} error={errors?.email} isDark={true}>
               <Input
                 id="email"
                 placeholder="Enter your email"
                 {...register("email")}
                 className={
-                  "border-2 border-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-none"
+                  "border-2 border-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-none text-white"
                 }
               />
             </Inputcontainer>
-            <Inputcontainer type={"password"} error={errors?.password}>
+            <Inputcontainer type={"password"} error={errors?.password} isDark={true}>
               <div className="relative mt-1 w-full">
                 <div className="flex items-center w-full rounded-md border-2 border-gray-500 focus-within:ring-2 focus-within:ring-blue-300 transition">
                   <Input
                     type={passwordVisible ? "text" : "password"}
                     id="password"
                     placeholder="Enter your password"
-                    className="flex-1 px-4 py-2 rounded-md focus:outline-none border-none bg-none"
+                    className="flex-1 px-4 py-2 rounded-md focus:outline-none border-none bg-none text-white"
                     {...register("password")}
                   />
                   <button
@@ -93,7 +93,7 @@ export default function Login() {
               name={"Login"}
               handler={undefined}
               value={undefined}
-              className={"max-w-[90%]"}
+              className={"max-w-[100%]"}
             />
           </form>
         </Formcontainer>

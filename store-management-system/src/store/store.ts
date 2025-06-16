@@ -7,7 +7,8 @@ import {combineReducers} from "@reduxjs/toolkit";
 
 const persistConfig={
   key:"root",
-  storage
+  storage,
+  whitelist: ["DarkMode"],
 }
 
 const reducer=combineReducers({

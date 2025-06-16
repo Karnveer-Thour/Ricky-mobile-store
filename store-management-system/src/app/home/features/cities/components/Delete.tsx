@@ -17,7 +17,7 @@ function Delete({ handleDelete, Id, Name,isDark=false }: DeleteProps) {
   return (
     <BlurredPopupLayout width={"30%"} height={"auto"} isDark={isDark}>
         <h2 className="text-xl font-bold mb-4 text-center">
-          Delete a Category
+          Delete a City
         </h2>
         <p className="text-l font-bold mb-4 text-center text-red-500">
           Really want to delete {Name} with id:{Id}
