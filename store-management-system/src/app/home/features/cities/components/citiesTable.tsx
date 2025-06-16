@@ -3,7 +3,7 @@ import Table from "@/components/table/table";
 import { Edit, TrashIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Delete from "./Delete";
+import Delete from "./delete";
 import ToggleButton from "@/components/togglebutton";
 
 const CityTable = ({ isDark = false }) => {
@@ -95,7 +95,7 @@ const CityTable = ({ isDark = false }) => {
     },
   ];
 
-  type ColumnKey = "Name" | "District" | "State" | "Pincode" | "Actions";
+  type ColumnKey = "Name" | "District" | "State" | "Pincode" |"Active"| "Actions";
   const [columnVisibility, setColumnVisibility] = useState<
     Record<ColumnKey, boolean>
   >({
@@ -103,6 +103,7 @@ const CityTable = ({ isDark = false }) => {
     District: true,
     State: true,
     Pincode:true,
+    Active:true,
     Actions: true,
   });
 
@@ -116,7 +117,7 @@ const CityTable = ({ isDark = false }) => {
       }
     }
     setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-  }, [columnVisibility.Name, columnVisibility.District,columnVisibility.State,columnVisibility.Pincode]);
+  }, [columnVisibility.Name, columnVisibility.District,columnVisibility.State,columnVisibility.Pincode,columnVisibility.Active]);
 
   return (
     <div className="w-[95%] mr-10 sm:ms-7">

@@ -3,8 +3,9 @@
 import Button from "@/components/Button";
 import { storeType } from "@/types/store.index";
 import { useSelector } from "react-redux";
-import CategoryTable from "./components/categoryTable";
+import CategoryTable from "./components/citiesTable";
 import { usePathname, useRouter } from "next/navigation";
+import CityTable from "./components/citiesTable";
 
 function page() {
   const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
@@ -30,7 +31,7 @@ function page() {
           </div>
         </div>
         <div className="w-full h-[80%] ms-7 overflow-hidden flex justify-center items-center">
-          <CategoryTable isDark={isDark} />
+          <CityTable isDark={isDark} />
         </div>
       </div>
     </>

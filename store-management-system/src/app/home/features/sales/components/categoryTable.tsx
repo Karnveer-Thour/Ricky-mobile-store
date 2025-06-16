@@ -4,11 +4,12 @@ import { Edit, TrashIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Delete from "./delete";
+import ToggleButton from "@/components/togglebutton";
 
-const CategoryTable = ({ isDark = false }) => {
+const CityTable = ({ isDark = false }) => {
   const [customerDeleting, setCustomerDeleting] = useState(false);
-  const pathName=usePathname();
-  const router=useRouter();
+  const pathName = usePathname();
+  const router = useRouter();
   const [customerData, setCustomerData] = useState({
     id: "",
     Name: "",
@@ -28,7 +29,6 @@ const CategoryTable = ({ isDark = false }) => {
 
   const handleUpdate = (data: any) => {
     if (location.pathname === "/customers") {
-      //   navigate("/customers/update");
       const Data = {
         id: data._id,
         Name: data.name,
@@ -36,7 +36,6 @@ const CategoryTable = ({ isDark = false }) => {
       setCustomerData(Data);
       localStorage.setItem("customerData", JSON.stringify(Data));
     } else if (location.pathname === "/customers/update") {
-      //   navigate("/customers");
       localStorage.removeItem("customerData");
     }
   };
@@ -50,15 +49,35 @@ const CategoryTable = ({ isDark = false }) => {
       accessorKey: "name",
     },
     {
-      header: "Description",
-      id: "Description",
-      accessorKey: "description",
+      header: "District",
+      id: "District",
+      accessorKey: "district",
+    },
+    {
+      header: "State",
+      id: "State",
+      accessorKey: "state",
+    },
+    {
+      header: "Pincode",
+      id: "Pincode",
+      accessorKey: "pincode",
+    },
+    {
+      header: "Active",
+      id: "Active",
+      cell:()=>(
+        <div>
+          <ToggleButton isDark={isDark} activeLabel="Accepting" inactiveLabel="Not Accepting" handler={()=>{}}/>
+          </div>
+      )
     },
     {
       header: "Actions",
       id: "Actions",
       cell: ({ row }: { row: any }) => (
         <div className="flex gap-2">
+          
           <button
             onClick={() => handleUpdate(router.push(`${pathName}/update`))}
             className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
@@ -76,12 +95,15 @@ const CategoryTable = ({ isDark = false }) => {
     },
   ];
 
-  type ColumnKey = "Name" | "Description" | "Actions";
+  type ColumnKey = "Name" | "District" | "State" | "Pincode" |"Active"| "Actions";
   const [columnVisibility, setColumnVisibility] = useState<
     Record<ColumnKey, boolean>
   >({
     Name: true,
-    Description:true,
+    District: true,
+    State: true,
+    Pincode:true,
+    Active:true,
     Actions: true,
   });
 
@@ -95,7 +117,7 @@ const CategoryTable = ({ isDark = false }) => {
       }
     }
     setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-  }, [columnVisibility.Name,columnVisibility.Description]);
+  }, [columnVisibility.Name, columnVisibility.District,columnVisibility.State,columnVisibility.Pincode,columnVisibility.Active]);
 
   return (
     <div className="w-[95%] mr-10 sm:ms-7">
@@ -112,8 +134,10 @@ const CategoryTable = ({ isDark = false }) => {
         data={[
           {
             _id:1,
-            name: "Smartphone",
-            description: "Smart devices",
+            name: "Khanna",
+            district: "Ludhiana",
+            state:"Punjab",
+            pincode:141401
           },
         ]}
         columnVisibility={columnVisibility}
@@ -124,4 +148,4 @@ const CategoryTable = ({ isDark = false }) => {
   );
 };
 
-export default CategoryTable;
+export default CityTable;
