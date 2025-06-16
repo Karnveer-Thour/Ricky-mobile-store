@@ -66,7 +66,11 @@ export default function Login() {
                 }
               />
             </Inputcontainer>
-            <Inputcontainer type={"password"} error={errors?.password} isDark={true}>
+            <Inputcontainer
+              type={"password"}
+              error={errors?.password}
+              isDark={true}
+            >
               <div className="relative mt-1 w-full">
                 <div className="flex items-center w-full rounded-md border-2 border-gray-500 focus-within:ring-2 focus-within:ring-blue-300 transition">
                   <Input

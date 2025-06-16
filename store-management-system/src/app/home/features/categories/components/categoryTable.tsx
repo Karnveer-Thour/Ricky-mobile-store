@@ -7,8 +7,8 @@ import Delete from "./delete";
 
 const CategoryTable = ({ isDark = false }) => {
   const [customerDeleting, setCustomerDeleting] = useState(false);
-  const pathName=usePathname();
-  const router=useRouter();
+  const pathName = usePathname();
+  const router = useRouter();
   const [customerData, setCustomerData] = useState({
     id: "",
     Name: "",
@@ -81,7 +81,7 @@ const CategoryTable = ({ isDark = false }) => {
     Record<ColumnKey, boolean>
   >({
     Name: true,
-    Description:true,
+    Description: true,
     Actions: true,
   });
 
@@ -95,7 +95,7 @@ const CategoryTable = ({ isDark = false }) => {
       }
     }
     setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-  }, [columnVisibility.Name,columnVisibility.Description]);
+  }, [columnVisibility.Name, columnVisibility.Description]);
 
   return (
     <div className="w-[95%] mr-10 sm:ms-7">
@@ -111,7 +111,7 @@ const CategoryTable = ({ isDark = false }) => {
         columns={columns}
         data={[
           {
-            _id:1,
+            _id: 1,
             name: "Smartphone",
             description: "Smart devices",
           },

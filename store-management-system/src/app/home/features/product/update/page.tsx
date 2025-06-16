@@ -13,9 +13,9 @@ import { storeType } from "@/types/store.index";
 
 function addProduct() {
   const router = useRouter();
-  const pathName=usePathname();
+  const pathName = usePathname();
   const [colorCount, setColorCount] = useState([1]);
-  const isDark=useSelector((store:storeType)=>store.DarkMode.isDarkMode)
+  const isDark = useSelector((store: storeType) => store.DarkMode.isDarkMode);
 
   const {
     register,
@@ -25,12 +25,12 @@ function addProduct() {
 
   const Categories = [
     {
-      id:1,
+      id: 1,
       value: "Mobile",
       name: "Mobile",
     },
     {
-      id:2,
+      id: 2,
       value: "SmartWatches",
       name: "SmartWatches",
     },
@@ -44,14 +44,20 @@ function addProduct() {
             id="Name"
             placeholder="Enter product's name"
             {...register("name")}
-            className={`border-2 ${isDark?"border-white text-white":"border-gray-500"} font-bold`}
+            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
         <div className="flex items-center justify-between w-full bg-transparent">
-          <Inputcontainer type={"Category"} error={errors?.category} isDark={isDark}>
+          <Inputcontainer
+            type={"Category"}
+            error={errors?.category}
+            isDark={isDark}
+          >
             <Select className={`w-full border-2`} isDark={isDark}>
               {Categories.map((category) => (
-                <option key={category.id} value={category.value}>{category.name}</option>
+                <option key={category.id} value={category.value}>
+                  {category.name}
+                </option>
               ))}
             </Select>
           </Inputcontainer>
@@ -61,15 +67,19 @@ function addProduct() {
             id="Price"
             placeholder="Enter product's price"
             {...register("price")}
-            className={`border-2 ${isDark?"border-white text-white":"border-gray-500"} font-bold`}
+            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Discount"} error={errors?.discount} isDark={isDark}>
+        <Inputcontainer
+          type={"Discount"}
+          error={errors?.discount}
+          isDark={isDark}
+        >
           <Input
             id="discount"
             placeholder="Enter product's discount"
             {...register("discount")}
-            className={`border-2 ${isDark?"border-white text-white":"border-gray-500"} font-bold`}
+            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
         <Inputcontainer type={"Color"} error={errors?.color} isDark={isDark}>
@@ -77,25 +87,30 @@ function addProduct() {
             {colorCount.map((count) => (
               <div key={count} className="w-[48%] flex justify-between">
                 <div className="w-[60%]">
-                  <Inputcontainer type={"Color Name"} error={errors?.colorName} isDark={isDark}>
+                  <Inputcontainer
+                    type={"Color Name"}
+                    error={errors?.colorName}
+                    isDark={isDark}
+                  >
                     <Input
                       id="ColorName"
                       placeholder="Enter product's Color Name"
                       {...register("Color Name")}
-                      className={`border-2 ${isDark?"border-white text-white":"border-gray-500"} font-bold`}
+                      className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
                     />
                   </Inputcontainer>
                 </div>
                 <div className="w-[36%]">
                   <Inputcontainer
                     type={"Color Quantity"}
-                    error={errors?.colorQuantity} isDark={isDark}
+                    error={errors?.colorQuantity}
+                    isDark={isDark}
                   >
                     <Input
                       id="ColorQuantity"
                       placeholder="Enter Quantity"
                       {...register("Color Name")}
-                      className={`border-2 ${isDark?"border-white text-white":"border-gray-500"} font-bold`}
+                      className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
                     />
                   </Inputcontainer>
                 </div>
@@ -107,7 +122,7 @@ function addProduct() {
                 value={"Add"}
                 handler={(e) => {
                   e.preventDefault();
-                  setColorCount([...colorCount,colorCount.length+1]);
+                  setColorCount([...colorCount, colorCount.length + 1]);
                 }}
               />
             </div>

@@ -23,9 +23,7 @@ function page() {
       <div className="w-[95%] h-[50vh] mt-8 ms-6 flex flex-col items-center justify-center">
         <div className=" w-full flex flex-row justify-between items-center">
           <div className="flex-1 overflow-hidden sm:ms-7 max-sm:ms-4 h-auto p-3 flex justify-center items-center">
-            <Button
-              name={"Download Sale"}
-            />
+            <Button name={"Download Sale"} />
           </div>
         </div>
         <div className="w-full h-[80%] ms-7 overflow-hidden flex justify-center items-center">

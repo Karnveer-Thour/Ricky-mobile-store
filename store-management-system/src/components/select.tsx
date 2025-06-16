@@ -6,10 +6,15 @@ import { SelectHTMLAttributes, ReactNode } from "react";
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   children?: ReactNode;
   isDark?: boolean;
-  className?:string;
+  className?: string;
 }
 
-function Select({ isDark = false, children,className, ...props }: SelectProps) {
+function Select({
+  isDark = false,
+  children,
+  className,
+  ...props
+}: SelectProps) {
   return (
     <select
       className={

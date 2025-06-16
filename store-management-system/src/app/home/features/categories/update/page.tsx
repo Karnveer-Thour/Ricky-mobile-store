@@ -10,7 +10,7 @@ import { storeType } from "@/types/store.index";
 
 function addProduct() {
   const router = useRouter();
-  const isDark=useSelector((store:storeType)=>store.DarkMode.isDarkMode)
+  const isDark = useSelector((store: storeType) => store.DarkMode.isDarkMode);
 
   const {
     register,
@@ -27,15 +27,19 @@ function addProduct() {
             id="Name"
             placeholder="Enter Category name"
             {...register("name")}
-            className={`border-2 ${isDark?"border-white text-white":"border-gray-500"} font-bold`}
+            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Description"} error={errors?.price} isDark={isDark}>
+        <Inputcontainer
+          type={"Description"}
+          error={errors?.price}
+          isDark={isDark}
+        >
           <Input
             id="Price"
             placeholder="Enter category description"
             {...register("description")}
-            className={`border-2 ${isDark?"border-white text-white":"border-gray-500"} font-bold`}
+            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
       </form>

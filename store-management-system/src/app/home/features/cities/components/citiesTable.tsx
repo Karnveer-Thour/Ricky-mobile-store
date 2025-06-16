@@ -66,18 +66,22 @@ const CityTable = ({ isDark = false }) => {
     {
       header: "Active",
       id: "Active",
-      cell:()=>(
+      cell: () => (
         <div>
-          <ToggleButton isDark={isDark} activeLabel="Accepting" inactiveLabel="Not Accepting" handler={()=>{}}/>
-          </div>
-      )
+          <ToggleButton
+            isDark={isDark}
+            activeLabel="Accepting"
+            inactiveLabel="Not Accepting"
+            handler={() => {}}
+          />
+        </div>
+      ),
     },
     {
       header: "Actions",
       id: "Actions",
       cell: ({ row }: { row: any }) => (
         <div className="flex gap-2">
-          
           <button
             onClick={() => handleUpdate(router.push(`${pathName}/update`))}
             className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
@@ -95,15 +99,21 @@ const CityTable = ({ isDark = false }) => {
     },
   ];
 
-  type ColumnKey = "Name" | "District" | "State" | "Pincode" |"Active"| "Actions";
+  type ColumnKey =
+    | "Name"
+    | "District"
+    | "State"
+    | "Pincode"
+    | "Active"
+    | "Actions";
   const [columnVisibility, setColumnVisibility] = useState<
     Record<ColumnKey, boolean>
   >({
     Name: true,
     District: true,
     State: true,
-    Pincode:true,
-    Active:true,
+    Pincode: true,
+    Active: true,
     Actions: true,
   });
 
@@ -117,7 +127,13 @@ const CityTable = ({ isDark = false }) => {
       }
     }
     setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-  }, [columnVisibility.Name, columnVisibility.District,columnVisibility.State,columnVisibility.Pincode,columnVisibility.Active]);
+  }, [
+    columnVisibility.Name,
+    columnVisibility.District,
+    columnVisibility.State,
+    columnVisibility.Pincode,
+    columnVisibility.Active,
+  ]);
 
   return (
     <div className="w-[95%] mr-10 sm:ms-7">
@@ -133,11 +149,11 @@ const CityTable = ({ isDark = false }) => {
         columns={columns}
         data={[
           {
-            _id:1,
+            _id: 1,
             name: "Khanna",
             district: "Ludhiana",
-            state:"Punjab",
-            pincode:141401
+            state: "Punjab",
+            pincode: 141401,
           },
         ]}
         columnVisibility={columnVisibility}

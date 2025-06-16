@@ -7,8 +7,8 @@ import { usePathname, useRouter } from "next/navigation";
 
 const ProductTable = ({ isDark = false }) => {
   const [customerDeleting, setCustomerDeleting] = useState(false);
-  const pathName=usePathname();
-  const router=useRouter();
+  const pathName = usePathname();
+  const router = useRouter();
   const [customerData, setCustomerData] = useState({
     id: "",
     Name: "",
@@ -107,7 +107,12 @@ const ProductTable = ({ isDark = false }) => {
       }
     }
     setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-  }, [columnVisibility.Name,columnVisibility.Category,columnVisibility.Price,columnVisibility.Quantity]);
+  }, [
+    columnVisibility.Name,
+    columnVisibility.Category,
+    columnVisibility.Price,
+    columnVisibility.Quantity,
+  ]);
 
   return (
     <div className="w-[95%] mr-10 sm:ms-7">

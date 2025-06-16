@@ -4,7 +4,6 @@ import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 const CityTable = ({ isDark = false }) => {
-
   const columns = [
     {
       header: "Buyer",
@@ -19,9 +18,7 @@ const CityTable = ({ isDark = false }) => {
     {
       header: "Status",
       id: "Status",
-      cell:()=>(
-        <div></div>
-      )
+      cell: () => <div></div>,
     },
     {
       header: "Amount",
@@ -30,14 +27,14 @@ const CityTable = ({ isDark = false }) => {
     },
   ];
 
-  type ColumnKey = "Buyer" | "Products" | "Status" |"Amount";
+  type ColumnKey = "Buyer" | "Products" | "Status" | "Amount";
   const [columnVisibility, setColumnVisibility] = useState<
     Record<ColumnKey, boolean>
   >({
-    Buyer:true,
-    Products:true,
-    Status:true,
-    Amount:true,
+    Buyer: true,
+    Products: true,
+    Status: true,
+    Amount: true,
   });
 
   return (
@@ -46,10 +43,10 @@ const CityTable = ({ isDark = false }) => {
         columns={columns}
         data={[
           {
-            _id:1,
-            buyer:"Karan",
-            products:"Redmi note 14",
-            amount:14000
+            _id: 1,
+            buyer: "Karan",
+            products: "Redmi note 14",
+            amount: 14000,
           },
         ]}
         columnVisibility={columnVisibility}

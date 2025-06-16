@@ -11,7 +11,7 @@ import ToggleButton from "@/components/togglebutton";
 
 function addProduct() {
   const router = useRouter();
-  const isDark=useSelector((store:storeType)=>store.DarkMode.isDarkMode)
+  const isDark = useSelector((store: storeType) => store.DarkMode.isDarkMode);
 
   const {
     register,
@@ -27,7 +27,7 @@ function addProduct() {
             id="City Name"
             placeholder="Enter city name"
             {...register("City Name")}
-            className={`border-2 ${isDark?"border-white text-white":"border-gray-500"} font-bold`}
+            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
         <Inputcontainer type={"District"} error={errors?.price} isDark={isDark}>
@@ -35,7 +35,7 @@ function addProduct() {
             id="District"
             placeholder="Enter city district"
             {...register("District")}
-            className={`border-2 ${isDark?"border-white text-white":"border-gray-500"} font-bold`}
+            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
         <Inputcontainer type={"State"} error={errors?.price} isDark={isDark}>
@@ -43,7 +43,7 @@ function addProduct() {
             id="State"
             placeholder="Enter city State"
             {...register("State")}
-            className={`border-2 ${isDark?"border-white text-white":"border-gray-500"} font-bold`}
+            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
         <Inputcontainer type={"Pincode"} error={errors?.price} isDark={isDark}>
@@ -51,12 +51,17 @@ function addProduct() {
             id="Pincode"
             placeholder="Enter city pincode"
             {...register("pincode")}
-            className={`border-2 ${isDark?"border-white text-white":"border-gray-500"} font-bold`}
+            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-         <div>
-          <ToggleButton isDark={isDark} activeLabel="Accepting" inactiveLabel="Not Accepting" handler={()=>{}}/>
-          </div>
+        <div>
+          <ToggleButton
+            isDark={isDark}
+            activeLabel="Accepting"
+            inactiveLabel="Not Accepting"
+            handler={() => {}}
+          />
+        </div>
       </form>
       <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">
         <Button name={"Cancel"} handler={() => router.back()} />
