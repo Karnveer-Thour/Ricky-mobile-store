@@ -18,7 +18,7 @@ function BlurredPopupLayout({
       <div
         className={`flex flex-col justify-evenly items-center gap-4 w-[40%] h-[20%] ${
           isDark ? "bg-gray-500 text-white" : "bg-white text-gray-700"
-        } rounded-xl shadow-lg p-4`}
+        } rounded-xl shadow-lg ${isDark && "shadow-white border border-white"} p-4`}
         style={{ width, height }}
       >
         {children}

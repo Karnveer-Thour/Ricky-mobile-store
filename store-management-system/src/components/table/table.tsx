@@ -81,7 +81,7 @@ function Table({
             </div>
           </div>
           <div className="overflow-x-auto hidden md:flex w-full md:flex-col mt-5">
-            <table className=" bg-white shadow-md rounded-b-xl w-full shrink-3">
+            <table className=" bg-white shadow-md rounded-b-xl w-full shrink-3 overflow-hidden">
               <thead
                 className={` ${isDark ? "text-white bg-gray-700" : "text-gray-700 bg-gray-200"} w-full`}
               >
