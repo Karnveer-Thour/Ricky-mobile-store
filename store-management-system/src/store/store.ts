@@ -1,11 +1,24 @@
 import { configureStore } from "@reduxjs/toolkit";
 import alertReducer from "@/store/slices/alert.slice";
 import darkModeReducer from "@/store/slices/isDarkMode.slice";
-export const store = configureStore({
-  reducer: {
-    Alert: alertReducer,
+import storage from "redux-persist/lib/storage";
+import {persistReducer} from "redux-persist";
+import {combineReducers} from "@reduxjs/toolkit";
+
+const persistConfig={
+  key:"root",
+  storage
+}
+
+const reducer=combineReducers({
+   Alert: alertReducer,
     DarkMode: darkModeReducer,
-  },
+})
+
+const persistedReducer=persistReducer(persistConfig,reducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
 });
 
 export type RootState = ReturnType<typeof store.getState>;
