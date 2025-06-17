@@ -2,6 +2,7 @@
 import Table from "@/components/table/table";
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import Button from "@/components/Button";
 
 const CityTable = ({ isDark = false }) => {
   const columns = [
@@ -18,7 +19,11 @@ const CityTable = ({ isDark = false }) => {
     {
       header: "Status",
       id: "Status",
-      cell: () => <div></div>,
+      cell: () => <div className="flex gap-5">
+        <Button name={"accepted"} className="bg-green-500"/>
+        <Button name={"prending"} className="bg-yellow-500"/>
+        <Button name={"rejected"} className="bg-red-500"/>
+      </div>,
     },
     {
       header: "Amount",
