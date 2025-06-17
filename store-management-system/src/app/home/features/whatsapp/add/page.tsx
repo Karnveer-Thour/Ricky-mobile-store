@@ -22,7 +22,11 @@ function addWhatsappGroup() {
     <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
       <p className="text-2xl font-bold mt-5">Add City</p>
       <form action="" className="flex-1 w-full p-3">
-        <Inputcontainer type={"Group Name"} error={errors?.name} isDark={isDark}>
+        <Inputcontainer
+          type={"Group Name"}
+          error={errors?.name}
+          isDark={isDark}
+        >
           <Input
             id="Group Name"
             placeholder="Enter Group Name"
@@ -30,7 +34,11 @@ function addWhatsappGroup() {
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Group Url"} error={errors?.price} isDark={isDark}>
+        <Inputcontainer
+          type={"Group Url"}
+          error={errors?.price}
+          isDark={isDark}
+        >
           <Input
             id="Group Url"
             placeholder="Enter Group Url"

@@ -84,10 +84,7 @@ const CityTable = ({ isDark = false }) => {
     },
   ];
 
-  type ColumnKey =
-    | "GroupName"
-    | "Status"
-    | "Actions";
+  type ColumnKey = "GroupName" | "Status" | "Actions";
   const [columnVisibility, setColumnVisibility] = useState<
     Record<ColumnKey, boolean>
   >({
@@ -106,10 +103,7 @@ const CityTable = ({ isDark = false }) => {
       }
     }
     setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-  }, [
-    columnVisibility.GroupName,
-    columnVisibility.Status,
-  ]);
+  }, [columnVisibility.GroupName, columnVisibility.Status]);
 
   return (
     <div className="w-[95%] mr-10 sm:ms-7">
@@ -126,7 +120,7 @@ const CityTable = ({ isDark = false }) => {
         data={[
           {
             _id: 1,
-            groupName:"Sales 2025"
+            groupName: "Sales 2025",
           },
         ]}
         columnVisibility={columnVisibility}

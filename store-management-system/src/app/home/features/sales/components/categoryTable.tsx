@@ -19,11 +19,13 @@ const CityTable = ({ isDark = false }) => {
     {
       header: "Status",
       id: "Status",
-      cell: () => <div className="flex gap-5">
-        <Button name={"accepted"} className="bg-green-500"/>
-        <Button name={"prending"} className="bg-yellow-500"/>
-        <Button name={"rejected"} className="bg-red-500"/>
-      </div>,
+      cell: () => (
+        <div className="flex gap-5">
+          <Button name={"accepted"} className="bg-green-500" />
+          <Button name={"prending"} className="bg-yellow-500" />
+          <Button name={"rejected"} className="bg-red-500" />
+        </div>
+      ),
     },
     {
       header: "Amount",
