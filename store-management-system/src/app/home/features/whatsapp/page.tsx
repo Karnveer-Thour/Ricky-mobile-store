@@ -3,7 +3,6 @@
 import Button from "@/components/Button";
 import { storeType } from "@/types/store.index";
 import { useSelector } from "react-redux";
-import CategoryTable from "./components/whatsappTable";
 import { usePathname, useRouter } from "next/navigation";
 import CityTable from "./components/whatsappTable";
 
@@ -27,6 +26,12 @@ function page() {
             <Button
               name={"Add Group"}
               handler={() => router.push(`${pathName}/add`)}
+            />
+          </div>
+          <div className="flex-1 overflow-hidden sm:ms-7 max-sm:ms-4 h-auto p-3 flex justify-center items-center">
+            <Button
+              name={"Upload Sale"}
+              handler={() => router.push(`${pathName}/uploadsale`)}
             />
           </div>
         </div>
