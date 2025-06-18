@@ -128,7 +128,7 @@ const ProductTable = ({ isDark = false }) => {
         columns={columns}
         data={[
           {
-            _id:1,
+            _id: 1,
             name: "Product 1",
             category: "Category 1",
             price: 100,
