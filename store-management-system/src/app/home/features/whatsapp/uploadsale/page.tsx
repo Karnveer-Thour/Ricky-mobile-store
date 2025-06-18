@@ -20,9 +20,9 @@ function UploadSale() {
   } = useForm({});
   return (
     <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
-      <p className="text-2xl font-bold mt-5">Add City</p>
+      <p className="text-2xl font-bold mt-5">upload Sale</p>
       <form action="" className="flex-1 w-full p-3">
-        <Inputcontainer type={"Group Name"} error={errors?.name} isDark={isDark}>
+        <Inputcontainer type={"Buyer"} error={errors?.name} isDark={isDark}>
           <Input
             id="Group Name"
             placeholder="Enter Group Name"

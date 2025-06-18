@@ -4,7 +4,7 @@ import Button from "@/components/Button";
 import { storeType } from "@/types/store.index";
 import { useSelector } from "react-redux";
 import { usePathname, useRouter } from "next/navigation";
-import CityTable from "./components/whatsappTable";
+import WhatsappTable from "./components/whatsappTable";
 
 function page() {
   const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
@@ -36,7 +36,7 @@ function page() {
           </div>
         </div>
         <div className="w-full h-[80%] ms-7 overflow-hidden flex justify-center items-center">
-          <CityTable isDark={isDark} />
+          <WhatsappTable isDark={isDark} />
         </div>
       </div>
     </>
