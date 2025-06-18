@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Delete from "./delete";
 import ToggleButton from "@/components/togglebutton";
 
-const CityTable = ({ isDark = false }) => {
+const WhatsappTable = ({ isDark = false }) => {
   const [customerDeleting, setCustomerDeleting] = useState(false);
   const pathName = usePathname();
   const router = useRouter();
@@ -131,4 +131,4 @@ const CityTable = ({ isDark = false }) => {
   );
 };
 
-export default CityTable;
+export default WhatsappTable;

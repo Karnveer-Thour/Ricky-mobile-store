@@ -20,7 +20,7 @@ function addWhatsappGroup() {
   } = useForm({});
   return (
     <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
-      <p className="text-2xl font-bold mt-5">Add City</p>
+      <p className="text-2xl font-bold mt-5">Add Whatsapp Group</p>
       <form action="" className="flex-1 w-full p-3">
         <Inputcontainer
           type={"Group Name"}

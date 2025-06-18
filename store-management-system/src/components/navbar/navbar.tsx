@@ -6,6 +6,7 @@ import {
   X,
   Home as Dashboard,
   User as Profile,
+  Users as Customers,
   Settings,
   Building2 as Cities,
   LayoutGrid as Whatsapp,
@@ -78,8 +79,14 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
               linkTo="/home/features/dashboard"
             />
             <Navitem
+              icon={<Customers size={24} />}
+              label="Customers"
+              isOpen={isOpen}
+              linkTo="/home/features/customers"
+            />
+            <Navitem
               icon={<Products size={24} />}
-              label="Product"
+              label="Products"
               isOpen={isOpen}
               linkTo="/home/features/product"
             />
@@ -103,7 +110,7 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
             />
             <Navitem
               icon={<Whatsapp size={24} />}
-              label="whatsapp"
+              label="whatsapp Groups"
               isOpen={isOpen}
               linkTo="/home/features/whatsapp"
             />
