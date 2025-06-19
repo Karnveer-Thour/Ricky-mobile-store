@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
 import ToggleButton from "@/components/togglebutton";
 import MultiSelectorInput from "@/components/multiselectorinput";
+import UploaderInput from "@/components/uploaderInput";
 
 function UploadSale() {
   const router = useRouter();
@@ -74,12 +75,7 @@ function UploadSale() {
           />
         </Inputcontainer>
         <Inputcontainer type={"Pictures"} error={errors?.price} isDark={isDark}>
-          <Input
-            id="Product Pictures"
-            placeholder="Enter Product Pictures"
-            {...register("Group Url")}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
-          />
+         <UploaderInput/>
         </Inputcontainer>
       </form>
       <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">
