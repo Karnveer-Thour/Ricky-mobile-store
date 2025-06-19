@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
 import ToggleButton from "@/components/togglebutton";
+import MultiSelectorInput from "@/components/multiselectorinput";
 
 function UploadSale() {
   const router = useRouter();
@@ -20,20 +21,62 @@ function UploadSale() {
   } = useForm({});
   return (
     <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
-      <p className="text-2xl font-bold mt-5">upload Sale</p>
+      <p className="text-2xl font-bold mt-5">Upload Sale</p>
       <form action="" className="flex-1 w-full p-3">
-        <Inputcontainer type={"Buyer"} error={errors?.name} isDark={isDark}>
+        <Inputcontainer
+          type={"Customer Name"}
+          error={errors?.name}
+          isDark={isDark}
+        >
           <Input
-            id="Group Name"
-            placeholder="Enter Group Name"
+            id="Customer Name"
+            placeholder="Enter Customer Name"
             {...register("Group Name")}
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Group Url"} error={errors?.price} isDark={isDark}>
+        <Inputcontainer type={"Products"} error={errors?.price} isDark={isDark}>
+          <MultiSelectorInput
+            values={[
+              {
+                name: "hi",
+              },
+              {
+                name: "hello",
+              },
+              {
+                name: "bye",
+              },
+              {
+                name: "cu",
+              },
+            ]}
+          />
+        </Inputcontainer>
+        <Inputcontainer type={"Amount"} error={errors?.price} isDark={isDark}>
           <Input
-            id="Group Url"
-            placeholder="Enter Group Url"
+            id="Amount"
+            placeholder="Enter Amount"
+            {...register("Group Url")}
+            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
+          />
+        </Inputcontainer>
+        <Inputcontainer
+          type={"Received Amount"}
+          error={errors?.price}
+          isDark={isDark}
+        >
+          <Input
+            id="Received Amount"
+            placeholder="Enter Received Amount"
+            {...register("Group Url")}
+            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
+          />
+        </Inputcontainer>
+        <Inputcontainer type={"Pictures"} error={errors?.price} isDark={isDark}>
+          <Input
+            id="Product Pictures"
+            placeholder="Enter Product Pictures"
             {...register("Group Url")}
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
