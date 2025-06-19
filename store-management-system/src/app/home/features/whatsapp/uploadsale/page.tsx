@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
 import ToggleButton from "@/components/togglebutton";
 import MultiSelectorInput from "@/components/multiselectorinput";
-import UploaderInput from "@/components/uploaderInput";
 
 function UploadSale() {
   const router = useRouter();
@@ -24,23 +23,11 @@ function UploadSale() {
     <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
       <p className="text-2xl font-bold mt-5">Upload Sale</p>
       <form action="" className="flex-1 w-full p-3">
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <Inputcontainer
-          type={"Group Name"}
-          error={errors?.name}
-          isDark={isDark}
-        >
-=======
-        <Inputcontainer type={"Buyer"} error={errors?.name} isDark={isDark}>
->>>>>>> d95ec6f8e3d2f9ac93260cf146cee6295cab1c2a
-=======
         <Inputcontainer
           type={"Customer Name"}
           error={errors?.name}
           isDark={isDark}
         >
->>>>>>> 87efa07fa857eb137bc7afcc4839914ac8879173
           <Input
             id="Customer Name"
             placeholder="Enter Customer Name"
@@ -48,13 +35,6 @@ function UploadSale() {
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-<<<<<<< HEAD
-        <Inputcontainer
-          type={"Group Url"}
-          error={errors?.price}
-          isDark={isDark}
-        >
-=======
         <Inputcontainer type={"Products"} error={errors?.price} isDark={isDark}>
           <MultiSelectorInput
             values={[
@@ -71,10 +51,10 @@ function UploadSale() {
                 name: "cu",
               },
             ]}
+            isDark={isDark}
           />
         </Inputcontainer>
         <Inputcontainer type={"Amount"} error={errors?.price} isDark={isDark}>
->>>>>>> 87efa07fa857eb137bc7afcc4839914ac8879173
           <Input
             id="Amount"
             placeholder="Enter Amount"
@@ -95,7 +75,12 @@ function UploadSale() {
           />
         </Inputcontainer>
         <Inputcontainer type={"Pictures"} error={errors?.price} isDark={isDark}>
-         <UploaderInput/>
+          <Input
+            id="Product Pictures"
+            placeholder="Enter Product Pictures"
+            {...register("Group Url")}
+            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
+          />
         </Inputcontainer>
       </form>
       <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">
