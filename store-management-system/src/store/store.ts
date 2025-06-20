@@ -1,9 +1,8 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import alertReducer from "@/store/slices/alert.slice";
 import darkModeReducer from "@/store/slices/isDarkMode.slice";
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
-import { combineReducers } from "@reduxjs/toolkit";
 
 const persistConfig = {
   key: "root",

@@ -11,10 +11,10 @@ import { Eye, EyeClosed } from "lucide-react";
 import { SUCCESSALERT } from "@/store/slices/alert.slice";
 import Formcontainer from "@/ui/Formcontainer";
 import Maincontainer from "@/ui/Maincontainer";
+import PasswordInput from "@/components/passwordInput";
 
 export default function Login() {
   const dispatch = useDispatch();
-  const [passwordVisible, setPasswordVisible] = useState(false);
   const {
     register,
     handleSubmit,
@@ -62,7 +62,7 @@ export default function Login() {
                 placeholder="Enter your email"
                 {...register("email")}
                 className={
-                  "border-2 border-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-none text-white"
+                  "border-2 border-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent text-white"
                 }
               />
             </Inputcontainer>
@@ -71,27 +71,18 @@ export default function Login() {
               error={errors?.password}
               isDark={true}
             >
-              <div className="relative mt-1 w-full">
-                <div className="flex items-center w-full rounded-md border-2 border-gray-500 focus-within:ring-2 focus-within:ring-blue-300 transition">
+              <PasswordInput>
+                {({ passwordVisible }) => (
                   <Input
                     type={passwordVisible ? "text" : "password"}
                     id="password"
                     placeholder="Enter your password"
-                    className="flex-1 px-4 py-2 rounded-md focus:outline-none border-none bg-none text-white"
+                    className="flex-1 px-4 py-2 rounded-md focus:outline-none border-none bg-transparent text-white"
+                    customMargin="mt-0"
                     {...register("password")}
                   />
-                  <button
-                    type="button"
-                    onClick={() => setPasswordVisible(!passwordVisible)}
-                    aria-label={
-                      passwordVisible ? "Hide password" : "Show password"
-                    }
-                    className="p-2 text-gray-600 hover:text-blue-500 focus:outline-none rounded-md"
-                  >
-                    {!passwordVisible ? <Eye /> : <EyeClosed />}
-                  </button>
-                </div>
-              </div>
+                )}
+              </PasswordInput>
             </Inputcontainer>
             <Button
               name={"Login"}

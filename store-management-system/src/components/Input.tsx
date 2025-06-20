@@ -4,9 +4,10 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id?: string;
   placeholder?: string;
   className?: string;
+  customMargin?:string;
 }
 
-function Input({ id, placeholder, className = "", ...props }: InputProps) {
+function Input({ id, placeholder, className = "",customMargin, ...props }: InputProps) {
   return (
     <input
       id={id}
@@ -14,7 +15,7 @@ function Input({ id, placeholder, className = "", ...props }: InputProps) {
       className={`
         w-full px-3 py-2 
         rounded-md  
-        mt-1.5
+        ${customMargin??"mt-1.5"}
         text-gray-600
         appearance-none 
         shadow-none 
