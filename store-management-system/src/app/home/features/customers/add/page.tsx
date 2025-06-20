@@ -67,7 +67,7 @@ function addCustomer() {
                 type={passwordVisible ? "text" : "password"}
                 id="password"
                 placeholder="Enter your password"
-                className="flex-1 px-4 py-2 rounded-md focus:outline-none border-none bg-transparent text-white"
+                className={`flex-1 px-4 py-2 rounded-md focus:outline-none border-none bg-transparent font-bold ${isDark ? " text-white" : "text-gray-500"}`}
                 customMargin="mt-0"
                 {...register("password")}
               />
