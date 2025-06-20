@@ -19,6 +19,7 @@
     "papaparse": "^5.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-easy-crop": "^5.4.2",
     "react-redux": "^9.2.0",
     "redux-persist": "^6.0.0"
   },
