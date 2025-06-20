@@ -85,12 +85,7 @@ const CustomerTable = ({ isDark = false }) => {
     },
   ];
 
-  type ColumnKey =
-    "Picture"
-    | "Name"
-    | "Email"
-    | "Mobile Number"
-    | "Actions";
+  type ColumnKey = "Picture" | "Name" | "Email" | "Mobile Number" | "Actions";
   const [columnVisibility, setColumnVisibility] = useState<
     Record<ColumnKey, boolean>
   >({
@@ -115,7 +110,7 @@ const CustomerTable = ({ isDark = false }) => {
     columnVisibility.Picture,
     columnVisibility.Name,
     columnVisibility.Email,
-    columnVisibility["Mobile Number"]
+    columnVisibility["Mobile Number"],
   ]);
 
   return (
@@ -133,10 +128,10 @@ const CustomerTable = ({ isDark = false }) => {
         data={[
           {
             _id: 1,
-            picture:"",
-            name:"Karanveer Thour",
-            email:"Karan@873498.yippe.com",
-            "mobile number":5674654654
+            picture: "",
+            name: "Karanveer Thour",
+            email: "Karan@873498.yippe.com",
+            "mobile number": 5674654654,
           },
         ]}
         columnVisibility={columnVisibility}

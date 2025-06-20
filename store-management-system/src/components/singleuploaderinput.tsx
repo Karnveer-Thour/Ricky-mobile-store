@@ -2,7 +2,7 @@ import { Upload, X } from "lucide-react";
 import React, { useRef, useState } from "react";
 
 const SingleUploaderInput = ({ prevPicture }: { prevPicture?: File }) => {
-  const [picture, setPicture] = useState<File |undefined>(prevPicture);
+  const [picture, setPicture] = useState<File | undefined>(prevPicture);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const openFileDialog = () => {

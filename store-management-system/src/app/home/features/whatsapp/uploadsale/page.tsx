@@ -76,7 +76,7 @@ function UploadSale() {
           />
         </Inputcontainer>
         <Inputcontainer type={"Pictures"} error={errors?.price} isDark={isDark}>
-          <UploaderInput/>
+          <UploaderInput />
         </Inputcontainer>
       </form>
       <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">

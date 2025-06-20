@@ -58,7 +58,11 @@ function updateCustomer() {
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Mobile Number"} error={errors?.price} isDark={isDark}>
+        <Inputcontainer
+          type={"Mobile Number"}
+          error={errors?.price}
+          isDark={isDark}
+        >
           <Input
             id="Mobile Number"
             placeholder="Enter Mobile Number"
@@ -66,7 +70,11 @@ function updateCustomer() {
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Date of Birth"} error={errors?.price} isDark={isDark}>
+        <Inputcontainer
+          type={"Date of Birth"}
+          error={errors?.price}
+          isDark={isDark}
+        >
           <Input
             id="Date of Birth"
             placeholder="Enter Date of Birth"
@@ -74,8 +82,12 @@ function updateCustomer() {
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Profile Picture"} error={errors?.price} isDark={isDark}>
-          <SingleUploaderInput/>
+        <Inputcontainer
+          type={"Profile Picture"}
+          error={errors?.price}
+          isDark={isDark}
+        >
+          <SingleUploaderInput />
         </Inputcontainer>
       </form>
       <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">

@@ -1,5 +1,5 @@
-import { Upload, X } from 'lucide-react';
-import React, { useRef, useState } from 'react';
+import { Upload, X } from "lucide-react";
+import React, { useRef, useState } from "react";
 
 const UploaderInput = () => {
   const [pictures, setPictures] = useState<File[]>([]);
@@ -33,7 +33,7 @@ const UploaderInput = () => {
           </button>
         </div>
       ))}
-      
+
       <div
         className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center hover:border-blue-500 transition-all cursor-pointer group"
         onClick={openFileDialog}
