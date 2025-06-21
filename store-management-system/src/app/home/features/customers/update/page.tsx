@@ -10,6 +10,9 @@ import { storeType } from "@/types/store.index";
 import ToggleButton from "@/components/togglebutton";
 import UploaderInput from "@/components/uploaderInput";
 import { Eye, EyeClosed } from "lucide-react";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import TextField from "@mui/material/TextField";
 import PasswordInput from "@/components/passwordInput";
 import SingleUploaderInput from "@/components/singleuploaderinput";
 
@@ -70,25 +73,57 @@ function updateCustomer() {
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer
-          type={"Date of Birth"}
-          error={errors?.price}
-          isDark={isDark}
-        >
-          <Input
-            id="Date of Birth"
-            placeholder="Enter Date of Birth"
-            {...register("pincode")}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
-          />
-        </Inputcontainer>
-        <Inputcontainer
-          type={"Profile Picture"}
-          error={errors?.price}
-          isDark={isDark}
-        >
-          <SingleUploaderInput />
-        </Inputcontainer>
+        <div className="flex items-center">
+          <Inputcontainer
+            type={"Profile Picture"}
+            error={errors?.price}
+            isDark={isDark}
+          >
+            <SingleUploaderInput isDark={isDark} />
+          </Inputcontainer>
+          <div className={`ms-20 self-baseline`}>
+            <Inputcontainer
+            type={"Profile Picture"}
+            error={errors?.price}
+            isDark={isDark}
+          >
+            <div className={` border-2 ${isDark?"#ffffff":" #6a7282"} rounded-md mt-1.5`}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Date of Birth"
+                format="DD-MM-YYYY"
+                slotProps={{
+                  textField: {
+                    InputLabelProps: {
+                      style: { color: isDark ? "#fff" : "#6b7280" },
+                    },
+                    InputProps: {
+                      style: { color: isDark ? "#fff" : "#6b7280", borderColor: isDark ? "#fff" : "#6b7280" }, // input text color
+                    },
+                    sx: {
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: isDark ? "#fff" : "#6b7280",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: isDark ? "#fff" : "#6b7280",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: isDark ? "#fff" : "#6b7280",
+                        },
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: isDark ? "#fff" : "#6b7280",
+                      },
+                    },
+                  },
+                }}
+              />
+            </LocalizationProvider>
+            </div>
+            </Inputcontainer>
+          </div>
+        </div>
       </form>
       <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">
         <Button name={"Cancel"} handler={() => router.back()} />

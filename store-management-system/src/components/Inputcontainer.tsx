@@ -14,7 +14,7 @@ function Inputcontainer({
   isDark = false,
 }: InputContainerProps) {
   return (
-    <div className="mb-5 w-full">
+    <div className="mb-5">
       <label
         htmlFor={type}
         className={`block text-sm/6 text-[1rem] font-semibold ${isDark ? "text-white" : "text-gray-500"} ms-1`}

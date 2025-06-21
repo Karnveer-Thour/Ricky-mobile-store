@@ -1,7 +1,7 @@
 import { Upload, X } from "lucide-react";
 import React, { useRef, useState } from "react";
 
-const SingleUploaderInput = ({ prevPicture }: { prevPicture?: File }) => {
+const SingleUploaderInput = ({ prevPicture,isDark=false }: { prevPicture?: File,isDark?:boolean }) => {
   const [picture, setPicture] = useState<File | undefined>(prevPicture);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -14,9 +14,10 @@ const SingleUploaderInput = ({ prevPicture }: { prevPicture?: File }) => {
   };
 
   return (
-    <div className="flex gap-4 flex-wrap mt-1.5">
+    <div className="flex gap-4 flex-wrap mt-1.5 w-32 ">
       {picture ? (
-        <div className="relative w-32 h-32 border-2 border-gray-300 rounded-xl overflow-hidden">
+        <div className={`relative w-32 h-32 border-2 ${isDark?"border-white":"border-gray-500"} rounded-xl overflow-hidden`}
+        >
           <img
             src={URL.createObjectURL(picture)}
             alt={`Uploaded`}
@@ -31,10 +32,10 @@ const SingleUploaderInput = ({ prevPicture }: { prevPicture?: File }) => {
         </div>
       ) : (
         <div
-          className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center hover:border-blue-500 transition-all cursor-pointer group"
+          className={`w-32 h-32 border-2 border-dashed ${isDark?"border-white":"border-gray-500"} rounded-xl flex items-center justify-center hover:border-blue-500 transition-all cursor-pointer group`}
           onClick={openFileDialog}
         >
-          <div className="flex flex-col items-center text-gray-400 group-hover:text-blue-500">
+          <div className={`flex flex-col items-center ${isDark?"text-white":"text-gray-500"} group-hover:text-blue-500`}>
             <Upload size={28} />
             <span className="text-sm mt-1 text-center">Add Images</span>
           </div>
