@@ -83,44 +83,49 @@ function updateCustomer() {
           </Inputcontainer>
           <div className={`ms-20 self-baseline`}>
             <Inputcontainer
-            type={"Profile Picture"}
-            error={errors?.price}
-            isDark={isDark}
-          >
-            <div className={` border-2 ${isDark?"#ffffff":" #6a7282"} rounded-md mt-1.5`}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Date of Birth"
-                format="DD-MM-YYYY"
-                slotProps={{
-                  textField: {
-                    InputLabelProps: {
-                      style: { color: isDark ? "#fff" : "#6b7280" },
-                    },
-                    InputProps: {
-                      style: { color: isDark ? "#fff" : "#6b7280", borderColor: isDark ? "#fff" : "#6b7280" }, // input text color
-                    },
-                    sx: {
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: isDark ? "#fff" : "#6b7280",
+              type={"Profile Picture"}
+              error={errors?.price}
+              isDark={isDark}
+            >
+              <div
+                className={` border-2 ${isDark ? "#ffffff" : " #6a7282"} rounded-md mt-1.5`}
+              >
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Date of Birth"
+                    format="DD-MM-YYYY"
+                    slotProps={{
+                      textField: {
+                        InputLabelProps: {
+                          style: { color: isDark ? "#fff" : "#6b7280" },
                         },
-                        "&:hover fieldset": {
-                          borderColor: isDark ? "#fff" : "#6b7280",
+                        InputProps: {
+                          style: {
+                            color: isDark ? "#fff" : "#6b7280",
+                            borderColor: isDark ? "#fff" : "#6b7280",
+                          }, // input text color
                         },
-                        "&.Mui-focused fieldset": {
-                          borderColor: isDark ? "#fff" : "#6b7280",
+                        sx: {
+                          "& .MuiOutlinedInput-root": {
+                            "& fieldset": {
+                              borderColor: isDark ? "#fff" : "#6b7280",
+                            },
+                            "&:hover fieldset": {
+                              borderColor: isDark ? "#fff" : "#6b7280",
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor: isDark ? "#fff" : "#6b7280",
+                            },
+                          },
+                          "& .MuiSvgIcon-root": {
+                            color: isDark ? "#fff" : "#6b7280",
+                          },
                         },
                       },
-                      "& .MuiSvgIcon-root": {
-                        color: isDark ? "#fff" : "#6b7280",
-                      },
-                    },
-                  },
-                }}
-              />
-            </LocalizationProvider>
-            </div>
+                    }}
+                  />
+                </LocalizationProvider>
+              </div>
             </Inputcontainer>
           </div>
         </div>
