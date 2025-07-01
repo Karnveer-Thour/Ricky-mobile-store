@@ -36,28 +36,31 @@ function MetricSummaryChart({ data, isDark }: MetricBarChartProps) {
     Payments: "#6366F1", // Indigo
   };
   return (
-    <ResponsiveContainer width="100%" height={"100%"}>
-      <BarChart
-        data={data}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="metric" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="value">
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={colorMap[entry.metric]} />
-          ))}
-        </Bar>
-      </BarChart>
-    </ResponsiveContainer>
+    <div
+      className={`w-full h-full p-4 rounded-xl ${
+        isDark ? "bg-gray-900" : "bg-white"
+      }`}
+    >
+      <ResponsiveContainer width="100%" height={"100%"}>
+        <BarChart
+          data={data}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <XAxis dataKey="metric" />
+          <YAxis />
+          <Bar dataKey="value">
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={colorMap[entry.metric]} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
 

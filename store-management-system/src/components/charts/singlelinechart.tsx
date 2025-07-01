@@ -14,6 +14,11 @@ interface SinglelineChartProps {
 
 function SingleLineChart({ data, isDark }: SinglelineChartProps) {
   return (
+    <div
+      className={`w-full h-full p-4 rounded-xl ${
+        isDark ? "bg-gray-900" : "bg-white"
+      }`}
+    >
     <ResponsiveContainer width="100%" height="100%">
       <LineChart
         width={500}
@@ -36,6 +41,7 @@ function SingleLineChart({ data, isDark }: SinglelineChartProps) {
         />
       </LineChart>
     </ResponsiveContainer>
+    </div>
   );
 }
 

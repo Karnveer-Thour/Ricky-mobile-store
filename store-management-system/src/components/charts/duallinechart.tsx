@@ -24,6 +24,11 @@ interface lineChartProps {
 
 function DualLineChart({ data, isDark }: lineChartProps) {
   return (
+    <div
+      className={`w-full h-full p-4 rounded-xl ${
+        isDark ? "bg-gray-900" : "bg-white"
+      }`}
+    >
     <ResponsiveContainer width="100%" height="100%">
       <LineChart
         width={500}
@@ -47,6 +52,7 @@ function DualLineChart({ data, isDark }: lineChartProps) {
         <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
       </LineChart>
     </ResponsiveContainer>
+    </div>
   );
 }
 
