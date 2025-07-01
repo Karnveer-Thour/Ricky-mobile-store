@@ -13,7 +13,7 @@ interface lineChartProps {
   isDark?: boolean,
 }
 
-function SimpleLineChart({data,isDark}:lineChartProps) {
+function DualLineChart({data,isDark}:lineChartProps) {
    return (
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
@@ -36,4 +36,4 @@ function SimpleLineChart({data,isDark}:lineChartProps) {
     );
 }
 
-export default SimpleLineChart
+export default DualLineChart

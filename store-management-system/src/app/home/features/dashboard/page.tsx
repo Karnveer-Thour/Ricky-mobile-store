@@ -1,6 +1,8 @@
 "use client";
 
-import SimpleLineChart from "@/components/charts/simplelinechart";
+import MetricSummaryChart, { metricSummaryChartTypes } from "@/components/charts/barchart";
+import DualLineChart from "@/components/charts/duallinechart";
+import SingleLineChart from "@/components/charts/singlelinechart";
 import CountCard from "@/components/countcard";
 import { storeType } from "@/types/store.index";
 import { useSelector } from "react-redux";
@@ -50,6 +52,51 @@ const lineChartData = [
   },
 ];
 
+const singleLineChartData = [
+  {
+    name: "Page A",
+    pv: 2400,
+    amt: 2400,
+  },
+  {
+    name: "Page B",
+    pv: 1398,
+    amt: 2210,
+  },
+  {
+    name: "Page C",
+    pv: 9800,
+    amt: 2290,
+  },
+  {
+    name: "Page D",
+    pv: 3908,
+    amt: 2000,
+  },
+  {
+    name: "Page E",
+    pv: 4800,
+    amt: 2181,
+  },
+  {
+    name: "Page F",
+    pv: 3800,
+    amt: 2500,
+  },
+  {
+    name: "Page G",
+    pv: 4300,
+    amt: 2100,
+  },
+];
+
+const metricBarChartData=[
+  { metric: metricSummaryChartTypes.Sales, value: 24000 },
+  { metric: metricSummaryChartTypes.Customers, value: 1200 },
+  { metric: metricSummaryChartTypes.Payments, value: 340 },
+  { metric: metricSummaryChartTypes.Products, value: 18000 },
+];
+
 function page() {
   const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
   return (
@@ -70,7 +117,7 @@ function page() {
           <CountCard isDark={isDark} title="Accepted orders" count={87} />
         </div>
       </div>
-      <p className="text-center mt-1 text-3xl">Sales and customers</p>
+      <p className="text-left mt-3 ms-10 text-3xl underline">Sales and customers</p>
       <div className="h-150 mt-1 flex justify-center items-center">
         <div className="w-[95%] h-full flex justify-between items-center py-5">
           <div className="shadow-md bg-white w-[50%] h-full rounded-2xl p-3">
@@ -81,7 +128,7 @@ function page() {
               className={`border-t-3 ${isDark ? "text-gray-100" : "text-gray-700"} mb-2 flex-1`}
             ></hr>
             <div className="h-[93%] w-full">
-              <SimpleLineChart isDark={isDark} data={lineChartData} />
+              <DualLineChart isDark={isDark} data={lineChartData} />
             </div>
           </div>
           <div className="shadow-md bg-white w-[43%] h-full rounded-2xl p-3">
@@ -103,11 +150,31 @@ function page() {
           </div>
         </div>
       </div>
-      <p className="text-center mt-1 text-3xl">Current year record</p>
-      <div className="h-100 mt-2 mb-5 flex justify-center items-center">
+      <p className="text-left mt-2 ms-10 text-3xl underline">Current year record</p>
+      <div className="h-150 mt-2 mb-5 flex justify-center items-center">
         <div className="w-[95%] h-full flex justify-between items-center py-5">
-          <div className="shadow-md bg-white w-[45%] h-full rounded-2xl"></div>
-          <div className="shadow-md bg-white w-[45%] h-full rounded-2xl"></div>
+          <div className="shadow-md bg-white w-[50%] h-full rounded-2xl p-3">
+            <p className="mb-1 ms-3 text-2xl">
+              Current year sales
+            </p>
+            <hr
+              className={`border-t-3 ${isDark ? "text-gray-100" : "text-gray-700"} mb-2 flex-1`}
+            ></hr>
+            <div className="h-[93%] w-full">
+              <SingleLineChart isDark={isDark} data={singleLineChartData}/>
+            </div>
+          </div>
+          <div className="shadow-md bg-white w-[45%] h-full rounded-2xl p-3">
+            <p className="mb-1 ms-3 text-2xl">
+              Current year Record
+            </p>
+            <hr
+              className={`border-t-3 ${isDark ? "text-gray-100" : "text-gray-700"} mb-2 flex-1`}
+            ></hr>
+            <div className="h-[93%] w-full flex justify-center items-center">
+              <MetricSummaryChart isDark={isDark} data={metricBarChartData}/>
+            </div>
+          </div>
         </div>
       </div>
     </>
