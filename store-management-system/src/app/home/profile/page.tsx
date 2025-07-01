@@ -18,7 +18,9 @@ function Profile() {
   return (
     <>
         <div className="w-[95%] overflow-hidden sm:ms-5 max-sm:ms-4 h-auto mt-8 ps-5 flex max-sm:flex-col max-sm:justify-center items-center gap-4">
-          <p className="text-3xl text-gray-700 ">My profile</p>
+          <p
+          className={`text-3xl font-semibold ${isDark ? "text-white" : "text-gray-700"}`}
+        >My profile</p>
           <hr className="border-t-3 border-gray-700 mt-1 flex-1"></hr>
         </div>
         <ProfileCard

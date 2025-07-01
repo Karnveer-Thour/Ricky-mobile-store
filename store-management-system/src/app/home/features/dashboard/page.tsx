@@ -1,6 +1,8 @@
 "use client";
 
-import MetricSummaryChart, { metricSummaryChartTypes } from "@/components/charts/barchart";
+import MetricSummaryChart, {
+  metricSummaryChartTypes,
+} from "@/components/charts/barchart";
 import DualLineChart from "@/components/charts/duallinechart";
 import SingleLineChart from "@/components/charts/singlelinechart";
 import CountCard from "@/components/countcard";
@@ -90,7 +92,7 @@ const singleLineChartData = [
   },
 ];
 
-const metricBarChartData=[
+const metricBarChartData = [
   { metric: metricSummaryChartTypes.Sales, value: 24000 },
   { metric: metricSummaryChartTypes.Customers, value: 1200 },
   { metric: metricSummaryChartTypes.Payments, value: 340 },
@@ -102,7 +104,9 @@ function page() {
   return (
     <>
       <div className=" w-[93%] overflow-hidden sm:ms-10 me-9 mt-8 max-sm:ms-4 h-auto flex max-sm:flex-col max-sm:justify-center items-center gap-4">
-        <p className={`text-3xl ${isDark ? "text-white" : "text-gray-700"} `}>
+        <p
+          className={`text-3xl font-semibold ${isDark ? "text-white" : "text-gray-700"}`}
+        >
           Dashboard
         </p>
         <hr
@@ -117,11 +121,17 @@ function page() {
           <CountCard isDark={isDark} title="Accepted orders" count={87} />
         </div>
       </div>
-      <p className="text-left mt-3 ms-10 text-3xl underline">Sales and customers</p>
+      <p
+        className={`text-left mt-6 ms-10 text-2xl font-semibold underline ${isDark ? "text-white" : "text-gray-800"}`}
+      >
+        Sales and Customers
+      </p>
       <div className="h-150 mt-1 flex justify-center items-center">
         <div className="w-[95%] h-full flex justify-between items-center py-5">
           <div className="shadow-md bg-white w-[50%] h-full rounded-2xl p-3">
-            <p className="mb-1 ms-3 text-2xl">
+            <p
+              className={`mb-2 ms-3 text-2xl font-semibold ${isDark ? "text-white" : "text-gray-800"}`}
+            >
               Current year sales and customers
             </p>
             <hr
@@ -132,47 +142,71 @@ function page() {
             </div>
           </div>
           <div className="shadow-md bg-white w-[43%] h-full rounded-2xl p-3">
-            <p className="mb-1 ms-3 text-2xl">
-              Recent Sales
-            </p>
+            <p className="mb-1 ms-3 text-2xl font-semibold">Recent Sales</p>
             <hr
               className={`border-t-3 ${isDark ? "text-gray-100" : "text-gray-700"} mb-2 flex-1`}
-            ></hr>
-            <div className="h-[93%] w-full overflow-y-scroll">
-              {[1,2,3,4,5,6,7,8,9,10,11,55,332,523,52].map((item,index)=>(
-                <div className="border-b-2 flex h-12 items-center justify-between px-5">
-                  <div>{index}</div>
-                  <div>{item}</div>
-                  <div>"status"</div>
-                </div>
-              ))}
+            />
+            <div className="h-[93%] w-full overflow-y-auto px-2">
+              {/* Table Header */}
+              <div className="grid grid-cols-3 font-semibold text-gray-600 border-b py-2 px-2 text-sm">
+                <div>#</div>
+                <div>Amount</div>
+                <div>Status</div>
+              </div>
+
+              {/* Table Rows */}
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 55, 332, 523, 52].map(
+                (item, index) => (
+                  <div
+                    key={index}
+                    className="grid grid-cols-3 text-sm text-gray-700 items-center py-2 px-2 border-b hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="font-medium">{index + 1}</div>
+                    <div>₹{item.toLocaleString()}</div>
+                    <div>
+                      <span className="text-green-600 font-semibold">
+                        Completed
+                      </span>
+                      {/* You can dynamically style this based on real status */}
+                    </div>
+                  </div>
+                )
+              )}
             </div>
           </div>
         </div>
       </div>
-      <p className="text-left mt-2 ms-10 text-3xl underline">Current year record</p>
+      <p
+        className={`text-left mt-6 ms-10 text-2xl font-semibold underline ${isDark ? "text-white" : "text-gray-800"}`}
+      >
+        Current year record
+      </p>
       <div className="h-150 mt-2 mb-5 flex justify-center items-center">
         <div className="w-[95%] h-full flex justify-between items-center py-5">
           <div className="shadow-md bg-white w-[50%] h-full rounded-2xl p-3">
-            <p className="mb-1 ms-3 text-2xl">
+            <p
+              className={`mb-2 ms-3 text-2xl font-semibold ${isDark ? "text-white" : "text-gray-800"}`}
+            >
               Current year sales
             </p>
             <hr
               className={`border-t-3 ${isDark ? "text-gray-100" : "text-gray-700"} mb-2 flex-1`}
             ></hr>
             <div className="h-[93%] w-full">
-              <SingleLineChart isDark={isDark} data={singleLineChartData}/>
+              <SingleLineChart isDark={isDark} data={singleLineChartData} />
             </div>
           </div>
           <div className="shadow-md bg-white w-[45%] h-full rounded-2xl p-3">
-            <p className="mb-1 ms-3 text-2xl">
+            <p
+              className={`mb-2 ms-3 text-2xl font-semibold ${isDark ? "text-white" : "text-gray-800"}`}
+            >
               Current year Record
             </p>
             <hr
               className={`border-t-3 ${isDark ? "text-gray-100" : "text-gray-700"} mb-2 flex-1`}
             ></hr>
             <div className="h-[93%] w-full flex justify-center items-center">
-              <MetricSummaryChart isDark={isDark} data={metricBarChartData}/>
+              <MetricSummaryChart isDark={isDark} data={metricBarChartData} />
             </div>
           </div>
         </div>
