@@ -170,7 +170,7 @@ function page() {
                       {/* You can dynamically style this based on real status */}
                     </div>
                   </div>
-                )
+                ),
               )}
             </div>
           </div>

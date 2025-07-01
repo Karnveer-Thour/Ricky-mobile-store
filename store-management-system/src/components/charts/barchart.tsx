@@ -11,7 +11,7 @@ import {
   Cell,
 } from "recharts";
 
-export enum metricSummaryChartTypes{
+export enum metricSummaryChartTypes {
   Sales = "Sales",
   Customers = "Customers",
   Products = "Products",

@@ -4,7 +4,10 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 // import { updateAdmin } from "@/Redux/Services/adminServices";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Addressinfovalidation, Personalinfovalidation } from "./utils/Personalinfovalidation";
+import {
+  Addressinfovalidation,
+  Personalinfovalidation,
+} from "./utils/Personalinfovalidation";
 // import {
 //   Addressinfovalidation,
 //   Personalinfovalidation,
@@ -15,7 +18,10 @@ type PersonalInfoCardProps = {
   Cardname: string;
 };
 
-const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({ formData, Cardname }) => {
+const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({
+  formData,
+  Cardname,
+}) => {
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
 
@@ -49,11 +55,13 @@ const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({ formData, Cardname 
           </button>
         ) : null}
       </div>
-      <form onSubmit={handleSubmit((data) => {
-        // handle form submission here
-        // Example: console.log(data);
-        setIsEditing(false);
-      })}>
+      <form
+        onSubmit={handleSubmit((data) => {
+          // handle form submission here
+          // Example: console.log(data);
+          setIsEditing(false);
+        })}
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
           {Object.entries(formData).map(
             ([key, value]) =>
@@ -63,7 +71,7 @@ const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({ formData, Cardname 
                     {key
                       .split("_")
                       .map(
-                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                        (word) => word.charAt(0).toUpperCase() + word.slice(1),
                       )
                       .join(" ")}
                     {key === "phone" ? " Number" : ""}
@@ -75,8 +83,8 @@ const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({ formData, Cardname 
                           key === "date_birth"
                             ? "date"
                             : key === "email"
-                            ? "email"
-                            : "text"
+                              ? "email"
+                              : "text"
                         }
                         {...register(key)}
                         className="border rounded-lg p-2 w-full"
@@ -91,7 +99,7 @@ const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({ formData, Cardname 
                     <p className="font-medium">{value}</p>
                   )}
                 </div>
-              )
+              ),
           )}
         </div>
         {isEditing && (

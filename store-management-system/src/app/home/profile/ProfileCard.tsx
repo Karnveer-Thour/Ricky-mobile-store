@@ -17,9 +17,9 @@ interface ProfileCardProps {
 
 const ProfileCard = ({ formData }: ProfileCardProps) => {
   // const Admin=useSelector(store=>store.Admin.user);
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const [data, setData] = useState(formData);
-  const [Loading,setLoading]=useState(false);
+  const [Loading, setLoading] = useState(false);
   // const handleImageChange = (event) => {
   //   const file = event.target.files[0];
   //   if (file) {
@@ -32,7 +32,11 @@ const ProfileCard = ({ formData }: ProfileCardProps) => {
     <Card>
       <div className="relative w-50 h-50 sm:ms-15 flex items-center justify-center bg-gray-600 rounded-full">
         <img
-          src={!Loading?data.imageURL:"https://res.cloudinary.com/dszgssbnh/image/upload/v1742290154/Marketplace/gvpccbc1jfzodruyussw.gif"}
+          src={
+            !Loading
+              ? data.imageURL
+              : "https://res.cloudinary.com/dszgssbnh/image/upload/v1742290154/Marketplace/gvpccbc1jfzodruyussw.gif"
+          }
           alt="Profile"
           className="w-[100%] h-[100%] rounded-full object-fill border-2 border-gray-300 shadow-md"
         />
@@ -41,7 +45,7 @@ const ProfileCard = ({ formData }: ProfileCardProps) => {
           <input
             type="file"
             className="hidden"
-            accept="image/jpeg, image/png" 
+            accept="image/jpeg, image/png"
             // onChange={handleImageChange}
           />
         </label>
