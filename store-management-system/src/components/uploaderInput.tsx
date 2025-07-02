@@ -1,8 +1,17 @@
 import { Upload, X } from "lucide-react";
 import React, { useRef, useState } from "react";
 
-const UploaderInput = () => {
-  const [pictures, setPictures] = useState<File[]>([]);
+interface uploaderInputProps {
+  setTempPicture?: React.Dispatch<React.SetStateAction<File | null>>;
+  pictures:File[];
+  setPictures:React.Dispatch<React.SetStateAction<File[]>>;
+}
+
+const UploaderInput = ({
+  setTempPicture,
+  pictures,
+  setPictures,
+}: uploaderInputProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const openFileDialog = () => {
@@ -51,7 +60,7 @@ const UploaderInput = () => {
             const files = e.target.files;
             if (files) {
               const selectedFiles = Array.from(files);
-              setPictures((prev) => [...prev, ...selectedFiles]);
+              setTempPicture ? setTempPicture(selectedFiles[0] || null) : "";
             }
           }}
           className="hidden"

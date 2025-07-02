@@ -7,20 +7,29 @@ import Input from "@/components/Input";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
-import ToggleButton from "@/components/togglebutton";
 import MultiSelectorInput from "@/components/multiselectorinput";
 import UploaderInput from "@/components/uploaderInput";
 import ImageCropper from "@/components/imagecropper";
+import { useState } from "react";
 
 function UploadSale() {
   const router = useRouter();
   const isDark = useSelector((store: storeType) => store.DarkMode.isDarkMode);
+  const [tempPicture, setTempPicture] = useState<File | null>(null);
+  const [pictures, setPictures] = useState<File[]>([]);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({});
+
+  const setCroppedImage = (picture: File) => {
+    setPictures((prev) => [...prev, picture]);
+    setTempPicture(null);
+  }
+
+
   return (
     <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
       <p className="text-2xl font-bold mt-5">Upload Sale</p>
@@ -77,8 +86,8 @@ function UploadSale() {
           />
         </Inputcontainer>
         <Inputcontainer type={"Pictures"} error={errors?.price} isDark={isDark}>
-          <UploaderInput />
-          <ImageCropper isDark={isDark} imageURL=""/>
+          <UploaderInput setTempPicture={setTempPicture} setPictures={setPictures} pictures={pictures}/>
+          {tempPicture && <ImageCropper isDark={isDark} imageURL={URL.createObjectURL(tempPicture)} setTempPicture={setTempPicture} setCroppedPicture={setCroppedImage}/>}
         </Inputcontainer>
       </form>
       <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">
