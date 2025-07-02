@@ -2,20 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.css";
 
-const ImageCropper: React.FC = () => {
-  const [imageURL, setImageURL] = useState<string | null>(null);
-  const [croppedData, setCroppedData] = useState<string | null>(null);
+interface imageCropperProps{
+  isDark?:boolean,
+  imageURL:string,
+}
 
+const ImageCropper= ({isDark,imageURL}:imageCropperProps) => {
+  const [croppedData, setCroppedData] = useState<string | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const cropper = useRef<Cropper | null>(null);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImageURL(url);
-    }
-  };
 
   useEffect(() => {
     if (imageRef.current && imageURL) {
@@ -42,21 +37,12 @@ const ImageCropper: React.FC = () => {
   };
 
   return (
-    <div className="p-5 space-y-6">
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleFileChange}
-        className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
-      />
-
-      {imageURL && (
         <div className="border-2 border-red-500 rounded-md p-4 space-y-4">
           <h2 className="text-lg font-semibold text-gray-800">Crop the image:</h2>
           <div className="w-full overflow-hidden rounded-md">
             <img
               ref={imageRef}
-              src={imageURL}
+              src={imageURL as any}
               alt="To crop"
               className="max-w-full max-h-[400px] object-contain"
             />
@@ -68,19 +54,6 @@ const ImageCropper: React.FC = () => {
             Crop
           </button>
         </div>
-      )}
-
-      {croppedData && (
-        <div className="space-y-2">
-          <h2 className="text-lg font-semibold text-gray-800">Cropped Result:</h2>
-          <img
-            src={croppedData}
-            alt="Cropped"
-            className="rounded-md border border-gray-300"
-          />
-        </div>
-      )}
-    </div>
   );
 };
 
