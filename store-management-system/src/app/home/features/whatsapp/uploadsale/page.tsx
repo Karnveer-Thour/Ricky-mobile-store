@@ -10,6 +10,7 @@ import { storeType } from "@/types/store.index";
 import ToggleButton from "@/components/togglebutton";
 import MultiSelectorInput from "@/components/multiselectorinput";
 import UploaderInput from "@/components/uploaderInput";
+import ImageCropper from "@/components/imagecropper";
 
 function UploadSale() {
   const router = useRouter();
@@ -77,6 +78,7 @@ function UploadSale() {
         </Inputcontainer>
         <Inputcontainer type={"Pictures"} error={errors?.price} isDark={isDark}>
           <UploaderInput />
+          <ImageCropper/>
         </Inputcontainer>
       </form>
       <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">

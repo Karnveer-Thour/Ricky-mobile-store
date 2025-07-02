@@ -18,6 +18,7 @@
     "@tailwindcss/postcss": "^4.1.8",
     "autoprefixer": "^10.4.21",
     "classnames": "^2.5.1",
+    "cropperjs": "^1.6.1",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "lucide-react": "^0.511.0",
