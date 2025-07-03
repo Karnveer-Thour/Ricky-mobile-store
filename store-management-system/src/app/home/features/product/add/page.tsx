@@ -48,13 +48,12 @@ function addProduct() {
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <div className="flex items-center justify-between w-full bg-transparent">
           <Inputcontainer
             type={"Category"}
             error={errors?.category}
             isDark={isDark}
           >
-            <Select className={`w-full border-2`} isDark={isDark}>
+            <Select className={`w-full mt-1.5 border-2`} isDark={isDark}>
               {Categories.map((category) => (
                 <option key={category.id} value={category.value}>
                   {category.name}
@@ -62,7 +61,6 @@ function addProduct() {
               ))}
             </Select>
           </Inputcontainer>
-        </div>
         <Inputcontainer type={"Price"} error={errors?.price} isDark={isDark}>
           <Input
             id="Price"
