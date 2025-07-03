@@ -81,7 +81,7 @@ const ImageCropper = ({
               />
             </div>
           </div>
-          <p className="text-sm text-white">
+          <p className={`text-sm ${isDark?"text-white":"text-gray-500"}`}>
             Cropping image {currentCropIndex} of {totalToCrop}
           </p>
           <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden mt-1">
