@@ -8,26 +8,18 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
 import MultiSelectorInput from "@/components/multiselectorinput";
-import UploaderInput from "@/components/uploaderInput";
-import ImageCropper from "@/components/imagecropper";
+import UploaderInput from "@/components/inputuploaders/multiuploaderinput/uploaderInput";
 import { useState } from "react";
 
 function UploadSale() {
   const router = useRouter();
   const isDark = useSelector((store: storeType) => store.DarkMode.isDarkMode);
-  const [tempPicture, setTempPicture] = useState<File | null>(null);
-  const [pictures, setPictures] = useState<File[]>([]);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({});
-
-  const setCroppedImage = (picture: File) => {
-    setPictures((prev) => [...prev, picture]);
-    setTempPicture(null);
-  }
 
 
   return (
@@ -86,8 +78,7 @@ function UploadSale() {
           />
         </Inputcontainer>
         <Inputcontainer type={"Pictures"} error={errors?.price} isDark={isDark}>
-          <UploaderInput setTempPicture={setTempPicture} setPictures={setPictures} pictures={pictures}/>
-          {tempPicture && <ImageCropper isDark={isDark} imageURL={URL.createObjectURL(tempPicture)} setTempPicture={setTempPicture} setCroppedPicture={setCroppedImage}/>}
+          <UploaderInput isDark={isDark} features={{crop:true}}/>
         </Inputcontainer>
       </form>
       <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">

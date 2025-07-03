@@ -8,13 +8,13 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
 import ToggleButton from "@/components/togglebutton";
-import UploaderInput from "@/components/uploaderInput";
+import UploaderInput from "@/components/inputuploaders/multiuploaderinput/uploaderInput";
 import { Eye, EyeClosed } from "lucide-react";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import TextField from "@mui/material/TextField";
 import PasswordInput from "@/components/passwordInput";
-import SingleUploaderInput from "@/components/singleuploaderinput";
+import SingleUploaderInput from "@/components/inputuploaders/singleuploaderinput/singleuploaderinput";
 
 function updateCustomer() {
   const router = useRouter();

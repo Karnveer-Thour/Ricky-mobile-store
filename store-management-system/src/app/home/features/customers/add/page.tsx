@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
 import ToggleButton from "@/components/togglebutton";
-import UploaderInput from "@/components/uploaderInput";
+import UploaderInput from "@/components/inputuploaders/multiuploaderinput/uploaderInput";
 import { Eye, EyeClosed } from "lucide-react";
 import PasswordInput from "@/components/passwordInput";
 
