@@ -87,8 +87,9 @@ function CsvUpload({
           type="file"
           accept=".csv"
           ref={fileInputRef}
-          onChange={(fileObject) =>
-            handleFileChange(fileObject, setFile, dispatch, ERRORALERT)
+          onChange={(fileObject) =>{
+            handleFileChange(fileObject, setFile, dispatch, ERRORALERT);
+          }
           }
           className="hidden"
         />

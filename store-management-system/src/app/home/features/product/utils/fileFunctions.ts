@@ -21,19 +21,15 @@ export const handleFileChange = (
   fileObject: any,
   SetFile: any,
   dispatch: any,
-  action: any,
+  action: any
 ) => {
-  const input = fileObject.target;
   fileObject.preventDefault();
+  const input = fileObject.target;
   const file = fileObject.target.files?.[0];
-  console.log(file);
   if (!file) {
-    SetFile(null);
     return;
   }
-  if (file && file.type === "text/csv") {
-    console.log(file);
-  } else {
+  if (file.type !== "text/csv") {
     dispatch(action("Please upload a valid CSV file."));
     input.value = "";
     return;
@@ -55,7 +51,7 @@ export const handleDrop = (
   SetFile: any,
   setIsDragging: any,
   dispatch: any,
-  action: any,
+  action: any
 ) => {
   fileObject.preventDefault();
   setIsDragging(false);
