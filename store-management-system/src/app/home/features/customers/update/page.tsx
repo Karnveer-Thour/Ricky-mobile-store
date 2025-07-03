@@ -83,7 +83,7 @@ function updateCustomer() {
           </Inputcontainer>
           <div className={`ms-20 self-baseline`}>
             <Inputcontainer
-              type={"Profile Picture"}
+              type={"Date of Birth"}
               error={errors?.price}
               isDark={isDark}
             >
