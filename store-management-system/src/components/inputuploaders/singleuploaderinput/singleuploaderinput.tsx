@@ -1,37 +1,82 @@
 import { Upload, X } from "lucide-react";
 import React, { useRef, useState } from "react";
+import ImageCropper from "../imagecroppers/singleimagecropper";
+
+interface singleInputProps {
+  prevPicture?: File;
+  isDark?: boolean;
+  features?: {
+    crop: boolean;
+  };
+}
 
 const SingleUploaderInput = ({
   prevPicture,
   isDark = false,
-}: {
-  prevPicture?: File;
-  isDark?: boolean;
-}) => {
-  const [picture, setPicture] = useState<File | undefined>(prevPicture);
+  features,
+}: singleInputProps) => {
+  const picURL = prevPicture ? URL.createObjectURL(prevPicture) : "";
+  const [picture, setPicture] = useState<string | undefined>(picURL);
+  const [croppedPicture, setCroppedPicture] = useState<string | undefined>();
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const openFileDialog = () => {
     inputRef?.current?.click();
   };
 
-  const removeImage = () => {
+  const handleSelectPicture = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const files = e.target.files;
+    if (files && files[0]) {
+      if (picture) URL.revokeObjectURL(picture);
+      if (croppedPicture) URL.revokeObjectURL(croppedPicture);
+
+      const imageURL = URL.createObjectURL(files[0]);
+      features?.crop ? setPicture(imageURL) : setCroppedPicture(imageURL);
+    }
+    e.target.value = "";
+  };
+
+  const removeImage = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (croppedPicture) {
+      URL.revokeObjectURL(croppedPicture);
+    }
+    setCroppedPicture(undefined);
+  };
+
+  const setCropImage = (image: string): void => {
+    setCroppedPicture(image);
+    setPicture(undefined);
+  };
+
+  const closeCropper = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (picture) URL.revokeObjectURL(picture);
     setPicture(undefined);
   };
 
   return (
     <div className="flex gap-4 flex-wrap mt-1.5 w-32 ">
-      {picture ? (
+      {picture && (
+        <ImageCropper
+          isDark={isDark}
+          imageURL={picture}
+          handleClose={closeCropper}
+          setCroppedPicture={setCropImage}
+        />
+      )}
+      {croppedPicture ? (
         <div
           className={`relative w-32 h-32 border-2 ${isDark ? "border-white" : "border-gray-500"} rounded-xl overflow-hidden`}
         >
           <img
-            src={URL.createObjectURL(picture)}
+            src={croppedPicture}
             alt={`Uploaded`}
             className="w-full h-full object-cover"
           />
           <button
-            onClick={() => removeImage()}
+            onClick={removeImage}
             className="absolute top-1 right-1 bg-white rounded-full p-1 shadow-md hover:bg-red-100 transition"
           >
             <X size={16} className="text-red-600" />
@@ -53,12 +98,7 @@ const SingleUploaderInput = ({
             accept="image/jpeg,image/png"
             ref={inputRef}
             multiple
-            onChange={(e) => {
-              const file = e.target.files;
-              if (file && file[0]) {
-                setPicture(file[0]);
-              }
-            }}
+            onChange={handleSelectPicture}
             className="hidden"
           />
         </div>
