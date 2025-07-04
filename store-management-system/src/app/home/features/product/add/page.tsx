@@ -48,19 +48,19 @@ function addProduct() {
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-          <Inputcontainer
-            type={"Category"}
-            error={errors?.category}
-            isDark={isDark}
-          >
-            <Select className={`w-full mt-1.5 border-2`} isDark={isDark}>
-              {Categories.map((category) => (
-                <option key={category.id} value={category.value}>
-                  {category.name}
-                </option>
-              ))}
-            </Select>
-          </Inputcontainer>
+        <Inputcontainer
+          type={"Category"}
+          error={errors?.category}
+          isDark={isDark}
+        >
+          <Select className={`w-full mt-1.5 border-2`} isDark={isDark}>
+            {Categories.map((category) => (
+              <option key={category.id} value={category.value}>
+                {category.name}
+              </option>
+            ))}
+          </Select>
+        </Inputcontainer>
         <Inputcontainer type={"Price"} error={errors?.price} isDark={isDark}>
           <Input
             id="Price"

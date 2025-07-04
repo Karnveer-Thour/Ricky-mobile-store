@@ -21,7 +21,7 @@ export const handleFileChange = (
   fileObject: any,
   SetFile: any,
   dispatch: any,
-  action: any
+  action: any,
 ) => {
   fileObject.preventDefault();
   const input = fileObject.target;
@@ -51,7 +51,7 @@ export const handleDrop = (
   SetFile: any,
   setIsDragging: any,
   dispatch: any,
-  action: any
+  action: any,
 ) => {
   fileObject.preventDefault();
   setIsDragging(false);

@@ -1,5 +1,5 @@
 import { Upload, X } from "lucide-react";
-import React, {useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import ImageCropper from "../imagecroppers/multiimagecropper";
 
 interface uploaderInputProps {
@@ -22,7 +22,7 @@ const UploaderInput = ({ isDark, features }: uploaderInputProps) => {
   };
 
   const handleSelectPicture = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ): void => {
     e.preventDefault();
     const files = e.target.files;
@@ -47,7 +47,7 @@ const UploaderInput = ({ isDark, features }: uploaderInputProps) => {
 
   const removeImage = (
     e: React.MouseEvent<HTMLButtonElement>,
-    index: number
+    index: number,
   ) => {
     e.preventDefault();
     URL.revokeObjectURL(finalPictures[index]);

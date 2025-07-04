@@ -140,7 +140,7 @@ function page() {
                       </span>
                     </div>
                   </div>
-                )
+                ),
               )}
             </div>
           </div>

@@ -79,7 +79,7 @@ function updateCustomer() {
             error={errors?.price}
             isDark={isDark}
           >
-            <SingleUploaderInput isDark={isDark} features={{crop:true}}/>
+            <SingleUploaderInput isDark={isDark} features={{ crop: true }} />
           </Inputcontainer>
           <div className={`ms-20 self-baseline`}>
             <Inputcontainer
