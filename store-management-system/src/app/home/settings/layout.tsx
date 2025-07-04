@@ -11,10 +11,10 @@ function SettingsPage({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className={`flex flex-col min-h-screen w-full ${isDark ? "bg-zinc-900 text-white" : "bg-white text-gray-800"}`}
+      className={`flex flex-col h-[96vh] w-full${isDark ? "bg-zinc-900 text-white" : "bg-white text-gray-800"}`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-6 pt-6 sm:px-10">
+      <div className="flex items-center justify-between px-6 pt-2 sm:px-10 ">
         <h1
           className={`text-3xl font-semibold ${isDark ? "text-white" : "text-gray-700"}`}
         >
@@ -29,8 +29,8 @@ function SettingsPage({ children }: { children: React.ReactNode }) {
       <div className="flex flex-1 mt-4 overflow-hidden">
         {/* Sidebar */}
         <aside
-          className={`w-[250px] min-w-[200px] border-r px-4 py-6 
-          ${isDark ? "bg-gray-50 text-gray-800 border-gray-700" : "bg-zinc-800 text-white border-gray-200"}
+          className={`w-[250px] min-w-[200px] border-r px-4 py-6
+          ${isDark ? "bg-gray-400 text-gray-800 border-gray-700" : "bg-zinc-950 text-white border-gray-200"}
           `}
         >
           <nav className="flex flex-col gap-2">
