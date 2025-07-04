@@ -11,7 +11,7 @@ function SettingsPage({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className={`flex flex-col h-[96vh] w-full${isDark ? "bg-zinc-900 text-white" : "bg-white text-gray-800"}`}
+      className={`flex flex-col h-[95vh] w-full${isDark ? "bg-zinc-900 text-white" : "bg-white text-gray-800"}`}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-6 pt-2 sm:px-10 ">
