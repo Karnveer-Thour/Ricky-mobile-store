@@ -39,18 +39,21 @@ function SettingsPage({ children }: { children: React.ReactNode }) {
               label="General"
               isOpen={true}
               linkTo="/home/settings"
+              isDark={isDark}
             />
             <Navitem
               icon={<Bolt size={20} />}
               label="Security"
               isOpen={true}
               linkTo="/home/settings/secuirity"
+              isDark={isDark}
             />
             <Navitem
               icon={<Bolt size={20} />}
               label="Banking"
               isOpen={true}
               linkTo="/home/settings/banking"
+              isDark={isDark}
             />
           </nav>
         </aside>

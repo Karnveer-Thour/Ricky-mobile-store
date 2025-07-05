@@ -10,6 +10,7 @@ interface NavitemProps {
   isOpen: boolean;
   menu?: MouseEventHandler<HTMLAnchorElement>;
   linkTo: string;
+  isDark?: boolean;
 }
 
 const Navitem: React.FC<NavitemProps> = ({
@@ -18,6 +19,7 @@ const Navitem: React.FC<NavitemProps> = ({
   isOpen,
   menu,
   linkTo,
+  isDark = true,
 }) => {
   const pathname = usePathname();
 
@@ -29,9 +31,10 @@ const Navitem: React.FC<NavitemProps> = ({
     <Link
       href={linkTo || pathname}
       onClick={menu}
-      className={`flex items-center gap-4 p-3 rounded-lg hover:bg-gray-700 cursor-pointer overflow-hidden ${
-        isActive ? "bg-gray-700" : ""
-      }`}
+      className={`flex items-center gap-4 p-3 rounded-lg hover:bg-gray-700 cursor-pointer overflow-hidden
+        ${isDark ? "text-white" : "text-gray-700"}
+        ${isActive ? "bg-gray-700" : ""}
+      `}
     >
       {icon}
       {isOpen && <span>{label}</span>}
