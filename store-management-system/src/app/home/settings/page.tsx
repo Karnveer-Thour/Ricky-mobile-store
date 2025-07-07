@@ -47,7 +47,6 @@ function Page() {
                 className="w-full h-10"
               />
             </div>
-            
           </div>
         </div>
       </div>
