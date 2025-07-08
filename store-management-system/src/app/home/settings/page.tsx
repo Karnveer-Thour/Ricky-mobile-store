@@ -20,7 +20,7 @@ function Page() {
         ></hr>
       </div>
       <div className="w-[93%] flex-1 overflow-hidden sm:ms-10 me-9 mt-8 max-sm:ms-4 flex max-sm:flex-col max-sm:justify-between items-center gap-4">
-        <div className="flex-1 h-[30%] overflow-hidden flex justify-between items-center">
+         <div className="flex-1 h-[30%] overflow-hidden flex justify-between items-center border-b-2 pb-4">
           <div className="w-[15%] h-[90%] ms-9 rounded-full flex justify-center items-center">
             <img
               src="https://plus.unsplash.com/premium_photo-1747054587747-bd631e58c312?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
