@@ -19,20 +19,18 @@ const Navitem: React.FC<NavitemProps> = ({
   isOpen,
   menu,
   linkTo,
-  isDark = true,
+  isDark = false,
 }) => {
   const pathname = usePathname();
 
-  const isActive =
-    (label !== "Profile" || ["/profile", "/logout"].includes(pathname)) &&
-    pathname === linkTo;
+  const isActive = pathname === linkTo;
 
   return (
     <Link
       href={linkTo || pathname}
       onClick={menu}
       className={`flex items-center gap-4 p-3 rounded-lg hover:bg-gray-700 cursor-pointer overflow-hidden
-        ${isDark ? "text-white" : "text-gray-700"}
+        ${!isDark ? "text-white" : "text-gray-700"}
         ${isActive ? "bg-gray-700" : ""}
       `}
     >

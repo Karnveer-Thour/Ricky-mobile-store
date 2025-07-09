@@ -12,13 +12,13 @@ function Page() {
   const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
   const dispatch = useDispatch();
   return (
-    <div className="w-full px-4 sm:px-10 py-8 space-y-8 overflow-hidden">
+    <div className="w-full sm:px-10 space-y-8 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center gap-4 border-b pb-4">
+      <div className="flex items-center gap-4 border-b pb-4 justify-center">
         <h1 className={`text-3xl font-semibold ${isDark ? "text-white" : "text-gray-800"}`}>
           General Settings
         </h1>
-        <hr className="flex-1 border-t border-gray-300" />
+        <hr className="border-t-3 border-gray-700 mt-1 flex-1"></hr>
       </div>
 
       {/* Profile Section */}
@@ -67,10 +67,10 @@ function Page() {
 
       <section className="flex flex-col sm:flex-row justify-between items-center gap-4 border-t pt-6">
         <div className="flex flex-col sm:flex-row items-center gap-2">
-          <span className="font-medium text-base text-gray-700 dark:text-gray-200">
+          <span className="font-medium text-base">
             Theme:
           </span>
-          <span className="text-sm text-gray-500 dark:text-gray-300">
+          <span className="text-sm ">
             {isDark ? "Dark Mode" : "Light Mode"}
           </span>
         </div>
