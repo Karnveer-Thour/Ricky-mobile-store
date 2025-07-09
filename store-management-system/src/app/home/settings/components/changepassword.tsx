@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 // import { updatePassword } from "@/Redux/Services/adminServices";
 // import { changePasswordValidator } from "./Utils/Objects/changePasswordValidator";
 
-function Changepassword({ isDark = false }: { isDark?: boolean }) {
+function Changepassword({ isDark = false,validator }: { isDark?: boolean, validator?: any }) {
   const dispatch = useDispatch();
   const [formUpdatable, setFormUpdatable] = useState(false);
 
@@ -18,7 +18,7 @@ function Changepassword({ isDark = false }: { isDark?: boolean }) {
     reset,
     formState: { errors },
   } = useForm({
-    // resolver: yupResolver(changePasswordValidator),
+    resolver: yupResolver(validator),
   });
 
   const formValues = watch();
@@ -36,12 +36,9 @@ function Changepassword({ isDark = false }: { isDark?: boolean }) {
     formValues.newPassword,
   ]);
 
-  // const PasswordChange = (data) => {
-  //   const { confirm_password, ...rest } = data;
-  //   dispatch(updatePassword(rest)).unwrap().then(() => {
-  //     reset();
-  //   });
-  // };
+  const PasswordChange = (data: Record<string, any>) => {
+    const { confirm_password, ...rest } = data;
+  };
 
   return (
     <div
@@ -51,7 +48,7 @@ function Changepassword({ isDark = false }: { isDark?: boolean }) {
     >
       <h2 className="text-xl font-semibold mb-4">Change Password</h2>
 
-      <form onSubmit={() => {}}>
+      <form onSubmit={handleSubmit(PasswordChange)} className="space-y-4">
         <Inputcontainer type="Current Password" error={errors.password}>
           <Input
             id="Current Password"
