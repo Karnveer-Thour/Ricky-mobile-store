@@ -4,12 +4,13 @@ import Button from "@/components/Button";
 import Select from "@/components/select";
 import { storeType } from "@/types/store.index";
 import { Trash, Upload } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Detail from "./components/detail";
+import { toggleDarkMode } from "@/store/slices/isDarkMode.slice";
 
 function Page() {
   const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
-
+  const dispatch = useDispatch();
   return (
     <div className="w-full px-4 sm:px-10 py-8 space-y-8 overflow-hidden">
       {/* Header */}
@@ -74,7 +75,7 @@ function Page() {
           </span>
         </div>
 
-        <Select className="w-44" isDark={isDark}>
+        <Select className="w-44" isDark={isDark} defaultValue={isDark ? "dark" : "light"} onChange={()=>{dispatch(toggleDarkMode())}}>
           <option value="light">Light Mode</option>
           <option value="dark">Dark Mode</option>
         </Select>
