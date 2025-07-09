@@ -1,3 +1,4 @@
+import Button from "@/components/Button";
 import Input from "@/components/Input";
 import Inputcontainer from "@/components/Inputcontainer";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -52,7 +53,7 @@ function Changepassword({ isDark = false,validator }: { isDark?: boolean, valida
             id="Current Password"
             placeholder="Enter your Current Password"
             {...register("password")}
-            className={isDark ? "bg-gray-700 text-white placeholder-gray-400" : ""}
+            className={isDark ? "bg-gray-700 text-white placeholder-gray-400" : ""+"border-2"}
           />
         </Inputcontainer>
 
@@ -61,7 +62,7 @@ function Changepassword({ isDark = false,validator }: { isDark?: boolean, valida
             id="New password"
             placeholder="Enter your New password"
             {...register("newPassword")}
-            className={isDark ? "bg-gray-700 text-white placeholder-gray-400" : ""}
+            className={isDark ? "bg-gray-700 text-white placeholder-gray-400" : ""+"border-2"}
           />
         </Inputcontainer>
 
@@ -70,21 +71,15 @@ function Changepassword({ isDark = false,validator }: { isDark?: boolean, valida
             id="Confirm password"
             placeholder="Confirm your New password"
             {...register("confirm_password")}
-            className={isDark ? "bg-gray-700 text-white placeholder-gray-400" : ""}
+            className={isDark ? "bg-gray-700 text-white placeholder-gray-400" : ""+"border-2"}
           />
         </Inputcontainer>
 
-        <button
+        <Button
+        name={"Change Password"}
           type="submit"
-          className={`px-4 py-2 rounded-md mt-1 transition-all duration-200 ${
-            isDark
-              ? "bg-indigo-500 hover:bg-indigo-600 text-white"
-              : "bg-indigo-600 hover:bg-indigo-700 text-white"
-          } disabled:opacity-50 disabled:cursor-not-allowed`}
           disabled={!formUpdatable}
-        >
-          Change Password
-        </button>
+        />
       </form>
     </div>
   );
