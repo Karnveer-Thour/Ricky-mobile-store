@@ -42,13 +42,11 @@ function Changepassword({ isDark = false,validator }: { isDark?: boolean, valida
 
   return (
     <div
-      className={`p-6 rounded-lg shadow-md mb-6 transition-colors duration-300 ${
-        isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"
-      }`}
+      className={`p-6 rounded-lg shadow-md mb-6 transition-colors duration-300`}
     >
       <h2 className="text-xl font-semibold mb-4">Change Password</h2>
 
-      <form onSubmit={handleSubmit(PasswordChange)} className="space-y-4">
+      <form onSubmit={() => {}}>
         <Inputcontainer type="Current Password" error={errors.password}>
           <Input
             id="Current Password"

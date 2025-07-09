@@ -3,7 +3,7 @@
 import { storeType } from "@/types/store.index";
 import { useSelector } from "react-redux";
 import Changepassword from "../components/changepassword";
-import { changePasswordValidator } from "../utils/changepasswordvalidator";
+import { changePasswordValidator } from "../utils/changePasswordValidator";
 
 function page() {
   const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
