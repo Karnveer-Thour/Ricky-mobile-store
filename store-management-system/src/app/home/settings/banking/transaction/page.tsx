@@ -27,7 +27,12 @@ const SingleTransactionPage = () => {
     <BlurredPopupLayout isDark={isDark} width="35%" height="auto">
       <div className="flex top-0 right-0 w-full h-10 justify-end">
         <div className="flex items-center justify-center w-[15%] p-2">
-          <Button name={<X size={24} />} handler={()=>{router.back()}}/>
+          <Button
+            name={<X size={24} />}
+            handler={() => {
+              router.back();
+            }}
+          />
         </div>
       </div>
 

@@ -23,13 +23,18 @@ const BankAccount = ({
   selected = false,
   onChange,
 }: BankAccountProps) => {
-    const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
-    const [isDeleting, setIsDeleting] = React.useState(false);
-    if(isDeleting){
-        return(
-            <Delete Name={bankName} Id={accountNumber} isDark={isDark} handleDelete={() => setIsDeleting(false)} />
-        )
-    }
+  const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
+  const [isDeleting, setIsDeleting] = React.useState(false);
+  if (isDeleting) {
+    return (
+      <Delete
+        Name={bankName}
+        Id={accountNumber}
+        isDark={isDark}
+        handleDelete={() => setIsDeleting(false)}
+      />
+    );
+  }
   return (
     <label className="w-full border border-gray-300 rounded-xl p-4 cursor-pointer flex gap-4 items-center justify-between hover:bg-gray-50 transition">
       {/* Native radio input */}
@@ -51,7 +56,13 @@ const BankAccount = ({
       </div>
 
       <div>
-        <Button name={<Trash />} handler={(e)=>{e.preventDefault();setIsDeleting(true)}}/>
+        <Button
+          name={<Trash />}
+          handler={(e) => {
+            e.preventDefault();
+            setIsDeleting(true);
+          }}
+        />
       </div>
     </label>
   );

@@ -15,7 +15,9 @@ function Page() {
     <div className="w-full sm:px-10 space-y-8 overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-4 border-b pb-4 justify-center">
-        <h1 className={`text-3xl font-semibold ${isDark ? "text-white" : "text-gray-800"}`}>
+        <h1
+          className={`text-3xl font-semibold ${isDark ? "text-white" : "text-gray-800"}`}
+        >
           General Settings
         </h1>
         <hr className="border-t-3 border-gray-700 mt-1 flex-1"></hr>
@@ -51,10 +53,7 @@ function Page() {
 
       {/* Details */}
       <section className="space-y-6">
-        <Detail
-          title="Name"
-          details={[{ id: 1, value: "John Doe" }]}
-        />
+        <Detail title="Name" details={[{ id: 1, value: "John Doe" }]} />
         <Detail
           title="Contacts"
           details={[
@@ -64,18 +63,22 @@ function Page() {
         />
       </section>
 
-
       <section className="flex flex-col sm:flex-row justify-between items-center gap-4 border-t pt-6">
         <div className="flex flex-col sm:flex-row items-center gap-2">
-          <span className="font-medium text-base">
-            Theme:
-          </span>
+          <span className="font-medium text-base">Theme:</span>
           <span className="text-sm ">
             {isDark ? "Dark Mode" : "Light Mode"}
           </span>
         </div>
 
-        <Select className="w-44" isDark={isDark} defaultValue={isDark ? "dark" : "light"} onChange={()=>{dispatch(toggleDarkMode())}}>
+        <Select
+          className="w-44"
+          isDark={isDark}
+          defaultValue={isDark ? "dark" : "light"}
+          onChange={() => {
+            dispatch(toggleDarkMode());
+          }}
+        >
           <option value="light">Light Mode</option>
           <option value="dark">Dark Mode</option>
         </Select>

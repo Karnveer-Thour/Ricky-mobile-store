@@ -8,7 +8,13 @@ import { useDispatch } from "react-redux";
 // import { updatePassword } from "@/Redux/Services/adminServices";
 // import { changePasswordValidator } from "./Utils/Objects/changePasswordValidator";
 
-function Changepassword({ isDark = false,validator }: { isDark?: boolean, validator?: any }) {
+function Changepassword({
+  isDark = false,
+  validator,
+}: {
+  isDark?: boolean;
+  validator?: any;
+}) {
   const dispatch = useDispatch();
   const [formUpdatable, setFormUpdatable] = useState(false);
 
@@ -53,7 +59,11 @@ function Changepassword({ isDark = false,validator }: { isDark?: boolean, valida
             id="Current Password"
             placeholder="Enter your Current Password"
             {...register("password")}
-            className={isDark ? "bg-gray-700 text-white placeholder-gray-400" : ""+"border-2"}
+            className={
+              isDark
+                ? "bg-gray-700 text-white placeholder-gray-400"
+                : "" + "border-2"
+            }
           />
         </Inputcontainer>
 
@@ -62,7 +72,11 @@ function Changepassword({ isDark = false,validator }: { isDark?: boolean, valida
             id="New password"
             placeholder="Enter your New password"
             {...register("newPassword")}
-            className={isDark ? "bg-gray-700 text-white placeholder-gray-400" : ""+"border-2"}
+            className={
+              isDark
+                ? "bg-gray-700 text-white placeholder-gray-400"
+                : "" + "border-2"
+            }
           />
         </Inputcontainer>
 
@@ -71,12 +85,16 @@ function Changepassword({ isDark = false,validator }: { isDark?: boolean, valida
             id="Confirm password"
             placeholder="Confirm your New password"
             {...register("confirm_password")}
-            className={isDark ? "bg-gray-700 text-white placeholder-gray-400" : ""+"border-2"}
+            className={
+              isDark
+                ? "bg-gray-700 text-white placeholder-gray-400"
+                : "" + "border-2"
+            }
           />
         </Inputcontainer>
 
         <Button
-        name={"Change Password"}
+          name={"Change Password"}
           type="submit"
           disabled={!formUpdatable}
         />

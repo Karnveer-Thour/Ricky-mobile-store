@@ -22,7 +22,11 @@ function page() {
     <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
       <p className="text-2xl font-bold mt-5">Add Category</p>
       <form action="" className="flex-1 w-full p-3">
-        <Inputcontainer type={"Account holder name"} error={errors?.name} isDark={isDark}>
+        <Inputcontainer
+          type={"Account holder name"}
+          error={errors?.name}
+          isDark={isDark}
+        >
           <Input
             id="Name"
             placeholder="Enter Account Holder name"

@@ -52,7 +52,7 @@ function Page() {
   const totalPages = Math.ceil(dummyTransactions.length / itemsPerPage);
   const currentData = dummyTransactions.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   return (
@@ -74,7 +74,11 @@ function Page() {
       </div>
 
       <div className="w-[93%] overflow-hidden sm:ms-10 me-9 mt-8 max-sm:ms-4 h-auto flex max-sm:flex-col max-sm:justify-center items-center gap-4">
-          <Button name={"Add New Bank Account"} className="w-48" handler={() => router.push(`${pathName}/add`)}/>
+        <Button
+          name={"Add New Bank Account"}
+          className="w-48"
+          handler={() => router.push(`${pathName}/add`)}
+        />
       </div>
 
       {/* Bank Accounts */}
