@@ -1,6 +1,6 @@
 "use client";
 
-import Navitem from "@/components/navbar/navItem";
+import Navitem from "./components/navitem";
 import { storeType } from "@/types/store.index";
 import { Bolt } from "lucide-react";
 import { useSelector } from "react-redux";

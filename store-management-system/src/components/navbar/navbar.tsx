@@ -154,7 +154,7 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
             icon={<Profile size={24} />}
             label="Profile"
             isOpen={isOpen}
-            linkTo={pathname}
+            linkTo={""}
             menu={toggleMenuVisibility}
           />
         </nav>

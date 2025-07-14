@@ -17,7 +17,7 @@ function layout({
       <Navbar isOpen={isOpen} setIsOpen={setIsOpen} />
       <div
         className={classNames(
-          "flex-1 h-auto overflow-y-auto p-5 transition-all duration-300",
+          "flex-1 h-screen overflow-y-auto p-5 transition-all duration-300 border-2",
           isOpen ? "md:ml-64" : "md:ml-20",
           isDark ? "bg-gray-500" : "bg-gray-100",
         )}

@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { boolean } from "yup";
 
 interface toggleButtonProps {
   isDark?: boolean;
   activeLabel: string;
   inactiveLabel: string;
   handler: Function;
-  formProp?: object;
+  formProp?: any;
 }
 
 function ToggleButton({

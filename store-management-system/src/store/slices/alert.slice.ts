@@ -11,17 +11,17 @@ export const Alertslice = createSlice({
   name: "Alert",
   initialState,
   reducers: {
-    SUCCESSALERT: (state, action) => {
+    SUCCESSALERT: (state:any, action:any) => {
       (state.type = alertType.success),
         (state.message = action.payload),
         (state.id = Date.now());
     },
-    ERRORALERT: (state, action) => {
+    ERRORALERT: (state:any, action:any) => {
       (state.type = alertType.error),
         (state.message = action.payload),
         (state.id = Date.now());
     },
-    CLOSEALERT: (state, action) => {
+    CLOSEALERT: (state:any, action:any) => {
       (state.type = null), (state.message = null);
     },
   },

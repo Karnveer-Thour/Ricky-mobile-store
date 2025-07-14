@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch } from "react-redux";
@@ -7,7 +7,6 @@ import Inputcontainer from "@/components/Inputcontainer";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import { Loginvalidationschema } from "@/library/yup/login.yup";
-import { Eye, EyeClosed } from "lucide-react";
 import { SUCCESSALERT } from "@/store/slices/alert.slice";
 import Formcontainer from "@/ui/Formcontainer";
 import Maincontainer from "@/ui/Maincontainer";

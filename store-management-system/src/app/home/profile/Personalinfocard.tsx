@@ -2,77 +2,74 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-// import { updateAdmin } from "@/Redux/Services/adminServices";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Addressinfovalidation,
   Personalinfovalidation,
 } from "./utils/Personalinfovalidation";
-// import {
-//   Addressinfovalidation,
-//   Personalinfovalidation,
-// } from "@/Components/Profile/utils/Personalinfovalidation";
 
 type PersonalInfoCardProps = {
   formData: { [key: string]: any };
   Cardname: string;
+  isDark?: boolean;
 };
 
 const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({
   formData,
   Cardname,
+  isDark = false,
 }) => {
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
 
-  // Initialize react-hook-form
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm();
+
   const handleEditClick = () => {
     setIsEditing(true);
-    reset(formData); // Reset form values when editing starts
+    reset(formData);
   };
 
-  // const onSubmit = (data) => {
-  //   dispatch(updateAdmin(data, dispatch));
-  //   setIsEditing(false);
-  // };
-
   return (
-    <div className="max-w-[95%] sm:ms-7 max-sm:ms-4 p-6 bg-white rounded-3xl mt-8 mt-shadow-md border">
-      <div className="flex justify-between items-center mb-4 p-2 border-b-2 border-gray-600">
-        <h2 className="text-lg font-semibold text-gray-800">{Cardname}</h2>
-        {!isEditing ? (
+    <div
+      className={`max-w-[95%] sm:ms-7 max-sm:ms-4 p-6 rounded-3xl mt-8 border shadow-md ${
+        isDark ? "bg-gray-900 text-white border-gray-700" : "bg-white text-gray-800 border-gray-300"
+      }`}
+    >
+      <div
+        className={`flex justify-between items-center mb-4 p-2 border-b-2 ${
+          isDark ? "border-gray-600" : "border-gray-400"
+        }`}
+      >
+        <h2 className="text-lg font-semibold">{Cardname}</h2>
+        {!isEditing && (
           <button
             className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
             onClick={handleEditClick}
           >
             Edit
           </button>
-        ) : null}
+        )}
       </div>
+
       <form
         onSubmit={handleSubmit((data) => {
-          // handle form submission here
-          // Example: console.log(data);
           setIsEditing(false);
         })}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
+        <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
           {Object.entries(formData).map(
             ([key, value]) =>
               !(key === "imageURL" || key === "role") && (
                 <div key={key}>
-                  <p className="text-sm text-gray-500">
+                  <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
                     {key
                       .split("_")
-                      .map(
-                        (word) => word.charAt(0).toUpperCase() + word.slice(1),
-                      )
+                      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                       .join(" ")}
                     {key === "phone" ? " Number" : ""}
                   </p>
@@ -83,11 +80,15 @@ const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({
                           key === "date_birth"
                             ? "date"
                             : key === "email"
-                              ? "email"
-                              : "text"
+                            ? "email"
+                            : "text"
                         }
                         {...register(key)}
-                        className="border rounded-lg p-2 w-full"
+                        className={`border rounded-lg p-2 w-full ${
+                          isDark
+                            ? "bg-gray-800 text-white border-gray-600"
+                            : "bg-white text-black border-gray-300"
+                        }`}
                       />
                       {errors[key] && (
                         <span className="text-sm text-red-600">
@@ -99,26 +100,26 @@ const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({
                     <p className="font-medium">{value}</p>
                   )}
                 </div>
-              ),
+              )
           )}
         </div>
+
         {isEditing && (
-          <>
+          <div className="mt-4">
             <button
               type="submit"
-              className="mt-4 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
             >
               Submit
             </button>
             <button
-              className="mt-4 ms-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
-              onClick={(e) => {
-                setIsEditing(false);
-              }}
+              type="button"
+              className="ms-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
+              onClick={() => setIsEditing(false)}
             >
               Cancel
             </button>
-          </>
+          </div>
         )}
       </form>
     </div>

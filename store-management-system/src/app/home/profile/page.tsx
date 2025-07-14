@@ -10,14 +10,9 @@ import Topactionbar from "@/components/topactionbar/topactionbar";
 function Profile() {
   const isDark = useSelector((store: storeType) => store.DarkMode.isDarkMode);
   const dispatch = useDispatch();
-  // const {user,isLoading} = useSelector((store) => store.Admin);
-  // useEffect(() => {
-  //   if (!user.Personaldata?.first_name) dispatch(getAdmin(localStorage.getItem("token")));
-  // }, [user]);
-  // if (isLoading) return <Skeltonloader />;
   return (
     <>
-      <div className="w-[95%] overflow-hidden sm:ms-5 max-sm:ms-4 h-auto mt-8 ps-5 flex max-sm:flex-col max-sm:justify-center items-center gap-4">
+      <div className="w-[95%] overflow-hidden sm:ms-5 max-sm:ms-4 mt-8 ps-5 flex max-sm:flex-col max-sm:justify-center items-center gap-4">
         <p
           className={`text-3xl font-semibold ${isDark ? "text-white" : "text-gray-700"}`}
         >
@@ -33,9 +28,10 @@ function Profile() {
           email: "Karan@gmail.com",
           imageURL: "https://cdn.corenexis.com/view/?img=d/ju28/xnPdPZ.png",
         }}
+        isDark={isDark}
       />
-      <PersonalInfoCard formData={{}} Cardname={"Personal Information"} />
-      <PersonalInfoCard formData={{}} Cardname={"Address"} />
+      <PersonalInfoCard formData={{}} Cardname={"Personal Information"} isDark={isDark} />
+      <PersonalInfoCard formData={{}} Cardname={"Address"} isDark={isDark}/>
     </>
   );
 }

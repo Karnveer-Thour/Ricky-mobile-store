@@ -3,8 +3,6 @@ import React, { useState } from "react";
 import { Search } from "lucide-react";
 import Actionbuttons from "./actionbuttons";
 import DarkModeToggle from "./darkModeToggle";
-import { useSelector } from "react-redux";
-import { storeType } from "@/types/store.index";
 
 function Topactionbar({
   isDark = false,
