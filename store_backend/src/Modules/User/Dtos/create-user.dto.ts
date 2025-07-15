@@ -1,6 +1,6 @@
 import { BaseDto } from 'Common/Dto/base.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserDto } from './User.dto';
+import { UserDto } from './user.dto';
 import { AddressDto } from 'Modules/Address/Dtos/Address.dto';
 import { ValidateNested, IsNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';

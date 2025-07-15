@@ -16,10 +16,10 @@ import { UserModule } from 'Modules/User/User.module';
 import { CartModule } from './Modules/Cart/cart.module';
 import { WishlistModule } from './Modules/Wishlist/wishlist.module';
 import { PaymentModule } from 'Modules/Payment/payment.module';
-import { UserController } from './Modules/User/user.controller';
-import { UserService } from './Modules/User/user.service';
 import { WhatsappDetailsModule } from './Modules/Whatsapp_details/whatsapp-details.module';
-import { FirebaseService } from 'Core/firebase/firebase.service';
+import { FirebaseService } from 'Core/Firebase/firebase.service';
+import { FirebaseAuthGuard } from 'Core/Guards/firebase-auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -43,7 +43,12 @@ import { FirebaseService } from 'Core/firebase/firebase.service';
     WhatsappDetailsModule,
   ],
   controllers: [AppController],
-  providers: [AppService,FirebaseService],
+  providers: [AppService,FirebaseService,
+     {
+      provide: APP_GUARD,
+      useClass: FirebaseAuthGuard,
+    },
+  ],
   exports: [FirebaseService],
 })
 export class AppModule {}

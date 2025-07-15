@@ -1,5 +1,4 @@
 import { InternalServerErrorException } from '@nestjs/common';
-import { loginCredentialsDto } from '../Dtos/LoginCredentials.dto';
 import { User } from '../Entities/User.entity';
 import * as bcrypt from 'bcrypt';
 

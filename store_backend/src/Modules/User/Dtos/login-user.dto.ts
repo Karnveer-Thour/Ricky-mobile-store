@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, Matches, MaxLength, MinLength } from 'class-validator';
 import { BaseDto } from 'Common/Dto/base.dto';
 
-export class loginCredentialsDto extends BaseDto {
+export class loginUserDto extends BaseDto {
   @ApiProperty({ example: 'Ricky@gmail.com', required: true })
   @IsEmail()
   @IsNotEmpty()

@@ -9,8 +9,15 @@ export class FirebaseService implements OnModuleInit {
       admin.initializeApp({
         credential: admin.credential.cert(firebaseConfig as admin.ServiceAccount),
       });
+    }
+  }
 
-
+  async verifyToken(idToken: string) {
+    try {
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      return decodedToken;
+    } catch (error) {
+      return false;
     }
   }
 
