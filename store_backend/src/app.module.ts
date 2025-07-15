@@ -18,7 +18,8 @@ import { WishlistModule } from './Modules/Wishlist/wishlist.module';
 import { PaymentModule } from 'Modules/Payment/payment.module';
 import { UserController } from './Modules/User/user.controller';
 import { UserService } from './Modules/User/user.service';
-import { WhatsappDetailsModule } from './Modules/Whatsapp_details/whatsapp_details.module';
+import { WhatsappDetailsModule } from './Modules/Whatsapp_details/whatsapp-details.module';
+import { FirebaseService } from 'Core/firebase/firebase.service';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { WhatsappDetailsModule } from './Modules/Whatsapp_details/whatsapp_detai
     WhatsappDetailsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,FirebaseService],
+  exports: [FirebaseService],
 })
 export class AppModule {}
