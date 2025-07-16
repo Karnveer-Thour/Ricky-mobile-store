@@ -43,8 +43,10 @@ import { APP_GUARD } from '@nestjs/core';
     WhatsappDetailsModule,
   ],
   controllers: [AppController],
-  providers: [AppService,FirebaseService,
-     {
+  providers: [
+    AppService,
+    FirebaseService,
+    {
       provide: APP_GUARD,
       useClass: FirebaseAuthGuard,
     },
