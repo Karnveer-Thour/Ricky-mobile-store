@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, Matches, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, Matches, MaxLength, MinLength } from 'class-validator';
 import { BaseDto } from 'Common/Dto/base.dto';
+import { role } from '../Model/Role.model';
 
 export class loginUserDto extends BaseDto {
   @ApiProperty({ example: 'Ricky@gmail.com', required: true })
@@ -18,4 +19,9 @@ export class loginUserDto extends BaseDto {
       'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
   })
   password: string;
+
+  @ApiProperty({ example: role.Admin, required: true })
+  @IsEnum(role)
+  @IsNotEmpty()
+  role: role;
 }

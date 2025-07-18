@@ -46,10 +46,10 @@ import { APP_GUARD } from '@nestjs/core';
   providers: [
     AppService,
     FirebaseService,
-    {
-      provide: APP_GUARD,
-      useClass: FirebaseAuthGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: FirebaseAuthGuard,
+    // },
   ],
   exports: [FirebaseService],
 })

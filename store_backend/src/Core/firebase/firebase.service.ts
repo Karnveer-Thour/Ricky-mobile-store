@@ -1,6 +1,7 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { firebaseConfig } from './firebase.config';
+import { role } from 'Modules/User/Model/Role.model';
 
 @Injectable()
 export class FirebaseService implements OnModuleInit {
@@ -14,10 +15,24 @@ export class FirebaseService implements OnModuleInit {
 
   async verifyToken(idToken: string) {
     try {
-      const decodedToken = await admin.auth().verifyIdToken(idToken);
-      return decodedToken;
+      const decoded = await admin.auth().verifyIdToken(idToken);
+      return decoded;
+    } catch (err) {
+      console.log(err);
+      throw new UnauthorizedException('Invalid Firebase token');
+    }
+  }
+
+  async createUser(email: string, password: string) {
+    try {
+      const userRecord = await admin.auth().createUser({
+        email,
+        password,
+      });
+      return userRecord;
     } catch (error) {
-      return false;
+      console.error('Error creating Firebase user:', error);
+      throw error;
     }
   }
 

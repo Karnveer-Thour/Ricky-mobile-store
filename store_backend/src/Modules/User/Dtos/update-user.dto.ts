@@ -2,17 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsDateString,
   IsEmail,
-  IsEnum,
-  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
-  Matches,
   MaxLength,
-  MinLength,
 } from 'class-validator';
 import { BaseDto } from 'Common/Dto/base.dto';
-import { role } from '../Model/Role.model';
 
 export class updateUserDto extends BaseDto {
   @ApiProperty({ example: 'Ricky', required: true })
@@ -37,11 +32,6 @@ export class updateUserDto extends BaseDto {
   @IsString()
   @IsOptional()
   pictureUrl?: string;
-
-  @ApiProperty({ example: role.Admin, required: true })
-  @IsEnum(role)
-  @IsNotEmpty()
-  role?: role;
 
   @ApiProperty({ example: '9456862378', required: false })
   @IsString()
