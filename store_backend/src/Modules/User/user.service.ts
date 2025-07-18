@@ -38,7 +38,7 @@ export class UserService {
 
   async getUserDataFromToken(token: string): Promise<{ id: string; role: role }> {
     try {
-       const decoded = await this.jwtService.verifyAsync(token);
+      const decoded = await this.jwtService.verifyAsync(token);
       return decoded;
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
@@ -80,7 +80,6 @@ export class UserService {
       }
 
       const userToken = await this.userToken(existingUser.id, existingUser.role);
-      console.log(userToken);
       return {
         code: 200,
         status: true,
@@ -179,8 +178,7 @@ export class UserService {
   async getByToken(token: string): Promise<baseResponseDto> {
     try {
       const { id, role } = await this.getUserDataFromToken(token);
-      const user =await this.userRepository.findOneBy({ id, role });
-      console.log(user);
+      const user = await this.userRepository.findOneBy({ id, role });
       if (!user) {
         throw new NotFoundException('User not found');
       }

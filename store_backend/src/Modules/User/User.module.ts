@@ -14,8 +14,9 @@ import { FirebaseService } from 'Core/Firebase/firebase.service';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1d' },
     }),
-    TypeOrmModule.forFeature([User])],
+    TypeOrmModule.forFeature([User]),
+  ],
   controllers: [UserController],
-  providers: [UserService, UserRepository, AddressRepository,FirebaseService],
+  providers: [UserService, UserRepository, AddressRepository, FirebaseService],
 })
 export class UserModule {}

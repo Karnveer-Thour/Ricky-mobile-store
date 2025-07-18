@@ -1,12 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsDateString,
-  IsEmail,
-  IsNumber,
-  IsOptional,
-  IsString,
-  MaxLength,
-} from 'class-validator';
+import { IsDateString, IsEmail, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
 import { BaseDto } from 'Common/Dto/base.dto';
 
 export class updateUserDto extends BaseDto {
