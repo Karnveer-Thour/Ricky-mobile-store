@@ -56,6 +56,44 @@ export class UserService {
     }
   }
 
+  async loginWithGoogle(token: string): Promise<baseResponseDto> {
+    try {
+      const decoded = await this.firebaseService.verifyToken(token);
+
+      const { uid, email, name, picture } = decoded;
+
+      const user = this.userRepository.findOneBy({ email });
+
+      if (!user) {
+        const parts = name?.trim().split(' ') ?? [];
+        const firstName = parts[0] || '';
+        const lastName = parts.slice(1).join(' ') || '';
+        const newUser: CreateUserDto = {
+          email,
+          firstName,
+          lastName,
+          pictureUrl: picture,
+          password: '',
+          role: role.Admin,
+          mobileNumber: '',
+          dateBirth: '',
+          age: 0,
+        };
+        await this.userRepository.save(newUser);
+      }
+
+      return {
+        code: 200,
+        status: true,
+        data: {
+          token: token,
+        },
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Invalid firebase token');
+    }
+  }
+
   async login(user: loginUserDto): Promise<baseResponseDto> {
     try {
       const existingUser = await this.userRepository.findOneBy({
