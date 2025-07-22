@@ -6,7 +6,7 @@ import { Column, Entity, Index, JoinColumn, OneToMany } from 'typeorm';
 @Entity()
 @Index(['name', 'description'])
 export class Category extends BaseEntity<Category> {
-  @Column({ name: 'name', type: 'varchar', length: '100', nullable: false })
+  @Column({ name: 'name', type: 'varchar', length: '100', nullable: false,unique:true })
   name: string;
 
   @Column({
