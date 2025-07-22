@@ -56,7 +56,7 @@ export class UserService {
     }
   }
 
-  async loginWithGoogle(token: string): Promise<baseResponseDto> {
+  async loginWithSocialMedia(token: string): Promise<baseResponseDto> {
     try {
       const decoded = await this.firebaseService.verifyToken(token);
 
