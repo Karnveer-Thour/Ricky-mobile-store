@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { ApiTags } from '@nestjs/swagger';
 import { CategoryDto } from './Dtos/Category.dto';
 import { baseResponseDto } from 'Common/Dto/BaseResponse.dto';
 import { UpdateCategoryDto } from './Dtos/update-category.dto';
+import { CategoryPaginationQueryDto } from './Dtos/category-pagination-query.dto';
 
 @ApiTags('category')
 @Controller('category')
@@ -23,14 +24,11 @@ export class CategoryController {
     return this.categoryService.update(id, categoryData);
   }
 
-  @Get(':page/:limit/:searchText')
-  async getAll(
-    @Param('page') page?: string,
-    @Param('limit') limit?: string,
-    @Param('searchText') searchText?: string,
-  ): Promise<baseResponseDto> {
-    const pageNumber = parseInt(page, 10) || 1;
-    const limitNumber = parseInt(limit, 10) || 10;
+  @Get()
+  async getAll(@Query() query: CategoryPaginationQueryDto): Promise<baseResponseDto> {
+    const pageNumber = parseInt(query.page, 10) || 1;
+    const limitNumber = parseInt(query.limit, 10) || 10;
+    const searchText = query.searchText || null;
     return this.categoryService.getAll(pageNumber, limitNumber, searchText);
   }
 
