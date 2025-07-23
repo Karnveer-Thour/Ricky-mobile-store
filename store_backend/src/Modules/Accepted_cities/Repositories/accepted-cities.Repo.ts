@@ -1,5 +1,5 @@
 import { BaseRepository } from 'Common/Repositories/Base.repo';
-import { AcceptedCities } from '../Entities/AcceptedCities.entity';
+import { AcceptedCities } from '../Entities/accepted-cities.entity';
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
