@@ -170,10 +170,10 @@ export class UserService {
       }
 
       for (let key in userData) {
-        userData[key] = userData[key] ?? user[key];
+        user[key] = userData[key] ?? user[key];
       }
 
-      await this.userRepository.update({ id: user.id }, userData);
+      await this.userRepository.save(user);
       return {
         status: true,
         code: 200,

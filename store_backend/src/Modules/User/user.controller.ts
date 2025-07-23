@@ -51,7 +51,7 @@ export class UserController {
   }
 
   @Delete('{:id}')
-  async deleteById(@Param('id') id: string) {
+  async deleteById(@Param('id') id: string):Promise<baseResponseDto> {
     return this.userService.softDeleteUserById(id);
   }
 }
