@@ -17,6 +17,7 @@ import { TransformCustomerUserDto } from './Dtos/response-customer-user.dto';
 import { updateUserDto } from './Dtos/update-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { FirebaseService } from 'Core/Firebase/firebase.service';
+import { dateToUTC } from 'Common/Utils/Utils';
 
 @Injectable()
 export class UserService {
@@ -185,33 +186,48 @@ export class UserService {
     }
   }
 
-  async getAllCustomers(page: number = 1, limit: number = 10): Promise<baseResponseDto> {
-    try {
-      const [customers, total] = await this.userRepository.findAndCount({
-        where: { role: role.Customer },
-        skip: (page - 1) * limit,
-        take: limit,
-      });
+  async getAllCustomers(
+  page: number = 1,
+  limit: number = 10,
+  searchText: string = null,
+): Promise<baseResponseDto> {
+  try {
+    const queryBuilder = this.userRepository.createQueryBuilder('user')
+      .where('user.role = :role', { role: role.Customer })
+      .andWhere('user.deletedAt IS NULL');
 
-      const transformedCustomers = customers.map((customer) =>
-        plainToInstance(TransformCustomerUserDto, customer, { excludeExtraneousValues: true }),
+    if (searchText) {
+      queryBuilder.andWhere(
+        `(LOWER(CONCAT(user.firstName, ' ', user.lastName)) ILIKE :searchText 
+           OR LOWER(user.email) ILIKE :searchText 
+           OR user.mobileNumber ILIKE :searchText)`,
+        { searchText: `%${searchText.toLowerCase()}%` },
       );
-
-      return {
-        status: true,
-        code: 200,
-        data: {
-          transformedCustomers,
-          total,
-          page,
-          pageSize: limit,
-          totalPages: Math.ceil(total / limit),
-        },
-      };
-    } catch (error) {
-      throw new InternalServerErrorException('Error fetching customers');
     }
+
+    queryBuilder.skip((page - 1) * limit).take(limit);
+
+    const [customers, total] = await queryBuilder.getManyAndCount();
+
+    const transformedCustomers = customers.map((customer) =>
+      plainToInstance(TransformCustomerUserDto, customer, { excludeExtraneousValues: true }),
+    );
+
+    return {
+      status: true,
+      code: 200,
+      data: {
+        transformedCustomers,
+        total,
+        page,
+        pageSize: limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  } catch (error) {
+    throw new InternalServerErrorException('Error fetching customers');
   }
+}
 
   async getByToken(token: string): Promise<baseResponseDto> {
     try {
@@ -238,7 +254,8 @@ export class UserService {
       if (!user) {
         throw new NotFoundException('User not found');
       }
-      await this.userRepository.softDelete({ id: id });
+      user.deletedAt=dateToUTC();
+      await this.userRepository.save(user);
       return {
         status: true,
         code: 200,

@@ -37,13 +37,12 @@ export class UserController {
     return this.userService.updateUserById(id, UserData);
   }
 
-  @Get('{:page}/{:limit}')
-  @Get(':page/:limit')
-  async getAllCustomers(@Param('page') page?: string, @Param('limit') limit?: string) {
+  @Get(':page/:limit/:searchText')
+  async getAllCustomers(@Param('page') page?: string, @Param('limit') limit?: string,@Param('searchText') searchText?:string):Promise<baseResponseDto> {
     const pageNumber = parseInt(page, 10) || 1;
     const limitNumber = parseInt(limit, 10) || 10;
 
-    return this.userService.getAllCustomers(pageNumber, limitNumber);
+    return this.userService.getAllCustomers(pageNumber, limitNumber,searchText);
   }
 
   @Get('{:token}')
