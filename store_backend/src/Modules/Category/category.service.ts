@@ -3,15 +3,15 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { CategoryRepository } from './Repositories/Category.repo';
 import { baseResponseDto } from 'Common/Dto/BaseResponse.dto';
 import { CategoryDto } from './Dtos/Category.dto';
 import { UpdateCategoryDto } from './Dtos/update-category.dto';
 import { plainToInstance } from 'class-transformer';
 import { TransformCategoryDto } from './Dtos/response-category.dto';
+import { ILike } from 'typeorm';
+import { dateToUTC } from 'Common/Utils/Utils';
 
 @Injectable()
 export class CategoryService {
@@ -42,7 +42,10 @@ export class CategoryService {
       if (!existingCategory) {
         throw new NotFoundException('Category does not exist');
       }
-      await this.categoryRepository.update(existingCategory.id, updateCategory);
+      for (let key in updateCategory) {
+        existingCategory[key] = existingCategory[key] ?? updateCategory[key];
+      }
+      await this.categoryRepository.save(existingCategory);
       return {
         status: true,
         code: 200,
@@ -55,10 +58,20 @@ export class CategoryService {
     }
   }
 
-  async getAllCategories(page: number = 1, limit: number = 10): Promise<baseResponseDto> {
+  async getAll(
+    page: number = 1,
+    limit: number = 10,
+    searchText: string = null,
+  ): Promise<baseResponseDto> {
     try {
+      const whereConditions = searchText
+        ? [
+            { name: ILike(`%${searchText}%`), deletedAt: null },
+            { description: ILike(`%${searchText}%`), deletedAt: null },
+          ]
+        : { deletedAt: null };
       const [categories, total] = await this.categoryRepository.findAndCount({
-        where: { deletedAt: null },
+        where: whereConditions,
         skip: (page - 1) * limit,
         take: limit,
       });
@@ -83,20 +96,21 @@ export class CategoryService {
     }
   }
 
-  async softDeleteCategoryById(id: string): Promise<baseResponseDto> {
+  async softDeleteById(id: string): Promise<baseResponseDto> {
     try {
       const existedCategory = await this.categoryRepository.findOneBy({ id });
       if (!existedCategory) {
         throw new NotFoundException('Category does not exist');
       }
-      await this.categoryRepository.softDelete(existedCategory.id);
+      existedCategory.deletedAt = dateToUTC();
+      await this.categoryRepository.save(existedCategory);
       return {
         status: true,
         code: 200,
         data: { message: 'Category deleted successfully' },
       };
     } catch (error) {
-        throw new InternalServerErrorException("Unable to delete category");
+      throw new InternalServerErrorException('Unable to delete category');
     }
   }
 }
