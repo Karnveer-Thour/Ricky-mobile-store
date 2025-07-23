@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as moment from 'moment';
 
 // function that converts date to UTC
 export const dateToUTC = (date = null) => {
@@ -7,17 +7,10 @@ export const dateToUTC = (date = null) => {
 
 // function that converts date of birth to age
 export const birthToAge = (dateBirth: Date): number | null => {
-  if (!dateBirth) {
-    return null;
-  }
-  const today = new Date();
-  const birthDate = new Date(dateBirth);
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const m = today.getMonth() - birthDate.getMonth();
+  if (!dateBirth) return null;
 
-  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
-  }
+  const birthMoment = moment(dateBirth);
+  const today = moment();
 
-  return age;
+  return today.diff(birthMoment, 'years');
 };

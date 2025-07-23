@@ -5,7 +5,6 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from 'Database/typeORM.config';
 import { AddressModule } from './Modules/Address/address.module';
-import { AcceptedCitiesModule } from './Modules/Accepted_cities/accepted-cities.module';
 import { ProductModule } from './Modules/Product/product.module';
 import { CategoryModule } from './Modules/Category/category.module';
 import { DeliveryAddressModule } from './Modules/Delivery_address/delivery-address.module';
@@ -18,8 +17,7 @@ import { WishlistModule } from './Modules/Wishlist/wishlist.module';
 import { PaymentModule } from 'Modules/Payment/payment.module';
 import { WhatsappDetailsModule } from './Modules/Whatsapp_details/whatsapp-details.module';
 import { FirebaseService } from 'Core/Firebase/firebase.service';
-import { FirebaseAuthGuard } from 'Core/Guards/firebase-auth.guard';
-import { APP_GUARD } from '@nestjs/core';
+import { AcceptedCitiesModule } from 'Modules/Accepted_cities/accepted-cities.module';
 
 @Module({
   imports: [
