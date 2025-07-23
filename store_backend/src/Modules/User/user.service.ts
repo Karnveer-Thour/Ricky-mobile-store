@@ -187,47 +187,48 @@ export class UserService {
   }
 
   async getAllCustomers(
-  page: number = 1,
-  limit: number = 10,
-  searchText: string = null,
-): Promise<baseResponseDto> {
-  try {
-    const queryBuilder = this.userRepository.createQueryBuilder('user')
-      .where('user.role = :role', { role: role.Customer })
-      .andWhere('user.deletedAt IS NULL');
+    page: number = 1,
+    limit: number = 10,
+    searchText: string = null,
+  ): Promise<baseResponseDto> {
+    try {
+      const queryBuilder = this.userRepository
+        .createQueryBuilder('user')
+        .where('user.role = :role', { role: role.Customer })
+        .andWhere('user.deletedAt IS NULL');
 
-    if (searchText) {
-      queryBuilder.andWhere(
-        `(LOWER(CONCAT(user.firstName, ' ', user.lastName)) ILIKE :searchText 
+      if (searchText) {
+        queryBuilder.andWhere(
+          `(LOWER(CONCAT(user.firstName, ' ', user.lastName)) ILIKE :searchText 
            OR LOWER(user.email) ILIKE :searchText 
            OR user.mobileNumber ILIKE :searchText)`,
-        { searchText: `%${searchText.toLowerCase()}%` },
+          { searchText: `%${searchText.toLowerCase()}%` },
+        );
+      }
+
+      queryBuilder.skip((page - 1) * limit).take(limit);
+
+      const [customers, total] = await queryBuilder.getManyAndCount();
+
+      const transformedCustomers = customers.map((customer) =>
+        plainToInstance(TransformCustomerUserDto, customer, { excludeExtraneousValues: true }),
       );
+
+      return {
+        status: true,
+        code: 200,
+        data: {
+          transformedCustomers,
+          total,
+          page,
+          pageSize: limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Error fetching customers');
     }
-
-    queryBuilder.skip((page - 1) * limit).take(limit);
-
-    const [customers, total] = await queryBuilder.getManyAndCount();
-
-    const transformedCustomers = customers.map((customer) =>
-      plainToInstance(TransformCustomerUserDto, customer, { excludeExtraneousValues: true }),
-    );
-
-    return {
-      status: true,
-      code: 200,
-      data: {
-        transformedCustomers,
-        total,
-        page,
-        pageSize: limit,
-        totalPages: Math.ceil(total / limit),
-      },
-    };
-  } catch (error) {
-    throw new InternalServerErrorException('Error fetching customers');
   }
-}
 
   async getByToken(token: string): Promise<baseResponseDto> {
     try {
@@ -254,7 +255,7 @@ export class UserService {
       if (!user) {
         throw new NotFoundException('User not found');
       }
-      user.deletedAt=dateToUTC();
+      user.deletedAt = dateToUTC();
       await this.userRepository.save(user);
       return {
         status: true,

@@ -43,7 +43,7 @@ export class CategoryService {
         throw new NotFoundException('Category does not exist');
       }
       for (let key in updateCategory) {
-        existingCategory[key] = updateCategory[key]??existingCategory[key];
+        existingCategory[key] = updateCategory[key] ?? existingCategory[key];
       }
       await this.categoryRepository.save(existingCategory);
       return {

@@ -47,7 +47,7 @@ export class AcceptedCitiesDto extends BaseDto {
     example: 'true',
     type: 'boolean',
     required: false,
-    default:false
+    default: false,
   })
   @IsBoolean()
   @IsOptional()

@@ -6,8 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AcceptedCitiesRepository } from './Repositories/accepted-cities.Repo';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([AcceptedCities])],
+  imports: [TypeOrmModule.forFeature([AcceptedCities])],
   controllers: [AcceptedCitiesController],
-  providers: [AcceptedCitiesService,AcceptedCitiesRepository],
+  providers: [AcceptedCitiesService, AcceptedCitiesRepository],
 })
 export class AcceptedCitiesModule {}

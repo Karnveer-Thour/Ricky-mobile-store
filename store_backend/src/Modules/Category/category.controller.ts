@@ -16,8 +16,11 @@ export class CategoryController {
   }
 
   @Patch('update/:id')
-  async update(@Param('id') id:string,@Body() categoryData: UpdateCategoryDto): Promise<baseResponseDto> {
-    return this.categoryService.update(id,categoryData);
+  async update(
+    @Param('id') id: string,
+    @Body() categoryData: UpdateCategoryDto,
+  ): Promise<baseResponseDto> {
+    return this.categoryService.update(id, categoryData);
   }
 
   @Get(':page/:limit/:searchText')

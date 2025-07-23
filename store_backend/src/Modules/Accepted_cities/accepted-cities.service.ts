@@ -45,7 +45,7 @@ export class AcceptedCitiesService {
         throw new NotFoundException('City does not exist');
       }
       for (let key in cityData) {
-        existingCity[key] = cityData[key]??existingCity[key];
+        existingCity[key] = cityData[key] ?? existingCity[key];
       }
       await this.acceptedCitiesRepository.save(existingCity);
       return {
@@ -98,65 +98,64 @@ export class AcceptedCitiesService {
     }
   }
 
- async getAll(
-  page: number = 1,
-  limit: number = 10,
-  searchText: string = null,
-): Promise<baseResponseDto> {
-  try {
-    const queryBuilder = this.acceptedCitiesRepository.createQueryBuilder('city');
+  async getAll(
+    page: number = 1,
+    limit: number = 10,
+    searchText: string = null,
+  ): Promise<baseResponseDto> {
+    try {
+      const queryBuilder = this.acceptedCitiesRepository.createQueryBuilder('city');
 
-    // Only include non-deleted entries
-    queryBuilder.where('city.deletedAt IS NULL');
+      // Only include non-deleted entries
+      queryBuilder.where('city.deletedAt IS NULL');
 
-    // Apply search filter
-    if (searchText) {
-      queryBuilder.andWhere(
-        `(
+      // Apply search filter
+      if (searchText) {
+        queryBuilder.andWhere(
+          `(
           city.cityName ILIKE :searchText OR 
           CAST(city.cityPincode AS TEXT) ILIKE :searchText OR 
           city.district ILIKE :searchText OR 
           city.state ILIKE :searchText
         )`,
-        { searchText: `%${searchText}%` },
-      );
-    }
+          { searchText: `%${searchText}%` },
+        );
+      }
 
-    // Count total first (without pagination)
-    const total = await queryBuilder.getCount();
+      // Count total first (without pagination)
+      const total = await queryBuilder.getCount();
 
-    // Apply sorting and pagination
-    const cities = await queryBuilder
-      .orderBy('city.createdAt', 'DESC')
-      .skip((page - 1) * limit)
-      .take(limit)
-      .getMany();
+      // Apply sorting and pagination
+      const cities = await queryBuilder
+        .orderBy('city.createdAt', 'DESC')
+        .skip((page - 1) * limit)
+        .take(limit)
+        .getMany();
 
       console.log(cities);
 
-    const transformedCities = cities.map((city) =>
-      plainToInstance(TransformAcceptedCitiesDto, city, {
-        excludeExtraneousValues: true,
-      }),
-    );
+      const transformedCities = cities.map((city) =>
+        plainToInstance(TransformAcceptedCitiesDto, city, {
+          excludeExtraneousValues: true,
+        }),
+      );
 
-    return {
-      status: true,
-      code: 200,
-      data: {
-        transformedCities,
-        total,
-        page,
-        pageSize: limit,
-        totalPages: Math.ceil(total / limit),
-      },
-    };
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerErrorException('Unable to fetch cities');
+      return {
+        status: true,
+        code: 200,
+        data: {
+          transformedCities,
+          total,
+          page,
+          pageSize: limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      };
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException('Unable to fetch cities');
+    }
   }
-}
-
 
   async softDeleteById(id: string): Promise<baseResponseDto> {
     try {

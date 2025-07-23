@@ -19,7 +19,7 @@ export class UserController {
   }
 
   @Post('login/social/{:token}')
-  async loginWithSocialMedia(@Param('token') token: string): Promise<baseResponseDto>{
+  async loginWithSocialMedia(@Param('token') token: string): Promise<baseResponseDto> {
     return this.userService.loginWithSocialMedia(token);
   }
 
@@ -38,11 +38,15 @@ export class UserController {
   }
 
   @Get(':page/:limit/:searchText')
-  async getAllCustomers(@Param('page') page?: string, @Param('limit') limit?: string,@Param('searchText') searchText?:string):Promise<baseResponseDto> {
+  async getAllCustomers(
+    @Param('page') page?: string,
+    @Param('limit') limit?: string,
+    @Param('searchText') searchText?: string,
+  ): Promise<baseResponseDto> {
     const pageNumber = parseInt(page, 10) || 1;
     const limitNumber = parseInt(limit, 10) || 10;
 
-    return this.userService.getAllCustomers(pageNumber, limitNumber,searchText);
+    return this.userService.getAllCustomers(pageNumber, limitNumber, searchText);
   }
 
   @Get('{:token}')
@@ -51,7 +55,7 @@ export class UserController {
   }
 
   @Delete('{:id}')
-  async deleteById(@Param('id') id: string):Promise<baseResponseDto> {
+  async deleteById(@Param('id') id: string): Promise<baseResponseDto> {
     return this.userService.softDeleteUserById(id);
   }
 }
