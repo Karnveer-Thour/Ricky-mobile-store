@@ -1,6 +1,6 @@
 import { Optional } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsOptional, IsString, MaxLength } from 'class-validator';
 import { BaseDto } from 'Common/Dto/Base.dto';
 
 export class UpdateCategoryDto extends BaseDto {
@@ -11,7 +11,7 @@ export class UpdateCategoryDto extends BaseDto {
     required: true,
   })
   @IsString()
-  @Optional()
+  @IsOptional()
   @MaxLength(100, { message: 'Name must be at most 100 characters long' })
   name: string;
 
@@ -22,7 +22,7 @@ export class UpdateCategoryDto extends BaseDto {
     required: true,
   })
   @IsString()
-  @Optional()
+  @IsOptional()
   @MaxLength(550, {
     message: 'Description must be at most 550 characters long',
   })

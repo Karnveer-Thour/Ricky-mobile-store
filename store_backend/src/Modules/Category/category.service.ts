@@ -34,16 +34,16 @@ export class CategoryService {
     }
   }
 
-  async update(updateCategory: UpdateCategoryDto): Promise<baseResponseDto> {
+  async update(id: string, updateCategory: UpdateCategoryDto): Promise<baseResponseDto> {
     try {
       const existingCategory = await this.categoryRepository.findOneBy({
-        name: updateCategory.name,
+        id,
       });
       if (!existingCategory) {
         throw new NotFoundException('Category does not exist');
       }
       for (let key in updateCategory) {
-        existingCategory[key] = existingCategory[key] ?? updateCategory[key];
+        existingCategory[key] = updateCategory[key]??existingCategory[key];
       }
       await this.categoryRepository.save(existingCategory);
       return {
@@ -64,20 +64,31 @@ export class CategoryService {
     searchText: string = null,
   ): Promise<baseResponseDto> {
     try {
-      const whereConditions = searchText
-        ? [
-            { name: ILike(`%${searchText}%`), deletedAt: null },
-            { description: ILike(`%${searchText}%`), deletedAt: null },
-          ]
-        : { deletedAt: null };
-      const [categories, total] = await this.categoryRepository.findAndCount({
-        where: whereConditions,
-        skip: (page - 1) * limit,
-        take: limit,
-      });
+      const queryBuilder = this.categoryRepository
+        .createQueryBuilder('category')
+        .where('category.deletedAt IS NULL'); // Exclude soft-deleted records
 
-      const transformedCategories = categories.map((customer) =>
-        plainToInstance(TransformCategoryDto, customer, { excludeExtraneousValues: true }),
+      // Apply search filter
+      if (searchText) {
+        queryBuilder.andWhere(
+          '(category.name ILIKE :searchText OR category.description ILIKE :searchText)',
+          { searchText: `%${searchText}%` },
+        );
+      }
+
+      // Get total count first (without pagination)
+      const total = await queryBuilder.getCount();
+
+      // Apply pagination and ordering
+      const categories = await queryBuilder
+        .skip((page - 1) * limit)
+        .take(limit)
+        .orderBy('category.createdAt', 'DESC')
+        .getMany();
+
+      // Transform result
+      const transformedCategories = categories.map((category) =>
+        plainToInstance(TransformCategoryDto, category, { excludeExtraneousValues: true }),
       );
 
       return {
@@ -92,7 +103,7 @@ export class CategoryService {
         },
       };
     } catch (error) {
-      throw new InternalServerErrorException('Error fetching customers');
+      throw new InternalServerErrorException('Error fetching categories');
     }
   }
 
@@ -102,8 +113,7 @@ export class CategoryService {
       if (!existedCategory) {
         throw new NotFoundException('Category does not exist');
       }
-      existedCategory.deletedAt = dateToUTC();
-      await this.categoryRepository.save(existedCategory);
+      await this.categoryRepository.softDelete(id);
       return {
         status: true,
         code: 200,
