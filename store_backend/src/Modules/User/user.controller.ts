@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { baseResponseDto } from 'Common/Dto/BaseResponse.dto';
@@ -6,6 +6,7 @@ import { loginUserDto } from './Dtos/login-user.dto';
 import { CreateUserDto } from './Dtos/create-user.dto';
 import { updateUserDto } from './Dtos/update-user.dto';
 import { Public } from 'Common/Decorators/public.decorator';
+import { UserPaginationQueryDto } from './Dtos/user-pagination-query.dto';
 
 @Controller('user')
 @ApiTags('User')
@@ -37,14 +38,11 @@ export class UserController {
     return this.userService.updateUserById(id, UserData);
   }
 
-  @Get(':page/:limit/:searchText')
-  async getAllCustomers(
-    @Param('page') page?: string,
-    @Param('limit') limit?: string,
-    @Param('searchText') searchText?: string,
-  ): Promise<baseResponseDto> {
-    const pageNumber = parseInt(page, 10) || 1;
-    const limitNumber = parseInt(limit, 10) || 10;
+  @Get()
+  async getAllCustomers(@Query() query: UserPaginationQueryDto): Promise<baseResponseDto> {
+    const pageNumber = parseInt(query.page, 10) || 1;
+    const limitNumber = parseInt(query.limit, 10) || 10;
+    const searchText = query.searchText || null;
 
     return this.userService.getAllCustomers(pageNumber, limitNumber, searchText);
   }
