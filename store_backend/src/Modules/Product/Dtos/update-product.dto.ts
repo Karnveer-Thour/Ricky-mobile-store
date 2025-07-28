@@ -1,17 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsNumber, IsObject, IsOptional, IsString, MaxLength } from 'class-validator';
 import { BaseDto } from 'Common/Dto/Base.dto';
 import { CreateProductColorDto } from './create-color.dto';
+import { ProductColorDto } from './ProductColor.dto';
+import { ProductColor } from '../Entities/ProductColor.entity';
 
-export class CreateProductDto extends BaseDto {
+export class UpdateProductDto extends BaseDto {
   @ApiProperty({
     description: 'Enter Product name',
     example: 'Redmi Note 14 pro+',
     type: 'string',
-    required: true,
+    required: false,
   })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(150, { message: 'Name must be at most 150 characters long' })
   name: string;
 
@@ -19,10 +21,10 @@ export class CreateProductDto extends BaseDto {
     description: 'Enter Product amount',
     example: '27000',
     type: 'string',
-    required: true,
+    required: false,
   })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(20, { message: 'Price must be at most 20 characters long' })
   price: string;
 
@@ -54,7 +56,7 @@ export class CreateProductDto extends BaseDto {
     description: 'Enter Product quantiy',
     example: 35,
     type: 'number',
-    required: true,
+    required: false,
   })
   @IsNumber()
   @IsOptional()
@@ -92,5 +94,5 @@ export class CreateProductDto extends BaseDto {
   })
   @IsObject()
   @IsOptional()
-  productColors:CreateProductColorDto[];
+  productColors: ProductColor[];
 }

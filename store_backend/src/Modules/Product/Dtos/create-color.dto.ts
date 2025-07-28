@@ -9,5 +9,5 @@ export class CreateProductColorDto extends BaseDto {
 
   @ApiProperty({ name: 'quantity', description: 'eg. 80', nullable: false })
   @IsNumber()
-  quantity: Number;
+  quantity: number;
 }

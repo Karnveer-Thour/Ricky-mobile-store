@@ -57,7 +57,7 @@ export class ProductDto extends BaseDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  quantiy: string;
+  quantiy: number;
 
   @ApiProperty({
     description: 'Enter Product specifications',
