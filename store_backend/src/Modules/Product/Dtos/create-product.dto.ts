@@ -27,6 +27,16 @@ export class CreateProductDto extends BaseDto {
   price: string;
 
   @ApiProperty({
+    description: 'Enter product category name',
+    example: 'mobile',
+    type: 'string',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  categoryName: string;
+
+  @ApiProperty({
     description: 'Enter discount applied on product',
     example: '3000',
     type: 'string',

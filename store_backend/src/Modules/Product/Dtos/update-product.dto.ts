@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsObject, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, MaxLength } from 'class-validator';
 import { BaseDto } from 'Common/Dto/Base.dto';
 import { CreateProductColorDto } from './create-color.dto';
 import { ProductColorDto } from './ProductColor.dto';
@@ -27,6 +27,16 @@ export class UpdateProductDto extends BaseDto {
   @IsOptional()
   @MaxLength(20, { message: 'Price must be at most 20 characters long' })
   price: string;
+
+  @ApiProperty({
+      description: 'Enter product category name',
+      example: 'mobile',
+      type: 'string',
+      required: true,
+    })
+    @IsString()
+    @IsOptional()
+    categoryName: string;
 
   @ApiProperty({
     description: 'Enter discount applied on product',
