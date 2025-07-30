@@ -58,8 +58,23 @@ export class ProductController {
   }
 
   @Get('download-csv')
-  async downloadCSV(): Promise<void> {
-    return this.productService.downloadCSV();
+  @Header('Content-Type', 'text/csv')
+  @Header('Content-Disposition', 'attachment; filename=products.csv')
+  @ApiOperation({ summary: 'Download all products as CSV' })
+  @ApiResponse({
+    status: 200,
+    description: 'CSV file downloaded successfully',
+    content: {
+      'text/csv': {
+        schema: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  async downloadCSV(@Res() res: Response): Promise<void> {
+    return this.productService.downloadCSV(res);
   }
 
   @Post('upload-csv')

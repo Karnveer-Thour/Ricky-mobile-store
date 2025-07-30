@@ -224,7 +224,7 @@ export class ProductService {
     }
   }
 
- async downloadCSV(): Promise<void> {
+ async downloadCSV(res:Response): Promise<void> {
   try {
     const products = await this.productRepository.find({
       relations: ['category', 'colors'],
@@ -253,9 +253,9 @@ export class ProductService {
     const parser = new Parser();
     const csv = parser.parse(formattedProducts);
 
-    // res.header('Content-Type', 'text/csv');
-    // res.header('Content-Disposition', 'attachment; filename=products.csv');
-    // res.status(200).send(csv); // ✅ CSV is sent here
+    res.header('Content-Type', 'text/csv');
+    res.header('Content-Disposition', 'attachment; filename=products.csv');
+    res.status(200).send(csv); // ✅ CSV is sent here
   } catch (error) {
     console.error(error);
     throw new InternalServerErrorException('Unable to download CSV');
