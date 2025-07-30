@@ -29,7 +29,7 @@ import { IsOptional } from 'class-validator';
   'warranty',
 ])
 export class Product extends BaseEntity<Product> {
-  @Column({ name: 'name', type: 'varchar', length: '150', nullable: false })
+  @Column({ name: 'name', type: 'varchar', length: '150', nullable: false,unique:true })
   name: string;
 
   @ManyToOne(() => Category, (category) => category.products)

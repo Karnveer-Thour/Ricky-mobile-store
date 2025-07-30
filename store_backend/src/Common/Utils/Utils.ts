@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { unlink } from 'fs';
 
 // function that converts date to UTC
 export const dateToUTC = (date = null) => {
@@ -14,3 +15,11 @@ export const birthToAge = (dateBirth: Date): number | null => {
 
   return today.diff(birthMoment, 'years');
 };
+
+export function deleteFile(path: string) {
+  unlink(path, (err) => {
+    if (err) console.error('Failed to delete file:', err);
+    else console.log('CSV file deleted:', path);
+  });
+}
+

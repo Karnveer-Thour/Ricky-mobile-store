@@ -18,7 +18,7 @@ import { CreateProductDto } from './Dtos/create-product.dto';
 import { baseResponseDto } from 'Common/Dto/BaseResponse.dto';
 import { UpdateProductDto } from './Dtos/update-product.dto';
 import { ProductPaginationQueryDto } from './Dtos/product-pagination-query.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 
@@ -27,7 +27,7 @@ import { diskStorage } from 'multer';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post()
+  @Post('/create')
   async create(@Body() productData: CreateProductDto): Promise<baseResponseDto> {
     return this.productService.create(productData);
   }
@@ -58,10 +58,8 @@ export class ProductController {
   }
 
   @Get('download-csv')
-  @Header('Content-Type', 'text/csv')
-  @Header('Content-Disposition', 'attachment; filename=products.csv')
-  async downloadCSV(@Res() res: Response) {
-    return this.productService.downloadCSV(res);
+  async downloadCSV(): Promise<void> {
+    return this.productService.downloadCSV();
   }
 
   @Post('upload-csv')
@@ -73,6 +71,18 @@ export class ProductController {
       }),
     }),
   )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   async uploadCSV(@UploadedFile() file: Express.Multer.File) {
     return this.productService.uploadCSV(file.path);
   }
