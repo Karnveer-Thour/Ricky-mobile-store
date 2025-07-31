@@ -107,6 +107,7 @@ export class ProductReviewService {
         throw new NotFoundException('Product Review does not found!');
       }
       existingProductReview.deletedAt = dateToUTC();
+      await this.productReviewRepository.save(existingProductReview);
       return {
         status: true,
         code: 204,
