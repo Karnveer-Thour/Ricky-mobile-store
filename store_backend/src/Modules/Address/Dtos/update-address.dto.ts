@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
 import { BaseDto } from 'Common/Dto/Base.dto';
 
-export class AddressDto extends BaseDto {
+export class UpdateAddressDto extends BaseDto {
   @ApiProperty({
     description: 'Enter your house number',
     example: 'L-34',
