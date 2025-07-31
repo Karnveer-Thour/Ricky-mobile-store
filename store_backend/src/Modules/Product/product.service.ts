@@ -31,7 +31,7 @@ export class ProductService {
   async create(productData: CreateProductDto): Promise<baseResponseDto> {
     try {
       let category = await this.categoryRepository.findOne({
-        where: { name: productData.categoryName },
+        where: { id: productData.categoryId },
       });
 
       if (!category) {
@@ -93,10 +93,9 @@ export class ProductService {
       if (!existingProduct) {
         throw new NotFoundException('Product not found!');
       }
-      const condition=productData?.categoryName;
-      if (condition) {
+      if (productData?.categoryId) {
         let category = await this.categoryRepository.findOne({
-          where: { name: productData.categoryName },
+          where: { id: productData.categoryId },
         });
 
         if (!category) {

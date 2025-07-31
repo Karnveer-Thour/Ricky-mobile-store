@@ -27,14 +27,14 @@ export class CreateProductDto extends BaseDto {
   price: string;
 
   @ApiProperty({
-    description: 'Enter product category name',
-    example: 'mobile',
+    description: 'Enter product category id',
+    example: '7fjha7843jhgjh833949',
     type: 'string',
     required: true,
   })
   @IsString()
   @IsNotEmpty()
-  categoryName: string;
+  categoryId: string;
 
   @ApiProperty({
     description: 'Enter discount applied on product',
