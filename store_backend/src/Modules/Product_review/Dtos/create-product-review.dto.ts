@@ -1,10 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { BaseDto } from 'Common/Dto/Base.dto';
-import { Product } from 'Modules/Product/Entities/Product.entity';
-import { User } from 'Modules/User/Entities/User.entity';
 
-export class ProductReview extends BaseDto {
+export class CreateProductReview extends BaseDto {
   @ApiProperty({
     description: 'Enter title of product review',
     example: 'Appreciatable',
@@ -27,9 +25,23 @@ export class ProductReview extends BaseDto {
   @MaxLength(550)
   description: string;
 
+  @ApiProperty({
+    description: 'Enter user Id',
+    example: 'gjfhgiyer#hgkjhrfgjkhkj974ihj',
+    type: 'string',
+    required: true,
+  })
+  @IsString()
   @IsNotEmpty()
-  reviewedBy:User
+  reviewedById:string
 
+  @ApiProperty({
+    description: 'Enter product Id',
+    example: 'gkdfsjgkdfhkj#jfhko3028',
+    type: 'string',
+    required: true,
+  })
+  @IsString()
   @IsNotEmpty()
-  reviewedProduct:Product;
+  reviewedProductId:string;
 }

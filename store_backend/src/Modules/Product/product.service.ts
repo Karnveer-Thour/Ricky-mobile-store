@@ -64,12 +64,12 @@ export class ProductService {
 
       const newProduct = await this.productRepository.save(productDetails);
 
-      if(productData?.productColors?.length){
+      if (productData?.productColors?.length) {
         const newColors = await Promise.all(
-        productData.productColors.map((productColor) =>
-          this.productColorRepository.save({ ...productColor, product: newProduct }),
-        ),
-      );
+          productData.productColors.map((productColor) =>
+            this.productColorRepository.save({ ...productColor, product: newProduct }),
+          ),
+        );
       }
 
       return {
@@ -148,7 +148,10 @@ export class ProductService {
     searchText: string = null,
   ): Promise<baseResponseDto> {
     try {
-      const queryBuilder = this.productRepository.createQueryBuilder('product');
+      const queryBuilder = this.productRepository
+        .createQueryBuilder('product')
+        .leftJoinAndSelect('product.colors', 'colors')
+        .leftJoinAndSelect('product.category', 'category');
 
       queryBuilder.where('product.deletedAt IS NULL');
 
@@ -223,148 +226,145 @@ export class ProductService {
     }
   }
 
- async downloadCSV(res:Response): Promise<void> {
-  try {
-    const products = await this.productRepository.find({
-      relations: ['category', 'colors'],
-    });
+  async downloadCSV(res: Response): Promise<void> {
+    try {
+      const products = await this.productRepository.find({
+        relations: ['category', 'colors'],
+      });
 
-    if (!products.length) {
-      // res.status(200).send('No Product found');
-      return;
+      if (!products.length) {
+        // res.status(200).send('No Product found');
+        return;
+      }
+
+      const formattedProducts = products.map((product) => ({
+        id: product.id,
+        name: product.name,
+        category: product.category?.name || '',
+        price: product.price,
+        discount: product.discount,
+        quantity: product.quantity,
+        warranty: product.warranty,
+        description: product.description,
+        specifications: product.specifications,
+        colors: product.colors?.map((c) => `${c.name} (${c.quantity})`).join(', ') || '',
+      }));
+
+      const parser = new Parser();
+      const csv = parser.parse(formattedProducts);
+
+      res.header('Content-Type', 'text/csv');
+      res.header('Content-Disposition', 'attachment; filename=products.csv');
+      res.status(200).send(csv); // ✅ CSV is sent here
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException('Unable to download CSV');
     }
-
-    const formattedProducts = products.map((product) => ({
-      id: product.id,
-      name: product.name,
-      category: product.category?.name || '',
-      price: product.price,
-      discount: product.discount,
-      quantity: product.quantity,
-      warranty: product.warranty,
-      description: product.description,
-      specifications: product.specifications,
-      colors: product.colors
-        ?.map((c) => `${c.name} (${c.quantity})`)
-        .join(', ') || '',
-    }));
-
-    const parser = new Parser();
-    const csv = parser.parse(formattedProducts);
-
-    res.header('Content-Type', 'text/csv');
-    res.header('Content-Disposition', 'attachment; filename=products.csv');
-    res.status(200).send(csv); // ✅ CSV is sent here
-  } catch (error) {
-    console.error(error);
-    throw new InternalServerErrorException('Unable to download CSV');
   }
-}
 
+  async uploadCSV(filePath: string): Promise<baseResponseDto> {
+    const products: Partial<Product>[] = [];
 
- async uploadCSV(filePath: string): Promise<baseResponseDto> {
-  const products: Partial<Product>[] = [];
+    return new Promise((resolve, reject) => {
+      const stream = createReadStream(filePath)
+        .pipe(parse({ headers: true }))
+        .on('error', (err) => {
+          console.error(err);
+          deleteFile(filePath); // Ensure file is deleted on error
+          reject(new InternalServerErrorException('CSV parsing failed'));
+        })
+        .on('data', async (row) => {
+          stream.pause(); // Pause stream while handling row
 
-  return new Promise((resolve, reject) => {
-    const stream = createReadStream(filePath)
-      .pipe(parse({ headers: true }))
-      .on('error', (err) => {
-        console.error(err);
-        deleteFile(filePath); // Ensure file is deleted on error
-        reject(new InternalServerErrorException('CSV parsing failed'));
-      })
-      .on('data', async (row) => {
-        stream.pause(); // Pause stream while handling row
+          try {
+            const requiredKeys = [
+              'name',
+              'category',
+              'price',
+              'discount',
+              'quantity',
+              'warranty',
+              'description',
+              'specifications',
+              'colors',
+            ];
 
-        try {
-          const requiredKeys = [
-            'name',
-            'category',
-            'price',
-            'discount',
-            'quantity',
-            'warranty',
-            'description',
-            'specifications',
-            'colors',
-          ];
-
-          for (const key of requiredKeys) {
-            if (!row[key]) {
-              deleteFile(filePath);
-              reject(new BadRequestException(`Missing required field: ${key}`));
-              return;
+            for (const key of requiredKeys) {
+              if (!row[key]) {
+                deleteFile(filePath);
+                reject(new BadRequestException(`Missing required field: ${key}`));
+                return;
+              }
             }
-          }
 
-          const {
-            name,
-            category,
-            price,
-            discount,
-            quantity,
-            warranty,
-            description,
-            specifications,
-            colors,
-          } = row;
+            const {
+              name,
+              category,
+              price,
+              discount,
+              quantity,
+              warranty,
+              description,
+              specifications,
+              colors,
+            } = row;
 
-          const cat = await this.categoryRepository.findOne({
-            where: { name: category },
-          });
-
-          if (!cat) {
-            deleteFile(filePath);
-            reject(new NotFoundException(`Category "${category}" not found`));
-            return;
-          }
-
-          const product = this.productRepository.create({
-            name,
-            price,
-            discount,
-            quantity: Number(quantity),
-            warranty,
-            description,
-            specifications,
-            category: cat,
-          });
-
-          const savedProduct = await this.productRepository.save(product);
-
-          if (colors) {
-            const colorList = colors.split(',').map((c: string) => {
-              const match = c.trim().match(/^(.+?)\s*\((\d+)\)$/);
-              return match
-                ? {
-                    colorName: match[1],
-                    quantity: Number(match[2]),
-                    product: savedProduct,
-                  }
-                : null;
+            const cat = await this.categoryRepository.findOne({
+              where: { name: category },
             });
 
-            const validColors = colorList.filter(Boolean) as Partial<ProductColor>[];
-            await this.productColorRepository.save(validColors);
-          }
+            if (!cat) {
+              deleteFile(filePath);
+              reject(new NotFoundException(`Category "${category}" not found`));
+              return;
+            }
 
-          products.push(product);
-        } catch (err) {
-          console.error(err);
-          deleteFile(filePath);
-          reject(new InternalServerErrorException('Error processing row'));
-        } finally {
-          stream.resume();
-        }
-      })
-      .on('end', () => {
-        deleteFile(filePath); // ✅ Delete file after processing is done
-        resolve({
-          status: true,
-          code: 200,
-          data: { message: `${products.length} products imported.` },
+            const product = this.productRepository.create({
+              name,
+              price,
+              discount,
+              quantity: Number(quantity),
+              warranty,
+              description,
+              specifications,
+              category: cat,
+            });
+
+            const savedProduct = await this.productRepository.save(product);
+
+            if (colors) {
+              const colorList = colors.split(',').map((c: string) => {
+                const match = c.trim().match(/^(.+?)\s*\((\d+)\)$/);
+                return match
+                  ? {
+                      colorName: match[1],
+                      quantity: Number(match[2]),
+                      product: savedProduct,
+                    }
+                  : null;
+              });
+
+              const validColors = colorList.filter(Boolean) as Partial<ProductColor>[];
+              await this.productColorRepository.save(validColors);
+            }
+
+            products.push(product);
+          } catch (err) {
+            console.error(err);
+            deleteFile(filePath);
+            reject(new InternalServerErrorException('Error processing row'));
+          } finally {
+            stream.resume();
+          }
+        })
+        .on('end', () => {
+          deleteFile(filePath); // ✅ Delete file after processing is done
+          resolve({
+            status: true,
+            code: 200,
+            data: { message: `${products.length} products imported.` },
+          });
         });
-      });
-  });
-}
+    });
+  }
 }

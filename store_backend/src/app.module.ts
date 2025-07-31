@@ -8,7 +8,6 @@ import { AddressModule } from './Modules/Address/address.module';
 import { ProductModule } from './Modules/Product/product.module';
 import { CategoryModule } from './Modules/Category/category.module';
 import { DeliveryAddressModule } from './Modules/Delivery_address/delivery-address.module';
-import { ProductReviewModule } from './Modules/Product_review/product-review.module';
 import { ChatModule } from './Modules/Chat/chat.module';
 import { UserModule } from 'Modules/User/User.module';
 import { CartModule } from './Modules/Cart/cart.module';
@@ -20,6 +19,7 @@ import { AcceptedCitiesModule } from 'Modules/Accepted_cities/accepted-cities.mo
 import { SaleModule } from './Modules/Sale/sale.module';
 import { APP_GUARD } from '@nestjs/core';
 import { FirebaseAuthGuard } from 'Core/Guards/firebase-auth.guard';
+import { ProductReviewModule } from './Modules/Product_review/product-review.module';
 
 @Module({
   imports: [
@@ -46,10 +46,10 @@ import { FirebaseAuthGuard } from 'Core/Guards/firebase-auth.guard';
   providers: [
     AppService,
     FirebaseService,
-    {
-      provide: APP_GUARD,
-      useClass: FirebaseAuthGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: FirebaseAuthGuard,
+    // },
   ],
   exports: [FirebaseService],
 })
