@@ -29,10 +29,10 @@ import { IsOptional } from 'class-validator';
   'warranty',
 ])
 export class Product extends BaseEntity<Product> {
-  @Column({ name: 'name', type: 'varchar', length: '150', nullable: false,unique:true })
+  @Column({ name: 'name', type: 'varchar', length: '150', nullable: false, unique: true })
   name: string;
 
-  @ManyToOne(() => Category, (category) => category.products)
+  @ManyToOne(() => Category, (category) => category.products, { eager: true })
   @JoinColumn({ name: 'categoryId' })
   category: Category;
 
@@ -81,10 +81,15 @@ export class Product extends BaseEntity<Product> {
   warranty: string;
 
   //Inverse relations
-  @OneToMany(() => ProductReview, (reviews) => reviews.reviewedProduct)
+  @OneToMany(() => ProductReview, (reviews) => reviews.reviewedProduct, {
+    cascade: ['soft-remove'],
+  })
   reviews: ProductReview[];
 
-  @OneToMany(() => ProductColor, (colors) => colors.product)
+  @OneToMany(() => ProductColor, (colors) => colors.product, {
+    cascade: ['soft-remove', 'update', 'insert'],
+    eager: true,
+  })
   colors: ProductColor[];
 
   @ManyToOne(() => Sale, (sold) => sold.products)

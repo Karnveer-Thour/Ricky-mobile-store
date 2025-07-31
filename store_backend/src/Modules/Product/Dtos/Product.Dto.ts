@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
 import { BaseDto } from 'Common/Dto/Base.dto';
 import { Category } from 'Modules/Category/Entities/Category.entity';
+import { CreateProductColorDto } from './create-color.dto';
 
 export class ProductDto extends BaseDto {
   @ApiProperty({
@@ -61,7 +62,7 @@ export class ProductDto extends BaseDto {
   })
   @IsNumber()
   @IsNotEmpty()
-  quantiy: number;
+  quantity: number;
 
   @ApiProperty({
     description: 'Enter Product specifications',
@@ -86,4 +87,7 @@ export class ProductDto extends BaseDto {
   @IsOptional()
   @MaxLength(100, { message: 'Warranty must be at most 100 characters long' })
   warranty: string;
+
+  @IsNotEmpty()
+  colors: CreateProductColorDto[];
 }

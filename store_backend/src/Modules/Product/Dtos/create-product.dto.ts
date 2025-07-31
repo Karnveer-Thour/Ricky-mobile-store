@@ -102,5 +102,5 @@ export class CreateProductDto extends BaseDto {
   })
   @IsObject()
   @IsOptional()
-  productColors:CreateProductColorDto[];
+  productColors: CreateProductColorDto[];
 }

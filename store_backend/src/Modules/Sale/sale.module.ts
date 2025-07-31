@@ -5,6 +5,6 @@ import { SaleRepository } from './Repositories/Sale.repo';
 
 @Module({
   controllers: [SaleController],
-  providers: [SaleService,SaleRepository],
+  providers: [SaleService, SaleRepository],
 })
 export class SaleModule {}

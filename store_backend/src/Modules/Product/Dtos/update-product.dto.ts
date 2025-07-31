@@ -29,14 +29,14 @@ export class UpdateProductDto extends BaseDto {
   price: string;
 
   @ApiProperty({
-      description: 'Enter product category id',
-      example: '8437843jfdusg489wkj',
-      type: 'string',
-      required: true,
-    })
-    @IsString()
-    @IsOptional()
-    categoryId: string;
+    description: 'Enter product category id',
+    example: '8437843jfdusg489wkj',
+    type: 'string',
+    required: true,
+  })
+  @IsString()
+  @IsOptional()
+  categoryId: string;
 
   @ApiProperty({
     description: 'Enter discount applied on product',
@@ -104,5 +104,5 @@ export class UpdateProductDto extends BaseDto {
   })
   @IsObject()
   @IsOptional()
-  productColors: ProductColor[];
+  productColors: ProductColorDto[];
 }

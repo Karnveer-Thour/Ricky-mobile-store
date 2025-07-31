@@ -54,23 +54,16 @@ export class ProductService {
       const productDetails: ProductDto = {
         name: productData.name,
         description: productData.description,
-        quantiy: quantity,
+        quantity: quantity,
         price: productData.price,
         category: category,
         specifications: productData.specifications,
         warranty: productData.warranty,
         discount: productData.discount,
+        colors: productData.productColors?.length ? productData.productColors : [],
       };
 
       const newProduct = await this.productRepository.save(productDetails);
-
-      if (productData?.productColors?.length) {
-        const newColors = await Promise.all(
-          productData.productColors.map((productColor) =>
-            this.productColorRepository.save({ ...productColor, product: newProduct }),
-          ),
-        );
-      }
 
       return {
         code: 201,
@@ -101,29 +94,13 @@ export class ProductService {
         if (!category) {
           throw new NotFoundException('Category does not exist');
         }
-
-        existingProduct.category = category;
-      }
-
-      if (productData?.productColors?.length) {
-        const productColors = await Promise.all(
-          productData.productColors.map(async (colorDto) => {
-            const color = await this.productColorRepository.findOneBy({ id: colorDto.id });
-            if (!color) {
-              throw new NotFoundException(`ProductColor with id ${colorDto.id} not found`);
-            }
-            for (let key in color) {
-              color[key] = colorDto[key] ?? color[key];
-            }
-            return color;
-          }),
-        );
-        existingProduct.colors = productColors;
       }
 
       for (let key in existingProduct) {
         if (key === 'colors') {
-          continue;
+          existingProduct[key] = productData[key]?.length
+            ? [...existingProduct[key], productData[key]]
+            : existingProduct[key];
         }
         existingProduct[key] = productData[key] ?? existingProduct[key];
       }
@@ -148,10 +125,7 @@ export class ProductService {
     searchText: string = null,
   ): Promise<baseResponseDto> {
     try {
-      const queryBuilder = this.productRepository
-        .createQueryBuilder('product')
-        .leftJoinAndSelect('product.colors', 'colors')
-        .leftJoinAndSelect('product.category', 'category');
+      const queryBuilder = this.productRepository.createQueryBuilder('product');
 
       queryBuilder.where('product.deletedAt IS NULL');
 

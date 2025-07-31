@@ -1,6 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, IsString, MaxLength } from "class-validator";
-import { BaseDto } from "Common/Dto/Base.dto";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { BaseDto } from 'Common/Dto/Base.dto';
 
 export class UpdateProductReview extends BaseDto {
   @ApiProperty({

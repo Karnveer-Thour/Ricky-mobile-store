@@ -28,8 +28,8 @@ export class ProductReview extends BaseDto {
   description: string;
 
   @IsNotEmpty()
-  reviewedBy:User
+  reviewedBy: User;
 
   @IsNotEmpty()
-  reviewedProduct:Product;
+  reviewedProduct: Product;
 }

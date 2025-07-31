@@ -99,25 +99,31 @@ export class User extends BaseEntity<User> {
   dateBirth: string;
 
   // Inverse relations
-  @OneToOne(() => Cart, (cart) => cart.cartOwner)
+  @OneToOne(() => Cart, (cart) => cart.cartOwner, { cascade: ['soft-remove', 'insert', 'update'] })
   cart: Cart;
 
-  @OneToMany(() => DeliveryAddress, (deliveryAddress) => deliveryAddress.customer)
+  @OneToMany(() => DeliveryAddress, (deliveryAddress) => deliveryAddress.customer, {
+    cascade: ['soft-remove'],
+  })
   deliveryAddress: DeliveryAddress[];
 
   @OneToMany(() => ProductReview, (reviews) => reviews.reviewedBy)
   reviews: ProductReview[];
 
-  @OneToMany(() => Sale, (sales) => sales.buyer)
+  @OneToMany(() => Sale, (sales) => sales.buyer, { cascade: ['soft-remove'] })
   sales: Sale[];
 
-  @OneToMany(() => Chat, (sendedChats) => sendedChats.senderId)
+  @OneToMany(() => Chat, (sendedChats) => sendedChats.senderId, { cascade: ['soft-remove'] })
   sendedChats: Chat[];
 
-  @OneToMany(() => Chat, (recievedMessages) => recievedMessages.receiverId)
+  @OneToMany(() => Chat, (recievedMessages) => recievedMessages.receiverId, {
+    cascade: ['soft-remove'],
+  })
   recievedMessages: Chat[];
 
-  @OneToMany(() => Payment, (recievedAmounts) => recievedAmounts.buyer)
+  @OneToMany(() => Payment, (recievedAmounts) => recievedAmounts.buyer, {
+    cascade: ['soft-remove'],
+  })
   recievedAmounts: Payment[];
 
   @ManyToOne(() => Wishlist, (wishlists) => wishlists.wisher)

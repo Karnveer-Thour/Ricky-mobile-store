@@ -25,9 +25,7 @@ export class ProductReviewController {
   }
 
   @Get()
-  async getAll(
-    @Query() query:ProductReviewPaginationQueryDto
-  ): Promise<baseResponseDto> {
+  async getAll(@Query() query: ProductReviewPaginationQueryDto): Promise<baseResponseDto> {
     const pageNumber = parseInt(query.page);
     const limitNumber = parseInt(query.limit);
     return this.productReviewService.getAll(pageNumber, limitNumber);

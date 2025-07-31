@@ -22,4 +22,3 @@ export function deleteFile(path: string) {
     else console.log('CSV file deleted:', path);
   });
 }
-

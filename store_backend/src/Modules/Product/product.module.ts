@@ -7,6 +7,6 @@ import { CategoryRepository } from 'Modules/Category/Repositories/Category.repo'
 
 @Module({
   controllers: [ProductController],
-  providers: [ProductService,ProductRepository,ProductColorRepository,CategoryRepository],
+  providers: [ProductService, ProductRepository, ProductColorRepository, CategoryRepository],
 })
 export class ProductModule {}

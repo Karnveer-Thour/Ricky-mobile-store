@@ -7,6 +7,6 @@ import { ProductRepository } from 'Modules/Product/Repositories/Product.repo';
 
 @Module({
   controllers: [ProductReviewController],
-  providers: [ProductReviewService,ProductReviewRepository,UserRepository,ProductRepository],
+  providers: [ProductReviewService, ProductReviewRepository, UserRepository, ProductRepository],
 })
 export class ProductReviewModule {}

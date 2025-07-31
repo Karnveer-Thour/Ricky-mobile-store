@@ -33,7 +33,7 @@ export class CreateProductReview extends BaseDto {
   })
   @IsString()
   @IsNotEmpty()
-  reviewedById:string
+  reviewedById: string;
 
   @ApiProperty({
     description: 'Enter product Id',
@@ -43,5 +43,5 @@ export class CreateProductReview extends BaseDto {
   })
   @IsString()
   @IsNotEmpty()
-  reviewedProductId:string;
+  reviewedProductId: string;
 }
