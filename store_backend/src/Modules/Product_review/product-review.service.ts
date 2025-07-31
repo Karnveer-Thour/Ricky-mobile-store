@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ProductReviewRepository } from './Repositories/ProductReview.repo';
 import { baseResponseDto } from 'Common/Dto/BaseResponse.dto';
 import { ProductRepository } from 'Modules/Product/Repositories/Product.repo';
@@ -7,6 +7,7 @@ import { CreateProductReview } from './Dtos/create-product-review.dto';
 import { ProductReview } from './Dtos/ProductReview.dto';
 import { UpdateProductReview } from './Dtos/update-product-review.dto';
 import { dateToUTC } from 'Common/Utils/Utils';
+import { role } from 'Modules/User/Model/Role.model';
 
 @Injectable()
 export class ProductReviewService {
@@ -23,6 +24,9 @@ export class ProductReviewService {
       ]);
       if (!user) {
         throw new NotFoundException('User not existed');
+      }
+      if(user.role===role.Admin){
+        throw new UnauthorizedException("Admin can not review the product");
       }
       if (!product) {
         throw new NotFoundException('Product not existed');
