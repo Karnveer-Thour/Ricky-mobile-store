@@ -1,8 +1,48 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString, MaxLength } from 'class-validator';
 import { BaseDto } from 'Common/Dto/Base.dto';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { label } from '../Model/Label.model';
 
-export class CreateAddressDto extends BaseDto {
+export class CreateDeliveryAddressDto extends BaseDto {
+  @ApiProperty({
+    description: 'Make this record active',
+    example: true,
+    type: 'boolean',
+    required: false,
+    default: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  isDefault: boolean;
+
+  @ApiProperty({
+    description: 'Select type of address',
+    example: label.Home,
+    type: 'string',
+    required: false,
+  })
+  @IsEnum(label)
+  @IsOptional()
+  label: label;
+
+  @ApiProperty({
+    description: 'Enter user Id...',
+    example: '878fdjkhjh8789hkj',
+    type: 'number',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  customerId: string;
+
   @ApiProperty({
     description: 'Enter your house number',
     example: 'L-34',
@@ -86,4 +126,24 @@ export class CreateAddressDto extends BaseDto {
   @IsNotEmpty()
   @MaxLength(20, { message: 'State name must be at most 20 characters long' })
   state: string;
+
+  @ApiProperty({
+    description: 'Enter your country code',
+    example: '+91',
+    type: 'string',
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsString()
+  countryCode: string;
+
+  @ApiProperty({
+    description: 'Enter your mobile number',
+    example: '8875895263',
+    type: 'string',
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsString()
+  mobileNumber: string;
 }

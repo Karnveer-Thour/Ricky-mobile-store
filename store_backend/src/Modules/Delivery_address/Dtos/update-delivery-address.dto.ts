@@ -1,8 +1,38 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString, MaxLength } from 'class-validator';
 import { BaseDto } from 'Common/Dto/Base.dto';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { label } from '../Model/Label.model';
 
-export class CreateAddressDto extends BaseDto {
+export class UpdateDeliveryAddressDto extends BaseDto {
+  @ApiProperty({
+    description: 'Make this record active',
+    example: true,
+    type: 'boolean',
+    required: false,
+    default: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  isDefault: boolean;
+
+  @ApiProperty({
+    description: 'Select type of address',
+    example: label.Home,
+    type: 'string',
+    required: false,
+  })
+  @IsEnum(label)
+  @IsOptional()
+  label: label;
+
   @ApiProperty({
     description: 'Enter your house number',
     example: 'L-34',
@@ -10,7 +40,7 @@ export class CreateAddressDto extends BaseDto {
     required: false,
   })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(15, {
     message: 'House number must be at most 15 characters long',
   })
@@ -23,7 +53,7 @@ export class CreateAddressDto extends BaseDto {
     required: false,
   })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(25, {
     message: 'Street number must be at most 25 characters long',
   })
@@ -36,7 +66,7 @@ export class CreateAddressDto extends BaseDto {
     required: false,
   })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(150, {
     message: 'Area name must be at most 150 characters long',
   })
@@ -49,7 +79,7 @@ export class CreateAddressDto extends BaseDto {
     required: false,
   })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(30, { message: 'City name must be at most 30 characters long' })
   city: string;
 
@@ -60,7 +90,7 @@ export class CreateAddressDto extends BaseDto {
     required: false,
   })
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   pincode: number;
 
   @ApiProperty({
@@ -70,7 +100,7 @@ export class CreateAddressDto extends BaseDto {
     required: false,
   })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(30, {
     message: 'District name must be at most 30 characters long',
   })
@@ -83,7 +113,27 @@ export class CreateAddressDto extends BaseDto {
     required: true,
   })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(20, { message: 'State name must be at most 20 characters long' })
   state: string;
+
+  @ApiProperty({
+    description: 'Enter your country code',
+    example: '+91',
+    type: 'string',
+    required: true,
+  })
+  @IsOptional()
+  @IsString()
+  countryCode: string;
+
+  @ApiProperty({
+    description: 'Enter your mobile number',
+    example: '8875895263',
+    type: 'string',
+    required: true,
+  })
+  @IsOptional()
+  @IsString()
+  mobileNumber: string;
 }

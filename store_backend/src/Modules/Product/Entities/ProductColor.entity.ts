@@ -7,7 +7,7 @@ import { Product } from './Product.entity';
 @Index(['product', 'name', 'quantity'])
 export class ProductColor extends BaseEntity<ProductColor> {
   @JoinColumn({ name: 'ProductId' })
-  @ManyToOne(() => Product, (product) => product.colors, { eager: true, cascade: true })
+  @ManyToOne(() => Product, (product) => product.colors)
   product: Product;
 
   @Column({

@@ -7,7 +7,6 @@ import { dataSourceOptions } from 'Database/typeORM.config';
 import { AddressModule } from './Modules/Address/address.module';
 import { ProductModule } from './Modules/Product/product.module';
 import { CategoryModule } from './Modules/Category/category.module';
-import { DeliveryAddressModule } from './Modules/Delivery_address/delivery-address.module';
 import { ChatModule } from './Modules/Chat/chat.module';
 import { UserModule } from 'Modules/User/User.module';
 import { CartModule } from './Modules/Cart/cart.module';
@@ -20,6 +19,7 @@ import { SaleModule } from './Modules/Sale/sale.module';
 import { APP_GUARD } from '@nestjs/core';
 import { FirebaseAuthGuard } from 'Core/Guards/firebase-auth.guard';
 import { ProductReviewModule } from './Modules/Product_review/product-review.module';
+import { DeliveryAddressModule } from './Modules/Delivery_address/delivery-address.module';
 
 @Module({
   imports: [
