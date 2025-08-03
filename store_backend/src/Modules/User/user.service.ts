@@ -209,7 +209,6 @@ export class UserService {
       queryBuilder.skip((page - 1) * limit).take(limit);
 
       const [customers, total] = await queryBuilder.getManyAndCount();
-
       const transformedCustomers = customers.map((customer) =>
         plainToInstance(TransformCustomerUserDto, customer, { excludeExtraneousValues: true }),
       );

@@ -38,7 +38,7 @@ export class DeliveryAddressService {
         state: deliveryAddressData.state,
       };
       const deliveryAddress: DeliveryAddressDto = {
-        isDefault: deliveryAddressData.isDefault,
+        isDefault: false,
         label: deliveryAddressData.label,
         mobileNumber: deliveryAddressData.mobileNumber,
         countryCode: deliveryAddressData.countryCode,
@@ -98,8 +98,8 @@ export class DeliveryAddressService {
         throw new NotFoundException('Delivery address does not exist!');
       }
       const enabledDeliveryAddress = await this.DeliveryAddressRepository.findOneBy({
-        customer: existingDeliveryAddress.customer,
-        isDefault: status,
+        customer:existingDeliveryAddress.customer,
+        isDefault: false,
       });
       if (status) {
         enabledDeliveryAddress.isDefault = !status;
@@ -126,6 +126,8 @@ export class DeliveryAddressService {
   async getAll(page: number, limit: number): Promise<baseResponseDto> {
     try {
       const query = this.DeliveryAddressRepository.createQueryBuilder('d_addresses')
+        .leftJoinAndSelect('d_addresses.address', 'address')
+        .leftJoinAndSelect('d_addresses.customer', 'customer')
         .orderBy('d_addresses.createdAt', 'DESC')
         .skip(page - 1)
         .take(limit);
@@ -170,24 +172,20 @@ export class DeliveryAddressService {
       if (!existingDeliveryAddress) {
         throw new NotFoundException('Delivery address does not exist!');
       }
-      existingDeliveryAddress.deletedAt = dateToUTC();
-      await this.DeliveryAddressRepository.save(existingDeliveryAddress);
       if (existingDeliveryAddress.isDefault) {
-        const alreadyEnabledAddress = await this.DeliveryAddressRepository.findOneBy({
+        const DefaultActivated = await this.DeliveryAddressRepository.findOneBy({
           customer: existingDeliveryAddress.customer,
-          isDefault: true,
+          isDefault: false,
+          deletedAt: null,
         });
-        if (!alreadyEnabledAddress) {
-          const newDefaultAddress = await this.DeliveryAddressRepository.findOne({
-            where: { customer: existingDeliveryAddress.customer },
-            order: { createdAt: 'DESC' },
-          });
-          if (!newDefaultAddress.isDefault) {
-            newDefaultAddress.isDefault = true;
-            await this.DeliveryAddressRepository.save(newDefaultAddress);
-          }
+        if (DefaultActivated) {
+          DefaultActivated.isDefault = true;
+          await this.DeliveryAddressRepository.save(DefaultActivated);
         }
       }
+      existingDeliveryAddress.deletedAt = dateToUTC();
+      existingDeliveryAddress.isDefault = false;
+      await this.DeliveryAddressRepository.save(existingDeliveryAddress);
       return {
         status: true,
         code: 204,

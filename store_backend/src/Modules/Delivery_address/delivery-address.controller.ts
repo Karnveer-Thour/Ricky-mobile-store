@@ -16,12 +16,12 @@ export class DeliveryAddressController {
     return this.deliveryAddressService.create(deliveryAddressData);
   }
 
-  @Patch('id')
+  @Patch(':id')
   async update(@Param('id') id:string,@Body() deliveryAddressData:UpdateDeliveryAddressDto):Promise<baseResponseDto>{
     return this.deliveryAddressService.update(id,deliveryAddressData);
   }
 
-  @Patch('id/status')
+  @Patch(':id/:status')
   async toggleStatus(@Param('id') id:string,@Param('status') status:boolean):Promise<baseResponseDto>{
     return this.deliveryAddressService.toggleAddressStatus(id,status);
   }
@@ -33,13 +33,14 @@ export class DeliveryAddressController {
     return this.deliveryAddressService.getAll(pageNumber,limitNumber);
   }
 
-  @Get('id')
+  @Get(':id')
   async getById(@Param('id') id:string){
     return this.deliveryAddressService.getById(id);
   }
 
-  @Delete('id')
+  @Delete(':id')
   async softDeleteById(@Param('id') id:string){
+    console.log(id);
     return this.deliveryAddressService.softDeleteById(id);
   }
 
