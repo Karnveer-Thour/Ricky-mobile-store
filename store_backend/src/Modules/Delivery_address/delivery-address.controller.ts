@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { DeliveryAddressService } from './delivery-address.service';
 import { CreateDeliveryAddressDto } from './Dtos/create-delivery-address.dto';
 import { baseResponseDto } from 'Common/Dto/BaseResponse.dto';
 import { UpdateDeliveryAddressDto } from './Dtos/update-delivery-address.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { DeliveryAddressPaginationQueryDto } from './Dtos/delivery-address-pagination-query.dto';
 
 @ApiTags('delivery-address')
 @Controller('delivery-address')
@@ -25,10 +26,10 @@ export class DeliveryAddressController {
     return this.deliveryAddressService.toggleAddressStatus(id,status);
   }
 
-  @Get('page/limit')
-  async getAll(@Param('page') page:string,@Param('limit') limit:string):Promise<baseResponseDto>{
-    const pageNumber=parseInt(page||"1");
-    const limitNumber=parseInt(limit||"10");
+  @Get()
+  async getAll(@Query() query:DeliveryAddressPaginationQueryDto):Promise<baseResponseDto>{
+    const pageNumber=parseInt(query.page||"1");
+    const limitNumber=parseInt(query.limit||"10");
     return this.deliveryAddressService.getAll(pageNumber,limitNumber);
   }
 
@@ -38,7 +39,7 @@ export class DeliveryAddressController {
   }
 
   @Delete('id')
-  async softDeleteById(@Param() id:string){
+  async softDeleteById(@Param('id') id:string){
     return this.deliveryAddressService.softDeleteById(id);
   }
 
