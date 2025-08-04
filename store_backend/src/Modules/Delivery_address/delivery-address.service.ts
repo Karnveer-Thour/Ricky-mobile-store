@@ -20,6 +20,65 @@ export class DeliveryAddressService {
     private readonly userRepository: UserRepository,
   ) {}
 
+  async convertExistingAddressAsNotDefaultByUserId(
+    userId: string,
+  ): Promise<boolean> {
+    try {
+      const existingDeliveryAddress = await this.DeliveryAddressRepository.findOneBy({
+        customer: { id: userId },
+        isDefault: true,
+      });
+      if (existingDeliveryAddress) {
+        existingDeliveryAddress.isDefault = false;
+        await this.DeliveryAddressRepository.save(existingDeliveryAddress);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw new InternalServerErrorException('Unable to set delivery address as not default');
+    }
+  }
+
+  async convertExistingAddressAsNotDefault(
+    existingDeliveryAddress: DeliveryAddressDto,
+  ): Promise<boolean> {
+    try {
+      const existingDefaultAddress = await this.DeliveryAddressRepository.findOneBy({
+        customer: existingDeliveryAddress.customer,
+        isDefault: true,
+      });
+      if (existingDefaultAddress) {
+        existingDefaultAddress.isDefault = false;
+        await this.DeliveryAddressRepository.save(existingDefaultAddress);
+      }
+      existingDeliveryAddress.isDefault = false;
+      await this.DeliveryAddressRepository.save(existingDeliveryAddress);
+      return true;
+    } catch (error) {
+      throw new InternalServerErrorException('Unable to set delivery address as not default');
+    }
+  }
+
+  async convertExistingAddressAsDefault(
+    existingDeliveryAddress: DeliveryAddressDto,
+  ): Promise<boolean> {
+    try {
+      const existingDefaultAddress = await this.DeliveryAddressRepository.findOneBy({
+        customer: existingDeliveryAddress.customer,
+        isDefault: false,
+      });
+      if (existingDefaultAddress) {
+        existingDefaultAddress.isDefault = true;
+        await this.DeliveryAddressRepository.save(existingDefaultAddress);
+      }
+      existingDeliveryAddress.isDefault = true;
+      await this.DeliveryAddressRepository.save(existingDeliveryAddress);
+      return true;
+    } catch (error) {
+      throw new InternalServerErrorException('Unable to set delivery address as default');
+    }
+  }
+
   async create(deliveryAddressData: CreateDeliveryAddressDto): Promise<baseResponseDto> {
     try {
       const existingUser = await this.userRepository.findOneBy({
@@ -27,6 +86,9 @@ export class DeliveryAddressService {
       });
       if (!existingUser) {
         throw new NotFoundException('User does not exist!');
+      }
+      if(deliveryAddressData.isDefault) {
+        await this.convertExistingAddressAsNotDefaultByUserId(existingUser.id);
       }
       const address: CreateAddressDto = {
         houseNumber: deliveryAddressData.houseNumber,
@@ -38,7 +100,7 @@ export class DeliveryAddressService {
         state: deliveryAddressData.state,
       };
       const deliveryAddress: DeliveryAddressDto = {
-        isDefault: false,
+        isDefault: deliveryAddressData.isDefault,
         label: deliveryAddressData.label,
         mobileNumber: deliveryAddressData.mobileNumber,
         countryCode: deliveryAddressData.countryCode,
@@ -67,6 +129,9 @@ export class DeliveryAddressService {
       const existingDeliveryAddress = await this.DeliveryAddressRepository.findOneBy({ id });
       if (!existingDeliveryAddress) {
         throw new NotFoundException('Delivery address does not found!');
+      }
+      if( deliveryAddressData.isDefault ) {
+        await this.convertExistingAddressAsNotDefault(existingDeliveryAddress);
       }
       for (let key in existingDeliveryAddress) {
         if (key === 'address') {
@@ -97,17 +162,10 @@ export class DeliveryAddressService {
       if (!existingDeliveryAddress) {
         throw new NotFoundException('Delivery address does not exist!');
       }
-      const enabledDeliveryAddress = await this.DeliveryAddressRepository.findOneBy({
-        customer:existingDeliveryAddress.customer,
-        isDefault: false,
-      });
-      if (status) {
-        enabledDeliveryAddress.isDefault = !status;
-        await this.DeliveryAddressRepository.save(enabledDeliveryAddress);
-      } else {
-        if (!enabledDeliveryAddress) {
-          throw new BadRequestException('Minimum one delivery address must be activated');
-        }
+      if (status && !existingDeliveryAddress.isDefault) {
+        await this.convertExistingAddressAsNotDefault(existingDeliveryAddress);
+      }else if(!status && existingDeliveryAddress.isDefault) {
+        await this.convertExistingAddressAsDefault(existingDeliveryAddress);
       }
       existingDeliveryAddress.isDefault = status;
       await this.DeliveryAddressRepository.save(existingDeliveryAddress);
@@ -173,15 +231,7 @@ export class DeliveryAddressService {
         throw new NotFoundException('Delivery address does not exist!');
       }
       if (existingDeliveryAddress.isDefault) {
-        const DefaultActivated = await this.DeliveryAddressRepository.findOneBy({
-          customer: existingDeliveryAddress.customer,
-          isDefault: false,
-          deletedAt: null,
-        });
-        if (DefaultActivated) {
-          DefaultActivated.isDefault = true;
-          await this.DeliveryAddressRepository.save(DefaultActivated);
-        }
+        await this.convertExistingAddressAsDefault(existingDeliveryAddress);
       }
       existingDeliveryAddress.deletedAt = dateToUTC();
       existingDeliveryAddress.isDefault = false;

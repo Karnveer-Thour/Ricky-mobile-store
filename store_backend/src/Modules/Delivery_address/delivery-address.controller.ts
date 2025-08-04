@@ -40,7 +40,6 @@ export class DeliveryAddressController {
 
   @Delete(':id')
   async softDeleteById(@Param('id') id:string){
-    console.log(id);
     return this.deliveryAddressService.softDeleteById(id);
   }
 

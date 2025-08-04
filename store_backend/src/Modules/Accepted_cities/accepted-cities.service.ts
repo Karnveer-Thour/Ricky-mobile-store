@@ -132,8 +132,6 @@ export class AcceptedCitiesService {
         .take(limit)
         .getMany();
 
-      console.log(cities);
-
       const transformedCities = cities.map((city) =>
         plainToInstance(TransformAcceptedCitiesDto, city, {
           excludeExtraneousValues: true,

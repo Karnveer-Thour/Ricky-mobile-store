@@ -13,6 +13,17 @@ import { label } from '../Model/Label.model';
 
 export class UpdateDeliveryAddressDto extends BaseDto {
   @ApiProperty({
+    description: 'Make this record active',
+    example: true,
+    type: 'boolean',
+    required: false,
+    default: false,
+  })
+  @IsBoolean()
+  @IsOptional()
+  isDefault: boolean;
+
+  @ApiProperty({
     description: 'Select type of address',
     example: label.Home,
     type: 'string',
