@@ -20,9 +20,7 @@ export class DeliveryAddressService {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async convertExistingAddressAsNotDefaultByUserId(
-    userId: string,
-  ): Promise<boolean> {
+  async convertExistingAddressAsNotDefaultByUserId(userId: string): Promise<boolean> {
     try {
       const existingDeliveryAddress = await this.DeliveryAddressRepository.findOneBy({
         customer: { id: userId },
@@ -87,7 +85,7 @@ export class DeliveryAddressService {
       if (!existingUser) {
         throw new NotFoundException('User does not exist!');
       }
-      if(deliveryAddressData.isDefault) {
+      if (deliveryAddressData.isDefault) {
         await this.convertExistingAddressAsNotDefaultByUserId(existingUser.id);
       }
       const address: CreateAddressDto = {
@@ -130,7 +128,7 @@ export class DeliveryAddressService {
       if (!existingDeliveryAddress) {
         throw new NotFoundException('Delivery address does not found!');
       }
-      if( deliveryAddressData.isDefault ) {
+      if (deliveryAddressData.isDefault) {
         await this.convertExistingAddressAsNotDefault(existingDeliveryAddress);
       }
       for (let key in existingDeliveryAddress) {
@@ -164,7 +162,7 @@ export class DeliveryAddressService {
       }
       if (status && !existingDeliveryAddress.isDefault) {
         await this.convertExistingAddressAsNotDefault(existingDeliveryAddress);
-      }else if(!status && existingDeliveryAddress.isDefault) {
+      } else if (!status && existingDeliveryAddress.isDefault) {
         await this.convertExistingAddressAsDefault(existingDeliveryAddress);
       }
       existingDeliveryAddress.isDefault = status;

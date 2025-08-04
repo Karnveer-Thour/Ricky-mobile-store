@@ -23,7 +23,6 @@ export class CreateDeliveryAddressDto extends BaseDto {
   @IsOptional()
   isDefault: boolean;
 
-
   @ApiProperty({
     description: 'Select type of address',
     example: label.Home,

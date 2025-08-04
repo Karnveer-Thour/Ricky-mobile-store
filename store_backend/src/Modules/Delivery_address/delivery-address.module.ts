@@ -6,6 +6,6 @@ import { UserRepository } from 'Modules/User/Repositories/User.repo';
 
 @Module({
   controllers: [DeliveryAddressController],
-  providers: [DeliveryAddressService,DeliveryAddressRepository,UserRepository],
+  providers: [DeliveryAddressService, DeliveryAddressRepository, UserRepository],
 })
 export class DeliveryAddressModule {}
