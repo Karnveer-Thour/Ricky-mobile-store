@@ -161,6 +161,34 @@ export class UserService {
       throw new InternalServerErrorException('Error registering user');
     }
   }
+  async changePassword(
+    userId: string,
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<baseResponseDto> {
+    try {
+      const user = await this.userRepository.findOneBy({ id: userId });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
+      if (!isOldPasswordValid) {
+        throw new UnauthorizedException('Invalid old password');
+      }
+
+      user.password = await this.bycryptPassword(newPassword);
+      await this.userRepository.save(user);
+
+      return {
+        status: true,
+        code: 200,
+        data: { message: 'Password changed successfully' },
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Error changing password');
+    }
+  }
 
   async updateUserById(id: string, userData: updateUserDto): Promise<baseResponseDto> {
     try {
