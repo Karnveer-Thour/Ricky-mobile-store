@@ -20,6 +20,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { FirebaseAuthGuard } from 'Core/Guards/firebase-auth.guard';
 import { ProductReviewModule } from './Modules/Product_review/product-review.module';
 import { DeliveryAddressModule } from './Modules/Delivery_address/delivery-address.module';
+import { BanksModule } from './Modules/banks/banks.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { DeliveryAddressModule } from './Modules/Delivery_address/delivery-addre
     WishlistModule,
     PaymentModule,
     WhatsappDetailsModule,
+    BanksModule,
   ],
   controllers: [AppController],
   providers: [

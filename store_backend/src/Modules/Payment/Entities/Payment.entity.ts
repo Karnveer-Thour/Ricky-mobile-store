@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseEntity } from 'Common/Entities/Base.entity';
+import { Bank } from 'Modules/banks/Entities/bank.entity';
 import { Sale } from 'Modules/Sale/Entities/Sale.entity';
 import { User } from 'Modules/User/Entities/User.entity';
 import { Column, Entity, Index, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
@@ -44,4 +45,14 @@ export class Payment extends BaseEntity<Payment> {
   @OneToOne(() => Sale, (order) => order.receivedPayment, { eager: true })
   @JoinColumn({ name: 'orderId' })
   order: Sale;
+
+  @ApiProperty({
+    description: 'Enter Payment Id',
+    example: '9dsjhs898f',
+    type: 'string',
+    required: true,
+  })
+  @OneToOne(() => Bank, (bank) => bank.receivedPayment, { eager: true })
+  @JoinColumn({ name: 'bankId' })
+  bankAccount: Bank;
 }
