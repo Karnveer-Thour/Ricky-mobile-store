@@ -21,6 +21,7 @@ import { FirebaseAuthGuard } from 'Core/Guards/firebase-auth.guard';
 import { ProductReviewModule } from './Modules/Product_review/product-review.module';
 import { DeliveryAddressModule } from './Modules/Delivery_address/delivery-address.module';
 import { BanksModule } from './Modules/banks/banks.module';
+import { GlobalModule } from 'Modules/global/global.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { BanksModule } from './Modules/banks/banks.module';
     PaymentModule,
     WhatsappDetailsModule,
     BanksModule,
+    GlobalModule,
   ],
   controllers: [AppController],
   providers: [
