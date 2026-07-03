@@ -179,3 +179,49 @@
     line-height: 1.5;
   }
 }
+
+/* ─── Ricky Mobile Store — WDS Design Tokens ────────────────────────────────
+   Source: _bmad-output/D-Design-System/design-tokens.md
+   Rule: Tailwind v4 — @theme directive only. No tailwind.config.js.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+@theme inline {
+  /* Colors — ricky- prefixed to avoid collision with shadcn tokens */
+  --color-ricky-primary-900: #0F172A;
+  --color-ricky-primary-800: #1E293B;
+  --color-ricky-primary-700: #334155;
+  --color-ricky-accent-green: #059669;
+  --color-ricky-accent-green-light: #10B981;
+  --color-ricky-accent-amber: #D97706;
+  --color-ricky-accent-red: #DC2626;
+  --color-ricky-accent-blue: #2563EB;
+  --color-ricky-surface-white: #FFFFFF;
+  --color-ricky-surface-muted: #F8FAFC;
+  --color-ricky-text-primary: #0F172A;
+  --color-ricky-text-secondary: #475569;
+  --color-ricky-text-muted: #94A3B8;
+
+  /* Border radius */
+  --radius-ricky-sm: 6px;
+  --radius-ricky-md: 10px;
+  --radius-ricky-lg: 16px;
+  --radius-ricky-full: 9999px;
+
+  /* Shadows */
+  --shadow-ricky-sm: 0 1px 3px rgba(0,0,0,0.12);
+  --shadow-ricky-md: 0 4px 12px rgba(0,0,0,0.15);
+  --shadow-ricky-lg: 0 8px 30px rgba(0,0,0,0.20);
+
+  /* Transitions */
+  --ease-ricky-fast: 150ms ease-in-out;
+  --ease-ricky-default: 300ms ease-in-out;
+  --ease-ricky-slow: 500ms ease-in-out;
+}
+
+/* Glassmorphism utility — not expressible as @theme token */
+.ricky-glass {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}

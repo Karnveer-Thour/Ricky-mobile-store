@@ -7,9 +7,13 @@ import { role } from 'Modules/User/Model/Role.model';
 export class FirebaseService implements OnModuleInit {
   onModuleInit() {
     if (!admin.apps.length) {
-      admin.initializeApp({
-        credential: admin.credential.cert(firebaseConfig as admin.ServiceAccount),
-      });
+      try {
+        admin.initializeApp({
+          credential: admin.credential.cert(firebaseConfig as admin.ServiceAccount),
+        });
+      } catch (error: any) {
+        console.warn('Firebase failed to initialize (running in offline mock mode):', error.message);
+      }
     }
   }
 

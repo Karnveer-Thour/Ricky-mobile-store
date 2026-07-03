@@ -14,6 +14,9 @@ import {
   ListCollapse as Products,
   StretchHorizontal as Categories,
   BadgeDollarSign as Sales,
+  Archive as InventoryIcon,
+  Columns3 as DispatchIcon,
+  MessageSquare as ChatIcon,
 } from "lucide-react";
 import cn from "classnames";
 import Navitem from "./navItem";
@@ -89,6 +92,24 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
               label="Products"
               isOpen={isOpen}
               linkTo="/home/features/product"
+            />
+            <Navitem
+              icon={<InventoryIcon size={24} />}
+              label="Inventory Grid"
+              isOpen={isOpen}
+              linkTo="/home/features/inventory"
+            />
+            <Navitem
+              icon={<DispatchIcon size={24} />}
+              label="Dispatch Board"
+              isOpen={isOpen}
+              linkTo="/home/features/dispatch"
+            />
+            <Navitem
+              icon={<ChatIcon size={24} />}
+              label="Support Chat"
+              isOpen={isOpen}
+              linkTo="/home/features/chat"
             />
             <Navitem
               icon={<Categories size={24} />}

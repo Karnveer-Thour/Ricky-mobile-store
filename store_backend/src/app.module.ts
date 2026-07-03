@@ -22,6 +22,7 @@ import { ProductReviewModule } from './Modules/Product_review/product-review.mod
 import { DeliveryAddressModule } from './Modules/Delivery_address/delivery-address.module';
 import { BanksModule } from './Modules/banks/banks.module';
 import { GlobalModule } from 'Modules/global/global.module';
+import { GatewayModule } from 'Core/Gateways/gateway.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { GlobalModule } from 'Modules/global/global.module';
     WhatsappDetailsModule,
     BanksModule,
     GlobalModule,
+    GatewayModule,
   ],
   controllers: [AppController],
   providers: [
