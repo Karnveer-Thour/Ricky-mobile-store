@@ -42,8 +42,10 @@ export class ProductController {
 
   @Get()
   async getAll(@Query() query: ProductPaginationQueryDto): Promise<baseResponseDto> {
-    const pageNumber = parseInt(query.page);
-    const limitNumber = parseInt(query.limit);
+    const page = parseInt(query.page);
+    const limit = parseInt(query.limit);
+    const pageNumber = isNaN(page) ? 1 : page;
+    const limitNumber = isNaN(limit) ? 10 : limit;
     return this.productService.getAllWithPagination(pageNumber, limitNumber, query.searchText);
   }
 
