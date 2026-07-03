@@ -4,9 +4,18 @@ import { Bank } from 'Modules/banks/Entities/bank.entity';
 import { Sale } from 'Modules/Sale/Entities/Sale.entity';
 import { User } from 'Modules/User/Entities/User.entity';
 import { Column, Entity, Index, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { EmiDetails } from './EmiDetails.entity';
+
+export enum PaymentMethod {
+  CARD = 'CARD',
+  UPI = 'UPI',
+  EMI_BAJAJ = 'EMI_BAJAJ',
+  EMI_HOMECREDIT = 'EMI_HOMECREDIT',
+  NETBANKING = 'NETBANKING',
+}
 
 @Entity()
-@Index(['amount', 'message', 'buyer', 'order'])
+@Index(['amount'])
 export class Payment extends BaseEntity<Payment> {
   @ApiProperty({
     description: 'Enter payed amount',
@@ -25,6 +34,24 @@ export class Payment extends BaseEntity<Payment> {
   })
   @Column({ name: 'message', type: 'varchar', length: 550, nullable: true })
   message: string;
+
+  @ApiProperty({
+    description: 'Enter payment method',
+    example: 'CARD',
+    enum: PaymentMethod,
+    required: true,
+  })
+  @Column({
+    name: 'paymentMethod',
+    type: 'enum',
+    enum: PaymentMethod,
+    default: PaymentMethod.CARD,
+  })
+  paymentMethod: PaymentMethod;
+
+  @OneToOne(() => EmiDetails, (emi) => emi.payment, { cascade: true, nullable: true, eager: true })
+  @JoinColumn({ name: 'emiDetailsId' })
+  emiDetails?: EmiDetails;
 
   @ApiProperty({
     description: 'Enter customer Id',

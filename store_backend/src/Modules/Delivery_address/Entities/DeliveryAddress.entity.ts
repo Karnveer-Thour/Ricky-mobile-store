@@ -6,7 +6,7 @@ import { label } from '../Model/Label.model';
 import { IsNotEmpty, Matches } from 'class-validator';
 
 @Entity()
-@Index(['address', 'customer', 'isDefault', 'label'])
+@Index(['isDefault'])
 export class DeliveryAddress extends BaseEntity<DeliveryAddress> {
   @OneToOne(() => Address, (address) => address.deliveryAddress, {
     cascade: true,

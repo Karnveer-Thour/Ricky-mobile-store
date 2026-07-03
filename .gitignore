@@ -3,3 +3,12 @@ dist/
 build/
 .env
 .DS_Store
+_bmad
+_bmad-output
+.agent
+.agents
+.claude
+.github
+.opencode
+design-artifacts
+docs

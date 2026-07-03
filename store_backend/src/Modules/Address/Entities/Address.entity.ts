@@ -4,7 +4,7 @@ import { User } from 'Modules/User/Entities/User.entity';
 import { Column, Entity, Index, OneToOne } from 'typeorm';
 
 @Entity()
-@Index(['houseNumber', 'streetNumber', 'areaName', 'city', 'pincode', 'district', 'state'])
+@Index(['pincode'])
 export class Address extends BaseEntity<Address> {
   @Column({
     name: 'houseNumber',

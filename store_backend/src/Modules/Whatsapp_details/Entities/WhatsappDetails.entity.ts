@@ -2,7 +2,7 @@ import { BaseEntity } from 'Common/Entities/Base.entity';
 import { Column, Entity, Index } from 'typeorm';
 
 @Entity()
-@Index(['name', 'url'])
+@Index(['name'])
 export class whatsappDetailsEntity extends BaseEntity<whatsappDetailsEntity> {
   @Column({
     name: 'groupName',

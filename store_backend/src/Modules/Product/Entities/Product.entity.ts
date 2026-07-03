@@ -18,16 +18,7 @@ import { ProductColor } from './ProductColor.entity';
 import { IsOptional } from 'class-validator';
 
 @Entity()
-@Index([
-  'name',
-  'category',
-  'price',
-  'discount',
-  'description',
-  'quantity',
-  'specifications',
-  'warranty',
-])
+@Index(['price'])
 export class Product extends BaseEntity<Product> {
   @Column({ name: 'name', type: 'varchar', length: '150', nullable: false, unique: true })
   name: string;
@@ -36,17 +27,18 @@ export class Product extends BaseEntity<Product> {
   @JoinColumn({ name: 'categoryId' })
   category: Category;
 
-  @Column({ name: 'price', type: 'varchar', length: '20', nullable: false })
-  price: string;
+  @Column({ name: 'price', type: 'decimal', precision: 10, scale: 2, nullable: false })
+  price: number;
 
   @Column({
     name: 'discount',
-    type: 'varchar',
-    length: '20',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
     nullable: true,
-    default: '0',
+    default: 0,
   })
-  discount: string;
+  discount: number;
 
   @Column({
     name: 'description',
@@ -92,15 +84,6 @@ export class Product extends BaseEntity<Product> {
   })
   colors: ProductColor[];
 
-  @ManyToOne(() => Sale, (sold) => sold.products)
-  @JoinColumn({ name: 'saleId' })
-  sold: Sale;
-
-  @ManyToOne(() => Wishlist, (wishlist) => wishlist.products, {
-    onDelete: 'CASCADE',
-  })
-  wishlist: Wishlist;
-
-  @ManyToMany(() => Cart, (carts) => carts.items, { onDelete: 'CASCADE' })
-  carts: Cart[];
+  @ManyToMany(() => Wishlist, (wishlist) => wishlist.products)
+  wishlists: Wishlist[];
 }

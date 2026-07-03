@@ -1,10 +1,10 @@
 import { BaseEntity } from 'Common/Entities/Base.entity';
 import { Product } from 'Modules/Product/Entities/Product.entity';
 import { User } from 'Modules/User/Entities/User.entity';
-import { Column, Entity, Index, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
 
 @Entity()
-@Index(['name', 'wisher'])
+@Index(['name'])
 export class Wishlist extends BaseEntity<Wishlist> {
   @Column({
     name: 'name',
@@ -15,7 +15,8 @@ export class Wishlist extends BaseEntity<Wishlist> {
   })
   name: string;
 
-  @OneToMany(() => Product, (product) => product.wishlist, { eager: true })
+  @ManyToMany(() => Product, (product) => product.wishlists, { eager: true })
+  @JoinTable({ name: 'wishlistProducts' })
   products: Product[];
 
   @ManyToOne(() => User, (wisher) => wisher.wishlists, {

@@ -18,28 +18,26 @@ export class ProductDto extends BaseDto {
 
   @ApiProperty({
     description: 'Enter Product amount',
-    example: '27000',
-    type: 'string',
+    example: 27000,
+    type: 'number',
     required: true,
   })
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  @MaxLength(20, { message: 'Price must be at most 20 characters long' })
-  price: string;
+  price: number;
 
   @IsNotEmpty()
   category: Category;
 
   @ApiProperty({
     description: 'Enter discount applied on product',
-    example: '3000',
-    type: 'string',
+    example: 3000,
+    type: 'number',
     required: false,
   })
-  @IsString()
+  @IsNumber()
   @IsOptional()
-  @MaxLength(20, { message: 'Discount must be at most 20 characters long' })
-  discount: string;
+  discount: number;
 
   @ApiProperty({
     description: 'Enter Product description',

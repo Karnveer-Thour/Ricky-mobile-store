@@ -4,7 +4,7 @@ import { Payment } from 'Modules/Payment/Entities/Payment.entity';
 import { Column, Entity, Index, OneToOne } from 'typeorm';
 
 @Entity()
-@Index(['accountHolderName', 'bankName', 'accountNumber', 'ifscCode', 'branchName'])
+@Index(['accountNumber'])
 export class Bank extends BaseEntity<Bank> {
   @Column({
     name: 'accountHolderName',

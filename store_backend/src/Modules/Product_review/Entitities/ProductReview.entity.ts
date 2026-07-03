@@ -4,7 +4,7 @@ import { User } from 'Modules/User/Entities/User.entity';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
-@Index(['title', 'description', 'reviewedBy', 'reviewedProduct'])
+@Index(['reviewedProduct'])
 export class ProductReview extends BaseEntity<ProductReview> {
   @Column({ name: 'title', type: 'varchar', length: '55', nullable: false })
   title: string;

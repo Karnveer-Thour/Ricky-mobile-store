@@ -1,17 +1,16 @@
 import { BaseEntity } from 'Common/Entities/Base.entity';
-import { Product } from 'Modules/Product/Entities/Product.entity';
 import { User } from 'Modules/User/Entities/User.entity';
-import { Entity, Index, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne } from 'typeorm';
+import { Entity, Index, JoinColumn, OneToMany, OneToOne } from 'typeorm';
+import { CartItem } from './CartItem.entity';
 
 @Entity()
 @Index(['cartOwner'])
 export class Cart extends BaseEntity<Cart> {
-  @ManyToMany(() => Product, (items) => items.carts, {
+  @OneToMany(() => CartItem, (items) => items.cart, {
     eager: true,
     cascade: true,
   })
-  @JoinTable({ name: 'cartItems' })
-  items: Product[];
+  items: CartItem[];
 
   @OneToOne(() => User, (cartOwner) => cartOwner.cart)
   @JoinColumn({ name: 'cartOwner' })

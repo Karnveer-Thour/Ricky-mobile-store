@@ -23,17 +23,8 @@ import { Payment } from 'Modules/Payment/Entities/Payment.entity';
 import { role } from '../Model/Role.model';
 
 @Entity()
-@Index([
-  'firstName',
-  'lastName',
-  'email',
-  'mobileNumber',
-  'password',
-  'pictureUrl',
-  'role',
-  'address',
-  'dateBirth',
-])
+@Index(['firstName'])
+@Index(['lastName'])
 export class User extends BaseEntity<User> {
   @Column({
     name: 'firstName',
@@ -126,6 +117,6 @@ export class User extends BaseEntity<User> {
   })
   recievedAmounts: Payment[];
 
-  @ManyToOne(() => Wishlist, (wishlists) => wishlists.wisher)
+  @OneToMany(() => Wishlist, (wishlist) => wishlist.wisher)
   wishlists: Wishlist[];
 }

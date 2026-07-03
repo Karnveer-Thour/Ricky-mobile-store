@@ -55,11 +55,11 @@ export class ProductService {
         name: productData.name,
         description: productData.description,
         quantity: quantity,
-        price: productData.price,
+        price: parseFloat(productData.price),
         category: category,
         specifications: productData.specifications,
         warranty: productData.warranty,
-        discount: productData.discount,
+        discount: productData.discount ? parseFloat(productData.discount) : 0,
         colors: productData.productColors?.length ? productData.productColors : [],
       };
 
@@ -101,8 +101,13 @@ export class ProductService {
           existingProduct[key] = productData[key]?.length
             ? [...existingProduct[key], productData[key]]
             : existingProduct[key];
+        } else if (key === 'price' && productData[key] !== undefined) {
+          existingProduct[key] = parseFloat(productData[key] as any);
+        } else if (key === 'discount' && productData[key] !== undefined) {
+          existingProduct[key] = parseFloat(productData[key] as any);
+        } else {
+          existingProduct[key] = productData[key] ?? existingProduct[key];
         }
-        existingProduct[key] = productData[key] ?? existingProduct[key];
       }
 
       await this.productRepository.save(existingProduct);
