@@ -1,7 +1,9 @@
-import { createContext, useContext, useState, useRef, ReactNode } from "react";
-import { PRODUCTS, CartItem, ChatMessage, CHAT_INIT } from "./data";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { PRODUCTS, Product, CartItem, ChatMessage, CHAT_INIT } from "./data";
+import { apiService } from "./services/apiService";
 
 interface AppContextType {
+  productsList: Product[];
   cart: CartItem[];
   wishlist: number[];
   cartCount: number;
@@ -28,8 +30,38 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const [productsList, setProductsList] = useState<Product[]>(PRODUCTS);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<number[]>([]);
+
+  useEffect(() => {
+    async function loadApiProducts() {
+      const apiData = await apiService.fetchProducts();
+      if (apiData && apiData.length > 0) {
+        // Map backend products if available
+        const mapped: Product[] = apiData.map((item: any, index: number) => ({
+          id: item.id || index + 1,
+          name: item.name || item.productName || 'Mobile Phone',
+          tagline: item.description || 'Premium Smartphone',
+          badge: item.badge || 'NEW',
+          rating: item.rating || 4.8,
+          reviewsCount: item.reviewsCount || 120,
+          price: Number(item.price) || 49999,
+          discount: Number(item.discount) || 5000,
+          emiMonthly: Math.round((Number(item.price) || 49999) / 12),
+          emiMonths: 12,
+          stock: Number(item.stockCount || item.stock) || 15,
+          image: item.imageUrl || PRODUCTS[index % PRODUCTS.length].image,
+          category: item.category || 'Smartphones',
+          brand: item.brand || 'Premium',
+          specs: item.specs || { ram: '8 GB', storage: '256 GB', camera: '50 MP', battery: '5000 mAh' },
+          colors: item.colors || PRODUCTS[0].colors,
+        }));
+        setProductsList(mapped);
+      }
+    }
+    loadApiProducts();
+  }, []);
   const [cartOpen, setCartOpen] = useState(false);
   const [trackedOrderId, setTrackedOrderId] = useState<string | null>(null);
   const [chatMsgs, setChatMsgs] = useState<ChatMessage[]>(CHAT_INIT);
@@ -101,6 +133,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   return (
     <AppContext.Provider
       value={{
+        productsList,
         cart,
         wishlist,
         cartCount,

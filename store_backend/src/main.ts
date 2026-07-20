@@ -9,6 +9,10 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }),
   );
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
   setupSwaggerConfig('/api-docs/v1', app);
   await app.listen(process.env.PORT ?? 3000);
 }
