@@ -40,22 +40,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (apiData && apiData.length > 0) {
         // Map backend products if available
         const mapped: Product[] = apiData.map((item: any, index: number) => ({
-          id: item.id || index + 1,
+          id: Number(item.id) || index + 1,
           name: item.name || item.productName || 'Mobile Phone',
-          tagline: item.description || 'Premium Smartphone',
-          badge: item.badge || 'NEW',
-          rating: item.rating || 4.8,
-          reviewsCount: item.reviewsCount || 120,
           price: Number(item.price) || 49999,
           discount: Number(item.discount) || 5000,
-          emiMonthly: Math.round((Number(item.price) || 49999) / 12),
-          emiMonths: 12,
-          stock: Number(item.stockCount || item.stock) || 15,
-          image: item.imageUrl || PRODUCTS[index % PRODUCTS.length].image,
-          category: item.category || 'Smartphones',
-          brand: item.brand || 'Premium',
-          specs: item.specs || { ram: '8 GB', storage: '256 GB', camera: '50 MP', battery: '5000 mAh' },
+          description: item.description || 'Premium Smartphone',
+          quantity: Number(item.quantity || item.stockCount || item.stock) || 15,
+          warranty: item.warranty || '1 Year Brand Warranty',
+          specifications: typeof item.specifications === 'string' ? item.specifications : (typeof item.specs === 'string' ? item.specs : 'Display:6.7" OLED|RAM:8GB|Battery:5000mAh'),
+          categoryId: item.categoryId || (typeof item.category === 'object' ? item.category?.id : 1) || 1,
           colors: item.colors || PRODUCTS[0].colors,
+          reviews: item.reviews || [],
+          image: item.image || item.imageUrl || PRODUCTS[index % PRODUCTS.length].image,
+          badge: item.badge || 'NEW',
         }));
         setProductsList(mapped);
       }
