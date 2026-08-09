@@ -49,6 +49,6 @@ export class DeliveryAddress extends BaseEntity<DeliveryAddress> {
   })
   countryCode: string;
 
-  @Column({ name: 'label', type: 'enum', enum: label, nullable: true })
+  @Column({ name: 'label', type: 'simple-enum', enum: label, nullable: true })
   label: label;
 }

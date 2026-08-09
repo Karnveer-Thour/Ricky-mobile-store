@@ -1,3 +1,4 @@
+import { CategoryRepository } from './Repositories/Category.repo';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoryService } from './category.service';
 
@@ -6,7 +7,10 @@ describe('CategoryService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CategoryService],
+      providers: [
+        CategoryService,
+        { provide: CategoryRepository, useValue: { find: jest.fn() } }
+      ],
     }).compile();
 
     service = module.get<CategoryService>(CategoryService);

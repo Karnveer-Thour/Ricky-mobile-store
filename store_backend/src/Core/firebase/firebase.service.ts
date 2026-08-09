@@ -1,18 +1,21 @@
-import { Injectable, OnModuleInit, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit, UnauthorizedException } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { firebaseConfig } from './firebase.config';
 import { role } from 'Modules/User/Model/Role.model';
 
 @Injectable()
 export class FirebaseService implements OnModuleInit {
+  private readonly logger = new Logger('FirebaseService');
+
   onModuleInit() {
     if (!admin.apps.length) {
       try {
         admin.initializeApp({
           credential: admin.credential.cert(firebaseConfig as admin.ServiceAccount),
         });
+        this.logger.log(`Firebase initialized successfully with project ID: ${firebaseConfig.project_id}`);
       } catch (error: any) {
-        console.warn('Firebase failed to initialize (running in offline mock mode):', error.message);
+        this.logger.warn(`Firebase failed to initialize (running in offline mock mode): ${error.message}`);
       }
     }
   }

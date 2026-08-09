@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit, Logger } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -59,4 +60,16 @@ import { GatewayModule } from 'Core/Gateways/gateway.module';
   ],
   exports: [FirebaseService],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  private readonly logger = new Logger('Database');
+
+  constructor(private readonly dataSource: DataSource) {}
+
+  onModuleInit() {
+    if (this.dataSource.isInitialized) {
+      this.logger.log(`Database connected successfully (${this.dataSource.options.type})`);
+    } else {
+      this.logger.warn('Database connection failed to initialize');
+    }
+  }
+}

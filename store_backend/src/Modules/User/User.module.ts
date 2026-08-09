@@ -7,12 +7,13 @@ import { User } from './Entities/User.entity';
 import { AddressRepository } from 'Modules/Address/Repositories/Address.repo';
 import { JwtModule } from '@nestjs/jwt';
 import { FirebaseService } from 'Core/Firebase/firebase.service';
+import { JWT_DEFAULT_EXPIRY } from 'Common/constants';
 
 @Module({
   imports: [
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1d' },
+      signOptions: { expiresIn: JWT_DEFAULT_EXPIRY },
     }),
     TypeOrmModule.forFeature([User]),
   ],

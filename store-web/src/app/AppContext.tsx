@@ -1,9 +1,8 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { PRODUCTS, Product, CartItem, ChatMessage, CHAT_INIT } from "./data";
-import { apiService } from "./services/apiService";
+import { createContext, useContext, useState, useRef, ReactNode } from "react";
+import { PRODUCTS, CartItem, ChatMessage, CHAT_INIT } from "./data";
+import { DEFAULT_SUPPORT_REPLY } from "./constants";
 
 interface AppContextType {
-  productsList: Product[];
   cart: CartItem[];
   wishlist: number[];
   cartCount: number;
@@ -30,35 +29,8 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [productsList, setProductsList] = useState<Product[]>(PRODUCTS);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<number[]>([]);
-
-  useEffect(() => {
-    async function loadApiProducts() {
-      const apiData = await apiService.fetchProducts();
-      if (apiData && apiData.length > 0) {
-        // Map backend products if available
-        const mapped: Product[] = apiData.map((item: any, index: number) => ({
-          id: Number(item.id) || index + 1,
-          name: item.name || item.productName || 'Mobile Phone',
-          price: Number(item.price) || 49999,
-          discount: Number(item.discount) || 5000,
-          description: item.description || 'Premium Smartphone',
-          quantity: Number(item.quantity || item.stockCount || item.stock) || 15,
-          warranty: item.warranty || '1 Year Brand Warranty',
-          specifications: typeof item.specifications === 'string' ? item.specifications : (typeof item.specs === 'string' ? item.specs : 'Display:6.7" OLED|RAM:8GB|Battery:5000mAh'),
-          categoryId: item.categoryId || (typeof item.category === 'object' ? item.category?.id : 1) || 1,
-          colors: item.colors || PRODUCTS[0].colors,
-          reviews: item.reviews || [],
-          image: item.image || item.imageUrl || PRODUCTS[index % PRODUCTS.length].image,
-          badge: item.badge || 'NEW',
-        }));
-        setProductsList(mapped);
-      }
-    }
-    loadApiProducts();
-  }, []);
   const [cartOpen, setCartOpen] = useState(false);
   const [trackedOrderId, setTrackedOrderId] = useState<string | null>(null);
   const [chatMsgs, setChatMsgs] = useState<ChatMessage[]>(CHAT_INIT);
@@ -120,7 +92,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           id: prev.length + 1,
           type: "TEXT",
           sender: "support",
-          message: "Thanks for your message! Our team will get back to you shortly. Typical response time is under 5 minutes.",
+          message: DEFAULT_SUPPORT_REPLY,
           time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         },
       ]);
@@ -130,7 +102,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   return (
     <AppContext.Provider
       value={{
-        productsList,
         cart,
         wishlist,
         cartCount,

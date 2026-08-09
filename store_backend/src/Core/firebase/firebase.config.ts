@@ -1,15 +1,16 @@
 import * as dotenv from 'dotenv';
+import { FIREBASE_DEFAULTS } from 'Common/constants';
 dotenv.config();
 
 export const firebaseConfig = {
-  type: process.env.TYPE || 'service_account',
-  project_id: process.env.PROJECT_ID || 'mock-project-id',
-  private_key_id: process.env.PRIVATE_KEY_ID || 'mock-private-key-id',
-  private_key: (process.env.PRIVATE_KEY || '-----BEGIN PRIVATE KEY-----\nMOCK_PRIVATE_KEY_CREDENTIAL_DATA\n-----END PRIVATE KEY-----\n').replace(/\\n/g, '\n'),
-  client_email: process.env.CLIENT_EMAIL || 'mock@project.iam.gserviceaccount.com',
-  client_id: process.env.CLIENT_ID || '123456789',
-  auth_uri: process.env.AUTH_URI || 'https://accounts.google.com/o/oauth2/auth',
-  token_uri: process.env.TOKEN_URI || 'https://oauth2.googleapis.com/token',
-  auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_X509_CERT_URL || 'https://www.googleapis.com/oauth2/v1/certs',
-  client_x509_cert_url: process.env.CLIENT_X509_CERT_URL || 'https://www.googleapis.com/renderer/certs',
+  type: process.env.TYPE || FIREBASE_DEFAULTS.TYPE,
+  project_id: process.env.PROJECT_ID || FIREBASE_DEFAULTS.PROJECT_ID,
+  private_key_id: process.env.PRIVATE_KEY_ID || FIREBASE_DEFAULTS.PRIVATE_KEY_ID,
+  private_key: (process.env.PRIVATE_KEY || FIREBASE_DEFAULTS.PRIVATE_KEY).replace(/\\n/g, '\n'),
+  client_email: process.env.CLIENT_EMAIL || FIREBASE_DEFAULTS.CLIENT_EMAIL,
+  client_id: process.env.CLIENT_ID || FIREBASE_DEFAULTS.CLIENT_ID,
+  auth_uri: process.env.AUTH_URI || FIREBASE_DEFAULTS.AUTH_URI,
+  token_uri: process.env.TOKEN_URI || FIREBASE_DEFAULTS.TOKEN_URI,
+  auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_X509_CERT_URL || FIREBASE_DEFAULTS.AUTH_PROVIDER_X509_CERT_URL,
+  client_x509_cert_url: process.env.CLIENT_X509_CERT_URL || FIREBASE_DEFAULTS.CLIENT_X509_CERT_URL,
 };

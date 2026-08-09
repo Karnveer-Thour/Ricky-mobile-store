@@ -1,3 +1,5 @@
+import { DeliveryAddressRepository } from './Repositories/DeliveryAddress.repo';
+import { UserRepository } from '../User/Repositories/User.repo';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DeliveryAddressService } from './delivery-address.service';
 
@@ -6,7 +8,11 @@ describe('DeliveryAddressService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [DeliveryAddressService],
+      providers: [
+        DeliveryAddressService,
+        { provide: DeliveryAddressRepository, useValue: { find: jest.fn() } },
+        { provide: UserRepository, useValue: { findOne: jest.fn() } }
+      ],
     }).compile();
 
     service = module.get<DeliveryAddressService>(DeliveryAddressService);

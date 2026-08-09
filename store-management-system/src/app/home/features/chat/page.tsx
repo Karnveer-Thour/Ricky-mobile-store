@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
 import { Send, AlertCircle, AlertTriangle, ShieldAlert, CheckCircle2 } from "lucide-react";
+import { UPI_SPLIT_PAY_URL, CHECKOUT_RETRY_URL } from "@/constants";
 
 interface CustomerChat {
   id: string;
@@ -101,11 +102,11 @@ export default function ChatWorkspacePage() {
   const handleCannedClick = (reply: string) => {
     let text = "";
     if (reply === "Send UPI Split Link") {
-      text = "Here is your customized UPI Split Link to complete the transaction: https://upi.rickystore.in/pay/rms-split-pay";
+      text = `Here is your customized UPI Split Link to complete the transaction: ${UPI_SPLIT_PAY_URL}`;
     } else if (reply === "Verify Bajaj Card") {
       text = "I've triggered a manual verification link to your mobile number to authorize the Bajaj cardless limit.";
     } else {
-      text = "Please use this link to retry your checkout directly: https://rickymobilestore.in/checkout?retry=true";
+      text = `Please use this link to retry your checkout directly: ${CHECKOUT_RETRY_URL}`;
     }
     handleSend(text);
   };

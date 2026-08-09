@@ -43,7 +43,7 @@ export class Payment extends BaseEntity<Payment> {
   })
   @Column({
     name: 'paymentMethod',
-    type: 'enum',
+    type: 'simple-enum',
     enum: PaymentMethod,
     default: PaymentMethod.CARD,
   })

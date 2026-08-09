@@ -33,7 +33,7 @@ export class EmiDetails extends BaseEntity<EmiDetails> {
 
   @Column({
     name: 'approvalStatus',
-    type: 'enum',
+    type: 'simple-enum',
     enum: EmiStatus,
     default: EmiStatus.PENDING,
   })

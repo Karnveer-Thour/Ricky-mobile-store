@@ -20,7 +20,7 @@ export class Chat extends BaseEntity<Chat> {
 
   @Column({
     name: 'messageType',
-    type: 'enum',
+    type: 'simple-enum',
     enum: ChatMessageType,
     default: ChatMessageType.TEXT,
   })

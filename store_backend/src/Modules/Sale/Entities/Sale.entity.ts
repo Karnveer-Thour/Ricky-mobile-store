@@ -14,7 +14,7 @@ export class Sale extends BaseEntity<Sale> {
   @OneToMany(() => SaleItem, (items) => items.sale, { eager: true, cascade: true })
   products: SaleItem[];
 
-  @Column({ name: 'status', type: 'enum', enum: status, nullable: false })
+  @Column({ name: 'status', type: 'simple-enum', enum: status, nullable: false })
   status: status;
 
   @Column({ name: 'lender', type: 'varchar', length: 50, nullable: true })
@@ -38,7 +38,7 @@ export class Sale extends BaseEntity<Sale> {
   @Column({ name: 'riderLng', type: 'decimal', precision: 10, scale: 6, nullable: true })
   riderLng: number;
 
-  @Column({ name: 'riderLocationUpdatedAt', type: 'timestamp', nullable: true })
+  @Column({ name: 'riderLocationUpdatedAt', type: process.env.DB_TYPE === 'postgres' ? 'timestamp' : 'datetime', nullable: true })
   riderLocationUpdatedAt: Date;
 
   //Inverse relations

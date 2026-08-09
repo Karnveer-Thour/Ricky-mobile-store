@@ -76,7 +76,7 @@ export class User extends BaseEntity<User> {
   })
   pictureUrl: string;
 
-  @Column({ name: 'role', type: 'enum', enum: role, nullable: false })
+  @Column({ name: 'role', type: 'simple-enum', enum: role, nullable: false })
   role: role;
 
   @OneToOne(() => Address, (address) => address.userAddress, {
