@@ -40,6 +40,7 @@ export class ProductReviewService {
       const productReview: ProductReview = {
         title: productReviewData.title,
         description: productReviewData?.description ?? '',
+        rating: productReviewData.rating,
         reviewedBy: user,
         reviewedProduct: product,
       };

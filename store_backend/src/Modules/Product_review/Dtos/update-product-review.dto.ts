@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsInt, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 import { BaseDto } from 'Common/Dto/Base.dto';
 
 export class UpdateProductReview extends BaseDto {
@@ -24,4 +24,16 @@ export class UpdateProductReview extends BaseDto {
   @IsOptional()
   @MaxLength(550)
   description: string;
+
+  @ApiProperty({
+    description: 'Star rating 1-5',
+    example: 4,
+    type: 'integer',
+    required: false,
+  })
+  @IsInt()
+  @IsOptional()
+  @Min(1)
+  @Max(5)
+  rating?: number;
 }

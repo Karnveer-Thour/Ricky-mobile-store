@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 import { BaseDto } from 'Common/Dto/Base.dto';
 
 export class CreateProductReview extends BaseDto {
@@ -44,4 +44,16 @@ export class CreateProductReview extends BaseDto {
   @IsString()
   @IsNotEmpty()
   reviewedProductId: string;
+
+  @ApiProperty({
+    description: 'Star rating 1-5',
+    example: 4,
+    type: 'integer',
+    required: true,
+  })
+  @IsInt()
+  @Min(1)
+  @Max(5)
+  @IsNotEmpty()
+  rating: number;
 }

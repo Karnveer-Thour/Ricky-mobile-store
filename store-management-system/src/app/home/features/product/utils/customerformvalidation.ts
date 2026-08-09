@@ -10,7 +10,7 @@ export const Customerformvalidationschema = yup.object().shape({
   manual_Login: yup.boolean().required("Manual login selection is required"),
   rating: yup
     .number()
-    .min(0, "Minimum rating is 1")
+    .min(1, "Minimum rating is 1")
     .max(5, "Maximum rating is 5")
     .required("Rating is required"),
 });
@@ -21,7 +21,8 @@ export const CustomerUpdateformvalidationschema = yup.object().shape({
   manual_Login: yup.boolean().required("Manual login selection is required"),
   rating: yup
     .number()
-    .min(0, "Minimum rating is 1")
+    .min(1, "Minimum rating is 1")
     .max(5, "Maximum rating is 5")
     .required("Rating is required"),
 });
+

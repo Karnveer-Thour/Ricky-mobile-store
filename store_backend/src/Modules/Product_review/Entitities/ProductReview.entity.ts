@@ -17,6 +17,9 @@ export class ProductReview extends BaseEntity<ProductReview> {
   })
   description: string;
 
+  @Column({ name: 'rating', type: 'int', nullable: false })
+  rating: number;
+
   @ManyToOne(() => User, (customer) => customer.reviews, { eager: true })
   @JoinColumn({ name: 'reviewedBy' })
   reviewedBy: User;

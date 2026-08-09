@@ -33,7 +33,7 @@ function addCustomer() {
           <Input
             id="First Name"
             placeholder="Enter First Name"
-            {...register("District")}
+            {...register("name")}
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
@@ -45,7 +45,7 @@ function addCustomer() {
           <Input
             id="Last Name"
             placeholder="Enter Last Name"
-            {...register("State")}
+            {...register("lastName")}
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
@@ -53,7 +53,7 @@ function addCustomer() {
           <Input
             id="Email"
             placeholder="Enter Email Address"
-            {...register("pincode")}
+            {...register("email")}
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
