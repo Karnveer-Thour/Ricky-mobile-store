@@ -1,8 +1,8 @@
 "use client";
 import Select from "@/components/select";
 import { flexRender } from "@tanstack/react-table";
-
 import { Header } from "@tanstack/react-table";
+import cn from "classnames";
 
 type HeadProps = {
   header: Header<any, any>;
@@ -18,9 +18,16 @@ function Head({
   isDark = false,
 }: HeadProps) {
   return (
-    <th className="py-3 px-6 text-left">
-      <div className="flex items-center justify-between w-full">
-        {flexRender(header.column.columnDef.header, header.getContext())}
+    <th
+      className={cn(
+        "py-3 px-5 text-left text-xs font-semibold uppercase tracking-wider whitespace-nowrap",
+        isDark ? "text-slate-400" : "text-slate-500",
+      )}
+    >
+      <div className="flex items-center gap-2">
+        <span className="flex-1">
+          {flexRender(header.column.columnDef.header, header.getContext())}
+        </span>
         <Select
           onChange={(e) => {
             const value = e.target.value;
@@ -34,10 +41,10 @@ function Head({
           }}
           isDark={isDark}
         >
-          <option value="">Select</option>
-          <option value="Asc">Ascending ⬆️</option>
-          <option value="Desc">Descending ⬇️</option>
-          <option value="Hide">Hide 👁️</option>
+          <option value="">⇅</option>
+          <option value="Asc">↑ Asc</option>
+          <option value="Desc">↓ Desc</option>
+          <option value="Hide">Hide</option>
         </Select>
       </div>
     </th>

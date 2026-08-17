@@ -19,7 +19,7 @@ export class UserController {
     return this.userService.register(user);
   }
 
-  @Post('login/social/{:token}')
+  @Post('login/social/:token')
   async loginWithSocialMedia(@Param('token') token: string): Promise<baseResponseDto> {
     return this.userService.loginWithSocialMedia(token);
   }
@@ -30,7 +30,7 @@ export class UserController {
     return this.userService.login(userCredentials);
   }
 
-  @Put('{:id}')
+  @Put(':id')
   async updateUserById(
     @Param('id') id: string,
     @Body() UserData: updateUserDto,
@@ -47,12 +47,12 @@ export class UserController {
     return this.userService.getAllCustomers(pageNumber, limitNumber, searchText);
   }
 
-  @Get('{:token}')
+  @Get(':token')
   async getByToken(@Param('token') token: string): Promise<baseResponseDto> {
     return this.userService.getByToken(token);
   }
 
-  @Delete('{:id}')
+  @Delete(':id')
   async deleteById(@Param('id') id: string): Promise<baseResponseDto> {
     return this.userService.softDeleteUserById(id);
   }

@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
 import ToggleButton from "@/components/togglebutton";
 
-function addProduct() {
+function updateSale() {
   const router = useRouter();
   const isDark = useSelector((store: storeType) => store.DarkMode.isDarkMode);
 
@@ -18,35 +18,41 @@ function addProduct() {
     handleSubmit,
     formState: { errors },
   } = useForm({});
+
+  const onSubmit = (data: any) => {
+    console.log("Updating sale:", data);
+    router.back();
+  };
+
   return (
     <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
-      <p className="text-2xl font-bold mt-5">Update City</p>
-      <form action="" className="flex-1 w-full p-3">
+      <p className="text-2xl font-bold mt-5">Update Sale</p>
+      <form id="update-sale-form" onSubmit={handleSubmit(onSubmit)} className="flex-1 w-full p-3">
         <Inputcontainer type={"City Name"} error={errors?.name} isDark={isDark}>
           <Input
             id="City Name"
             placeholder="Enter city name"
-            {...register("City Name")}
+            {...register("name")}
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"District"} error={errors?.price} isDark={isDark}>
+        <Inputcontainer type={"District"} error={errors?.district} isDark={isDark}>
           <Input
             id="District"
             placeholder="Enter city district"
-            {...register("District")}
+            {...register("district")}
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"State"} error={errors?.price} isDark={isDark}>
+        <Inputcontainer type={"State"} error={errors?.state} isDark={isDark}>
           <Input
             id="State"
             placeholder="Enter city State"
-            {...register("State")}
+            {...register("state")}
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Pincode"} error={errors?.price} isDark={isDark}>
+        <Inputcontainer type={"Pincode"} error={errors?.pincode} isDark={isDark}>
           <Input
             id="Pincode"
             placeholder="Enter city pincode"
@@ -59,16 +65,16 @@ function addProduct() {
             isDark={isDark}
             activeLabel="Accepting"
             inactiveLabel="Not Accepting"
-            handler={() => {}}
+            handler={(val: boolean) => console.log("Toggle status:", val)}
           />
         </div>
       </form>
       <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">
         <Button name={"Cancel"} handler={() => router.back()} />
-        <Button name={"Submit"} handler={() => {}} />
+        <Button name={"Submit"} handler={handleSubmit(onSubmit)} />
       </div>
     </BlurredPopupLayout>
   );
 }
 
-export default addProduct;
+export default updateSale;

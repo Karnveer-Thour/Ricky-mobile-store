@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { HttpException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { baseResponseDto } from 'Common/Dto/BaseResponse.dto';
 import { AcceptedCitiesRepository } from 'Modules/Accepted_cities/Repositories/accepted-cities.Repo';
 import { CategoryRepository } from 'Modules/Category/Repositories/Category.repo';
@@ -88,7 +88,10 @@ export class GlobalService {
     };
   } catch (error) {
     console.error('Error executing global search:', error);
-    throw new InternalServerErrorException('Error executing global search', error);
+    if (error instanceof HttpException) throw error;
+    throw new InternalServerErrorException(
+      error?.message ? `Error executing global search: ${error.message}` : 'Error executing global search',
+    );
   }
 }
 

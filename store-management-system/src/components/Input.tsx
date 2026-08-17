@@ -19,13 +19,13 @@ function Input({
       id={id}
       placeholder={placeholder}
       className={`
-        w-full px-3 py-2 
-        rounded-md  
-        ${customMargin ?? "mt-1.5"}
-        text-gray-600
-        appearance-none 
-        shadow-none 
-        transition 
+        w-full px-4 py-3 
+        rounded-2xl
+        ${customMargin ?? "mt-0"}
+        text-sm text-white placeholder-gray-500
+        bg-white/5 border border-white/10
+        focus:outline-none focus:border-[#00cfff]/60 focus:bg-white/10
+        transition-all duration-200
         ${className}
       `}
       {...props}

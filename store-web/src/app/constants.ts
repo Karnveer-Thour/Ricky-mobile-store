@@ -1,5 +1,7 @@
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-export const APP_TITLE = import.meta.env.VITE_APP_TITLE || 'Ricky Mobile Store';
-export const DEFAULT_SUPPORT_REPLY = 
-  import.meta.env.VITE_CHAT_SUPPORT_REPLY || 
-  'Thanks for your message! Our team will get back to you shortly. Typical response time is under 5 minutes.';
+import { ENV_CONFIG } from './config/env.config';
+
+export * from './config/env.config';
+
+export const API_URL = ENV_CONFIG.API_BASE_URL;
+export const APP_TITLE = ENV_CONFIG.APP_TITLE;
+export const DEFAULT_SUPPORT_REPLY = ENV_CONFIG.DEFAULT_SUPPORT_REPLY;

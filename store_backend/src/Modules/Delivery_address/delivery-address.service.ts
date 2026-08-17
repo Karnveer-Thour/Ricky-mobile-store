@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -33,6 +34,7 @@ export class DeliveryAddressService {
       }
       return false;
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to set delivery address as not default');
     }
   }
@@ -53,6 +55,7 @@ export class DeliveryAddressService {
       await this.DeliveryAddressRepository.save(existingDeliveryAddress);
       return true;
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to set delivery address as not default');
     }
   }
@@ -73,6 +76,7 @@ export class DeliveryAddressService {
       await this.DeliveryAddressRepository.save(existingDeliveryAddress);
       return true;
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to set delivery address as default');
     }
   }
@@ -115,6 +119,7 @@ export class DeliveryAddressService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to add new delivery address');
     }
   }
@@ -150,6 +155,7 @@ export class DeliveryAddressService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to update delivery address');
     }
   }
@@ -175,18 +181,22 @@ export class DeliveryAddressService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to toggle delivery address');
     }
   }
 
   async getAll(page: number, limit: number): Promise<baseResponseDto> {
     try {
+      const pageNumber = Math.max(1, page || 1);
+      const limitNumber = Math.max(1, limit || 10);
+
       const query = this.DeliveryAddressRepository.createQueryBuilder('d_addresses')
         .leftJoinAndSelect('d_addresses.address', 'address')
         .leftJoinAndSelect('d_addresses.customer', 'customer')
         .orderBy('d_addresses.createdAt', 'DESC')
-        .skip(page - 1)
-        .take(limit);
+        .skip((pageNumber - 1) * limitNumber)
+        .take(limitNumber);
       const [deliveryAddresses, total] = await query.getManyAndCount();
       return {
         status: true,
@@ -194,12 +204,13 @@ export class DeliveryAddressService {
         data: {
           deliveryAddresses,
           total,
-          page,
-          pageSize: limit,
-          totalPages: Math.ceil(total / limit),
+          page: pageNumber,
+          pageSize: limitNumber,
+          totalPages: Math.ceil(total / limitNumber),
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to fetch delivery addresses');
     }
   }
@@ -218,6 +229,7 @@ export class DeliveryAddressService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to fetch delivery address');
     }
   }
@@ -242,6 +254,7 @@ export class DeliveryAddressService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to delete a particular delivery address');
     }
   }

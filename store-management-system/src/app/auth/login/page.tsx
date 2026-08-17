@@ -3,6 +3,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { Smartphone, ShieldCheck, Mail, Lock } from "lucide-react";
 import Inputcontainer from "@/components/Inputcontainer";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
@@ -14,6 +16,7 @@ import PasswordInput from "@/components/passwordInput";
 
 export default function Login() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -25,76 +28,77 @@ export default function Login() {
   const submitForm = () => {
     try {
       dispatch(SUCCESSALERT("Login Successfully"));
+      router.push("/home/features/dashboard");
     } catch (error) {
       throw new Error(String(error));
     }
   };
 
   return (
-    <>
-      <Maincontainer>
-        <Formcontainer className="max-w-xl p-8">
-          <div className="h-32 flex justify-center items-center">
-            <img
-              src="/assets/images/logo.png"
-              alt="loading"
-              className=" border-2 h-full"
-            />
-          </div>
-          <h1 className="text-3xl font-bold text-center text-white p-2 h-auto">
-            Welcome to{" "}
-            <span className="text-[#ffb396]">Ricky mobile store!</span>
-          </h1>
-          <h2 className="text-xl text-center text-white p-2 h-auto">
-            Admin Login
-          </h2>
+    <Maincontainer>
+      <Formcontainer className="max-w-md p-8 sm:p-10 flex flex-col items-center">
+        {/* Brand Logo Header */}
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00cfff] to-[#0077ff] flex items-center justify-center text-[#07070f] shadow-xl shadow-[#00cfff]/25 mb-4 hover:scale-105 transition-transform duration-300 cursor-pointer">
+          <Smartphone size={28} className="stroke-[2.5]" />
+        </div>
 
-          <form
-            className="flex flex-col justify-center items-center"
-            onSubmit={handleSubmit(() => {
-              submitForm();
-            })}
-          >
-            <Inputcontainer type={"email"} error={errors?.email} isDark={true}>
+        <h1
+          style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+          className="text-3xl font-extrabold text-white tracking-widest text-center"
+        >
+          RICKY<span className="text-[#00cfff]">MOBILE</span>
+        </h1>
+
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#00cfff]/10 border border-[#00cfff]/20 rounded-full text-xs font-bold text-[#00cfff] mt-2 mb-6">
+          <ShieldCheck size={13} />
+          ADMIN MANAGEMENT PORTAL
+        </div>
+
+        <form
+          className="w-full flex flex-col gap-4"
+          onSubmit={handleSubmit(() => {
+            submitForm();
+          })}
+        >
+          <Inputcontainer type="email" error={errors?.email} isDark={true}>
+            <div className="relative flex items-center">
+              <Mail size={16} className="absolute left-4 text-gray-500 pointer-events-none" />
               <Input
                 id="email"
-                placeholder="Enter your email"
+                placeholder="Ricky@gmail.com"
                 {...register("email")}
-                className={
-                  "border-2 border-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-transparent text-white"
-                }
+                className="pl-11"
               />
-            </Inputcontainer>
-            <Inputcontainer
-              type={"password"}
-              error={errors?.password}
-              isDark={true}
-            >
-              <PasswordInput>
-                {({ passwordVisible }) => (
+            </div>
+          </Inputcontainer>
+
+          <Inputcontainer type="password" error={errors?.password} isDark={true}>
+            <PasswordInput>
+              {({ passwordVisible }) => (
+                <div className="relative flex-1 flex items-center">
+                  <Lock size={16} className="absolute left-4 text-gray-500 pointer-events-none" />
                   <Input
                     type={passwordVisible ? "text" : "password"}
                     id="password"
-                    placeholder="Enter your password"
-                    className="flex-1 px-4 py-2 rounded-md focus:outline-none border-none bg-transparent text-white"
-                    customMargin="mt-0"
+                    placeholder="Enter admin password"
+                    className="pl-11 bg-transparent border-none focus:border-none focus:bg-transparent"
                     {...register("password")}
                   />
-                )}
-              </PasswordInput>
-            </Inputcontainer>
-            <Button
-              name={"Login"}
-              handler={undefined}
-              value={undefined}
-              className={"max-w-[100%]"}
-            />
-          </form>
-        </Formcontainer>
-        <h1 className="mt-8 text-white">
-          © Copyrights Karanveer Thour 2025. All Rights Reserved.
-        </h1>
-      </Maincontainer>
-    </>
+                </div>
+              )}
+            </PasswordInput>
+          </Inputcontainer>
+
+          <Button
+            name="LOGIN TO DASHBOARD"
+            className="mt-2"
+          />
+        </form>
+      </Formcontainer>
+
+      <p className="mt-8 text-xs text-gray-500 text-center tracking-wide">
+        © {new Date().getFullYear()} Ricky Mobile Store · Admin Security System
+      </p>
+    </Maincontainer>
   );
 }

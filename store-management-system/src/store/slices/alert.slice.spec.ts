@@ -37,7 +37,7 @@ describe('Alert Redux Slice Reducer', () => {
       message: 'Active Alert Message',
       id: 123456789,
     };
-    const nextState = alertReducer(activeState, CLOSEALERT(null));
+    const nextState = alertReducer(activeState, CLOSEALERT());
 
     expect(nextState.type).toBeNull();
     expect(nextState.message).toBeNull();

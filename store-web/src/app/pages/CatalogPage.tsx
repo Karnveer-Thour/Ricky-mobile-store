@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useApp } from "../AppContext";
-import { PRODUCTS, CATEGORIES, pct, fmt } from "../data";
+import { pct, fmt } from "../data";
 import {
   Smartphone, Heart, Zap, Truck, Shield, CreditCard, MapPin, CheckCircle2, BadgePercent, ChevronRight, Star
 } from "lucide-react";
@@ -11,7 +11,7 @@ function StarRow({ rating, size = 13 }: { rating: number; size?: number }) {
   return (
     <div className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map((s) => (
-        <Star key={s} size={size} className={s <= rating ? "text-yellow-400 fill-yellow-400" : "text-gray-700"} />
+        <Star key={s} size={size} className={s <= rating ? "text-yellow-400 fill-[#00cfff]" : "text-gray-700"} />
       ))}
     </div>
   );
@@ -19,11 +19,11 @@ function StarRow({ rating, size = 13 }: { rating: number; size?: number }) {
 
 export default function CatalogPage() {
   const navigate = useNavigate();
-  const { wishlist, toggleWishlist, addToCart } = useApp();
+  const { products, categories, wishlist, toggleWishlist, addToCart } = useApp();
   const [catFilter, setCatFilter] = useState<number | null>(null);
   const [search, setSearch] = useState("");
 
-  const filtered = PRODUCTS.filter((p) => {
+  const filtered = products.filter((p) => {
     const mc = catFilter === null || p.categoryId === catFilter;
     const ms = search === "" || p.name.toLowerCase().includes(search.toLowerCase());
     return mc && ms;
@@ -117,7 +117,7 @@ export default function CatalogPage() {
           <BadgePercent size={16} className="text-[#ff2d55] shrink-0" />
           <p className="text-sm text-white">
             <span className="font-bold text-[#ff2d55]">SALE ON NOW</span>{" "}
-            <span className="text-gray-400">— Up to {pct(PRODUCTS[1].price, PRODUCTS[1].discount)}% off Samsung S24 Ultra. Limited stock.</span>
+            <span className="text-gray-400">— Up to {products[1] ? pct(products[1].price, products[1].discount) : 15}% off flagship devices. Limited stock.</span>
           </p>
           <ChevronRight size={14} className="text-gray-600 ml-auto shrink-0" />
         </div>
@@ -133,7 +133,7 @@ export default function CatalogPage() {
             >
               All
             </button>
-            {CATEGORIES.map((c) => (
+            {categories.map((c) => (
               <button
                 key={c.id}
                 onClick={() => setCatFilter(c.id)}

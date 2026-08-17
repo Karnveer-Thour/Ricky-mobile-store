@@ -14,6 +14,8 @@ import Head from "./components/head";
 import Row from "./components/row";
 import Pagination from "./features/pagination";
 import MobileCards from "./mobileCards";
+import { Inbox } from "lucide-react";
+import cn from "classnames";
 
 interface TableProps {
   columns: any[];
@@ -44,14 +46,10 @@ function Table({
   const table = useReactTable({
     columns,
     data,
-
     getCoreRowModel: getCoreRowModel(),
-
     getPaginationRowModel: getPaginationRowModel(),
-
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
-
     getFilteredRowModel: getFilteredRowModel(),
     onGlobalFilterChange: setGlobalFilter,
     state: {
@@ -60,18 +58,39 @@ function Table({
       globalFilter,
     },
   });
+
   return (
-    <div className={`h-full w-full bg-transparent`}>
-      {/* Desktop Table */}
+    <div className="h-full w-full">
+      {/* ── Desktop Table ───────────────────────────── */}
       {data?.length === 0 ? (
-        <div className="text-center hidden md:block py-12 text-gray-500">
-          No customers found
+        /* Empty state */
+        <div
+          className={cn(
+            "hidden md:flex flex-col items-center justify-center py-20 rounded-2xl border mx-4",
+            isDark
+              ? "bg-slate-800/60 border-white/8 text-slate-500"
+              : "bg-white border-slate-200 text-slate-400",
+          )}
+        >
+          <Inbox size={44} strokeWidth={1.2} className="mb-3 opacity-40" />
+          <p className="font-semibold text-sm">No records found</p>
+          <p className="text-xs mt-1 opacity-60">
+            Try adjusting your search or filters
+          </p>
         </div>
       ) : (
         <>
-          <div className=" p-3 hidden md:flex justify-between items-center">
+          {/* Filter + Column toolbar */}
+          <div
+            className={cn(
+              "hidden md:flex justify-between items-center px-5 py-3 rounded-t-2xl border-b",
+              isDark
+                ? "bg-slate-800/80 border-white/8"
+                : "bg-white border-slate-100",
+            )}
+          >
             <GlobalFilter setGlobalFilter={setGlobalFilter} isDark={isDark} />
-            <div className="w-45 h-12 ">
+            <div className="w-44 h-10">
               <ColumnVisibility
                 columns={columns}
                 handleColumnVisibility={handleColumnVisibility}
@@ -80,13 +99,30 @@ function Table({
               />
             </div>
           </div>
-          <div className="overflow-x-auto hidden md:flex w-full md:flex-col mt-5">
-            <table className=" bg-white shadow-md rounded-b-xl w-full shrink-3 overflow-hidden">
+
+          {/* Table */}
+          <div
+            className={cn(
+              "overflow-x-auto hidden md:flex w-full md:flex-col",
+              isDark
+                ? "bg-slate-800/80 border-white/8"
+                : "bg-white",
+              "rounded-b-2xl border-x border-b",
+              isDark ? "border-white/8" : "border-slate-200",
+            )}
+          >
+            <table className="w-full text-sm">
+              {/* Header */}
               <thead
-                className={` ${isDark ? "text-white bg-gray-700" : "text-gray-700 bg-gray-200"} w-full`}
+                className={cn(
+                  "sticky top-0 z-10 border-b",
+                  isDark
+                    ? "bg-slate-900/90 text-slate-400 border-white/8"
+                    : "bg-slate-50 text-slate-500 border-slate-200",
+                )}
               >
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id} className="">
+                  <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) =>
                       header.id !== "Actions" ? (
                         <Head
@@ -100,19 +136,15 @@ function Table({
                         <th
                           key={header.id}
                           className="py-3 px-6 text-left"
-                        ></th>
+                        />
                       ),
                     )}
                   </tr>
                 ))}
               </thead>
 
-              <tbody
-                className={
-                  "text-center text-lg font-bold w-full" +
-                  (isDark ? " text-gray-800 bg-gray-300" : " text-gray-700")
-                }
-              >
+              {/* Body */}
+              <tbody>
                 {table.getRowModel().rows.map((row: any) => (
                   <Row row={row} key={row.id} />
                 ))}
@@ -123,7 +155,7 @@ function Table({
         </>
       )}
 
-      {/* Mobile Cards */}
+      {/* ── Mobile Cards ────────────────────────────── */}
       <MobileCards data={data} />
     </div>
   );

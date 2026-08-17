@@ -24,6 +24,7 @@ import { DeliveryAddressModule } from './Modules/Delivery_address/delivery-addre
 import { BanksModule } from './Modules/banks/banks.module';
 import { GlobalModule } from 'Modules/global/global.module';
 import { GatewayModule } from 'Core/Gateways/gateway.module';
+import { UploadModule } from './Modules/Upload/upload.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { GatewayModule } from 'Core/Gateways/gateway.module';
     BanksModule,
     GlobalModule,
     GatewayModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [

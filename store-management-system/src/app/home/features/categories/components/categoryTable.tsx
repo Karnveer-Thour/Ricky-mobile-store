@@ -3,45 +3,55 @@ import Table from "@/components/table/table";
 import { Edit, TrashIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Delete from "./delete";
+import Delete from "./Delete";
+import { categoryService } from "@/services/category.service";
 
 const CategoryTable = ({ isDark = false }) => {
-  const [customerDeleting, setCustomerDeleting] = useState(false);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [categoryDeleting, setCategoryDeleting] = useState(false);
   const pathName = usePathname();
   const router = useRouter();
-  const [customerData, setCustomerData] = useState({
+  const [selectedCategory, setSelectedCategory] = useState({
     id: "",
     Name: "",
   });
 
+  const loadCategories = async () => {
+    setLoading(true);
+    try {
+      const res = await categoryService.fetchCategories();
+      setCategories(res || []);
+    } catch (err) {
+      console.warn("Failed to load categories:", err);
+      setCategories([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
   const handleDelete = (data: any) => {
-    if (customerDeleting) {
-      setCustomerDeleting(false);
-    } else if (!customerDeleting) {
-      setCustomerDeleting(true);
-      setCustomerData({
-        id: data._id,
+    if (categoryDeleting) {
+      setCategoryDeleting(false);
+    } else {
+      setCategoryDeleting(true);
+      setSelectedCategory({
+        id: data._id || data.id,
         Name: data.name,
       });
     }
   };
 
   const handleUpdate = (data: any) => {
-    if (location.pathname === "/customers") {
-      //   navigate("/customers/update");
-      const Data = {
-        id: data._id,
-        Name: data.name,
-      };
-      setCustomerData(Data);
-      localStorage.setItem("customerData", JSON.stringify(Data));
-    } else if (location.pathname === "/customers/update") {
-      //   navigate("/customers");
-      localStorage.removeItem("customerData");
+    if (typeof window !== "undefined") {
+      localStorage.setItem("categoryData", JSON.stringify(data));
     }
+    router.push(`${pathName}/update`);
   };
-
-  // Define table columns
 
   const columns = [
     {
@@ -60,16 +70,16 @@ const CategoryTable = ({ isDark = false }) => {
       cell: ({ row }: { row: any }) => (
         <div className="flex gap-2">
           <button
-            onClick={() => handleUpdate(router.push(`${pathName}/update`))}
-            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+            onClick={() => handleUpdate(row.original)}
+            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 cursor-pointer"
           >
-            <Edit />
+            <Edit size={16} />
           </button>
           <button
             onClick={() => handleDelete(row.original)}
-            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 cursor-pointer"
           >
-            <TrashIcon />
+            <TrashIcon size={16} />
           </button>
         </div>
       ),
@@ -98,24 +108,21 @@ const CategoryTable = ({ isDark = false }) => {
   }, [columnVisibility.Name, columnVisibility.Description]);
 
   return (
-    <div className="w-[95%] mr-10 sm:ms-7">
-      {customerDeleting && (
+    <div className="w-full">
+      {categoryDeleting && (
         <Delete
-          handleDelete={() => handleDelete(customerData)}
-          Id={customerData?.id}
-          Name={customerData?.Name}
+          handleDelete={() => {
+            setCategoryDeleting(false);
+            loadCategories();
+          }}
+          Id={selectedCategory?.id}
+          Name={selectedCategory?.Name}
           isDark={isDark}
         />
       )}
       <Table
         columns={columns}
-        data={[
-          {
-            _id: 1,
-            name: "Smartphone",
-            description: "Smart devices",
-          },
-        ]}
+        data={categories}
         columnVisibility={columnVisibility}
         setColumnVisibility={setColumnVisibility}
         isDark={isDark}

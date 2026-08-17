@@ -1,11 +1,9 @@
 import { Injectable, Logger, RequestTimeoutException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ENV_CONFIG } from 'Common/constants';
 
 @Injectable()
 export class BanksService {
   private readonly logger = new Logger(BanksService.name);
-
-  constructor(private readonly configService: ConfigService) {}
 
   private maskMobile(mobile: string): string {
     if (!mobile || mobile.length < 4) return '***';
@@ -16,8 +14,7 @@ export class BanksService {
     const masked = this.maskMobile(mobile);
     this.logger.log(`Checking Bajaj Finserv eligibility for mobile: ${masked}, amount: ₹${amount}`);
 
-    // Retrieve fake credentials from config service to demonstrate correct pattern
-    const apiSecret = this.configService.get<string>('BAJAJ_API_SECRET') || 'default-bajaj-secret';
+    const apiSecret = ENV_CONFIG.BANKS.BAJAJ_API_SECRET;
 
     // Simulate standard eligibility logic with 8s timeout guard
     return Promise.race([
@@ -44,7 +41,7 @@ export class BanksService {
     const masked = this.maskMobile(mobile);
     this.logger.log(`Checking Home Credit eligibility for mobile: ${masked}, amount: ₹${amount}`);
 
-    const apiSecret = this.configService.get<string>('HOMECREDIT_API_SECRET') || 'default-hc-secret';
+    const apiSecret = ENV_CONFIG.BANKS.HOMECREDIT_API_SECRET;
 
     return Promise.race([
       new Promise((resolve) => {

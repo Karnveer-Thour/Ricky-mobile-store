@@ -1,4 +1,5 @@
 "use client";
+import React, { useState, useEffect } from "react";
 import BlurredPopupLayout from "@/layout/blurredPopupLayout";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
@@ -7,43 +8,91 @@ import Input from "@/components/Input";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
-import ToggleButton from "@/components/togglebutton";
-import UploaderInput from "@/components/inputuploaders/multiuploaderinput/uploaderInput";
-import { Eye, EyeClosed } from "lucide-react";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import TextField from "@mui/material/TextField";
-import PasswordInput from "@/components/passwordInput";
-import SingleUploaderInput from "@/components/inputuploaders/singleuploaderinput/singleuploaderinput";
+import { customerService } from "@/services/customer.service";
 
 function updateCustomer() {
   const router = useRouter();
   const isDark = useSelector((store: storeType) => store.DarkMode.isDarkMode);
+  const [customerId, setCustomerId] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({});
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("customerData");
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          setCustomerId(parsed._id || parsed.id || "");
+          setValue("firstName", parsed.firstName || parsed.name || "");
+          setValue("lastName", parsed.lastName || "");
+          setValue("email", parsed.email || "");
+          setValue("mobileNumber", parsed.mobile || parsed.mobileNumber || "");
+        } catch (e) {
+          console.warn("Failed to parse customerData from localStorage", e);
+        }
+      }
+    }
+  }, [setValue]);
+
+  const onSubmit = async (data: any) => {
+    if (!customerId) {
+      setSubmitError("No customer ID selected for update.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError("");
+
+    const payload = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      mobileNumber: data.mobileNumber,
+    };
+
+    const res = await customerService.updateCustomer(customerId, payload);
+    setIsSubmitting(false);
+
+    if (res.ok) {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("customerData");
+      }
+      router.back();
+    } else {
+      setSubmitError(res.message || "Failed to update customer. Please try again.");
+    }
+  };
+
   return (
     <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
       <p className="text-2xl font-bold mt-5">Update Customer</p>
-      <form action="" className="flex-1 w-full p-3">
+      {submitError && (
+        <p className="text-sm text-red-500 font-semibold mt-2">{submitError}</p>
+      )}
+      <form id="update-customer-form" onSubmit={handleSubmit(onSubmit)} className="flex-1 w-full p-3">
         <Inputcontainer
           type={"First Name"}
-          error={errors?.price}
+          error={errors?.firstName}
           isDark={isDark}
         >
           <Input
             id="First Name"
             placeholder="Enter First Name"
-            {...register("name")}
+            {...register("firstName", { required: true })}
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
         <Inputcontainer
           type={"Last Name"}
-          error={errors?.price}
+          error={errors?.lastName}
           isDark={isDark}
         >
           <Input
@@ -53,17 +102,18 @@ function updateCustomer() {
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Email"} error={errors?.price} isDark={isDark}>
+        <Inputcontainer type={"Email"} error={errors?.email} isDark={isDark}>
           <Input
             id="Email"
+            type="email"
             placeholder="Enter Email Address"
-            {...register("email")}
+            {...register("email", { required: true })}
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
         <Inputcontainer
           type={"Mobile Number"}
-          error={errors?.price}
+          error={errors?.mobileNumber}
           isDark={isDark}
         >
           <Input
@@ -73,66 +123,14 @@ function updateCustomer() {
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <div className="flex items-center">
-          <Inputcontainer
-            type={"Profile Picture"}
-            error={errors?.price}
-            isDark={isDark}
-          >
-            <SingleUploaderInput isDark={isDark} features={{ crop: true }} />
-          </Inputcontainer>
-          <div className={`ms-20 self-baseline`}>
-            <Inputcontainer
-              type={"Date of Birth"}
-              error={errors?.price}
-              isDark={isDark}
-            >
-              <div
-                className={` border-2 ${isDark ? "#ffffff" : " #6a7282"} rounded-md mt-1.5`}
-              >
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    label="Date of Birth"
-                    format="DD-MM-YYYY"
-                    slotProps={{
-                      textField: {
-                        InputLabelProps: {
-                          style: { color: isDark ? "#fff" : "#6b7280" },
-                        },
-                        InputProps: {
-                          style: {
-                            color: isDark ? "#fff" : "#6b7280",
-                            borderColor: isDark ? "#fff" : "#6b7280",
-                          }, // input text color
-                        },
-                        sx: {
-                          "& .MuiOutlinedInput-root": {
-                            "& fieldset": {
-                              borderColor: isDark ? "#fff" : "#6b7280",
-                            },
-                            "&:hover fieldset": {
-                              borderColor: isDark ? "#fff" : "#6b7280",
-                            },
-                            "&.Mui-focused fieldset": {
-                              borderColor: isDark ? "#fff" : "#6b7280",
-                            },
-                          },
-                          "& .MuiSvgIcon-root": {
-                            color: isDark ? "#fff" : "#6b7280",
-                          },
-                        },
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-              </div>
-            </Inputcontainer>
-          </div>
-        </div>
       </form>
       <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">
         <Button name={"Cancel"} handler={() => router.back()} />
-        <Button name={"Submit"} handler={() => {}} />
+        <Button
+          name={isSubmitting ? "Updating..." : "Submit"}
+          handler={handleSubmit(onSubmit)}
+          disabled={isSubmitting}
+        />
       </div>
     </BlurredPopupLayout>
   );

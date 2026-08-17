@@ -4,6 +4,7 @@ import { User } from 'Modules/User/Entities/User.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { status } from '../Model/Status.enum';
 import { SaleItem } from './SaleItem.entity';
+import { ENV_CONFIG } from 'Common/constants';
 
 @Entity()
 export class Sale extends BaseEntity<Sale> {
@@ -38,7 +39,7 @@ export class Sale extends BaseEntity<Sale> {
   @Column({ name: 'riderLng', type: 'decimal', precision: 10, scale: 6, nullable: true })
   riderLng: number;
 
-  @Column({ name: 'riderLocationUpdatedAt', type: process.env.DB_TYPE === 'postgres' ? 'timestamp' : 'datetime', nullable: true })
+  @Column({ name: 'riderLocationUpdatedAt', type: ENV_CONFIG.DATABASE.TYPE === 'postgres' ? 'timestamp' : 'datetime', nullable: true })
   riderLocationUpdatedAt: Date;
 
   //Inverse relations

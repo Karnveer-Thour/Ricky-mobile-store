@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router";
 import { ArrowLeft, Users, Shield, Award, Globe, Heart, Zap } from "lucide-react";
-import { PRODUCTS, pct } from "../data";
+import { useApp } from "../AppContext";
+import { pct } from "../data";
 
 export default function AboutPage() {
   const navigate = useNavigate();
+  const { products } = useApp();
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-24 pb-16">

@@ -4,50 +4,56 @@ import { Edit, TrashIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Delete from "./delete";
-import ToggleButton from "@/components/togglebutton";
+import { customerService } from "@/services/customer.service";
 
 const CustomerTable = ({ isDark = false }) => {
+  const [customers, setCustomers] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [customerDeleting, setCustomerDeleting] = useState(false);
   const pathName = usePathname();
   const router = useRouter();
-  const [customerData, setCustomerData] = useState({
+  const [selectedCustomer, setSelectedCustomer] = useState({
     id: "",
     Name: "",
   });
 
+  const loadCustomers = async () => {
+    setLoading(true);
+    try {
+      const res = await customerService.fetchCustomers();
+      setCustomers(res || []);
+    } catch (err) {
+      console.warn("Failed to load customers:", err);
+      setCustomers([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadCustomers();
+  }, []);
+
   const handleDelete = (data: any) => {
     if (customerDeleting) {
       setCustomerDeleting(false);
-    } else if (!customerDeleting) {
+    } else {
       setCustomerDeleting(true);
-      setCustomerData({
-        id: data._id,
-        Name: data.name,
+      setSelectedCustomer({
+        id: data._id || data.id,
+        Name: data.name || "Customer",
       });
     }
   };
 
   const handleUpdate = (data: any) => {
-    if (location.pathname === "/customers") {
-      const Data = {
-        id: data._id,
-        Name: data.name,
-      };
-      setCustomerData(Data);
-      localStorage.setItem("customerData", JSON.stringify(Data));
-    } else if (location.pathname === "/customers/update") {
-      localStorage.removeItem("customerData");
+    if (typeof window !== "undefined") {
+      localStorage.setItem("customerData", JSON.stringify(data));
     }
+    router.push(`${pathName}/update`);
   };
 
-  // Define table columns
-
   const columns = [
-    {
-      header: "Picture",
-      id: "Picture",
-      accessorKey: "name",
-    },
     {
       header: "Name",
       id: "Name",
@@ -61,7 +67,7 @@ const CustomerTable = ({ isDark = false }) => {
     {
       header: "Mobile Number",
       id: "Mobile Number",
-      accessorKey: "mobile number",
+      accessorKey: "mobile",
     },
     {
       header: "Actions",
@@ -69,27 +75,26 @@ const CustomerTable = ({ isDark = false }) => {
       cell: ({ row }: { row: any }) => (
         <div className="flex gap-2">
           <button
-            onClick={() => handleUpdate(router.push(`${pathName}/update`))}
-            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+            onClick={() => handleUpdate(row.original)}
+            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 cursor-pointer"
           >
-            <Edit />
+            <Edit size={16} />
           </button>
           <button
             onClick={() => handleDelete(row.original)}
-            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 cursor-pointer"
           >
-            <TrashIcon />
+            <TrashIcon size={16} />
           </button>
         </div>
       ),
     },
   ];
 
-  type ColumnKey = "Picture" | "Name" | "Email" | "Mobile Number" | "Actions";
+  type ColumnKey = "Name" | "Email" | "Mobile Number" | "Actions";
   const [columnVisibility, setColumnVisibility] = useState<
     Record<ColumnKey, boolean>
   >({
-    Picture: true,
     Name: true,
     Email: true,
     "Mobile Number": true,
@@ -107,33 +112,27 @@ const CustomerTable = ({ isDark = false }) => {
     }
     setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
   }, [
-    columnVisibility.Picture,
     columnVisibility.Name,
     columnVisibility.Email,
     columnVisibility["Mobile Number"],
   ]);
 
   return (
-    <div className="w-[95%] mr-10 sm:ms-7">
+    <div className="w-full">
       {customerDeleting && (
         <Delete
-          handleDelete={() => handleDelete(customerData)}
-          Id={customerData?.id}
-          Name={customerData?.Name}
+          handleDelete={() => {
+            setCustomerDeleting(false);
+            loadCustomers();
+          }}
+          Id={selectedCustomer?.id}
+          Name={selectedCustomer?.Name}
           isDark={isDark}
         />
       )}
       <Table
         columns={columns}
-        data={[
-          {
-            _id: 1,
-            picture: "",
-            name: "Karanveer Thour",
-            email: "Karan@873498.yippe.com",
-            "mobile number": 5674654654,
-          },
-        ]}
+        data={customers}
         columnVisibility={columnVisibility}
         setColumnVisibility={setColumnVisibility}
         isDark={isDark}

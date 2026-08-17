@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -30,6 +31,7 @@ export class CategoryService {
         data: newCategory,
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to create new Category');
     }
   }
@@ -54,6 +56,7 @@ export class CategoryService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to update category');
     }
   }
@@ -64,6 +67,9 @@ export class CategoryService {
     searchText: string = null,
   ): Promise<baseResponseDto> {
     try {
+      const pageNumber = Math.max(1, page || 1);
+      const limitNumber = Math.max(1, limit || 10);
+
       const queryBuilder = this.categoryRepository
         .createQueryBuilder('category')
         .where('category.deletedAt IS NULL'); // Exclude soft-deleted records
@@ -81,8 +87,8 @@ export class CategoryService {
 
       // Apply pagination and ordering
       const categories = await queryBuilder
-        .skip((page - 1) * limit)
-        .take(limit)
+        .skip((pageNumber - 1) * limitNumber)
+        .take(limitNumber)
         .orderBy('category.createdAt', 'DESC')
         .getMany();
 
@@ -97,12 +103,13 @@ export class CategoryService {
         data: {
           transformedCategories,
           total,
-          page,
-          pageSize: limit,
-          totalPages: Math.ceil(total / limit),
+          page: pageNumber,
+          pageSize: limitNumber,
+          totalPages: Math.ceil(total / limitNumber),
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Error fetching categories');
     }
   }
@@ -120,6 +127,7 @@ export class CategoryService {
         data: { message: 'Category deleted successfully' },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to delete category');
     }
   }

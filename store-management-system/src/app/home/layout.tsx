@@ -13,20 +13,32 @@ function layout({
   const [isOpen, setIsOpen] = useState(false);
   const isDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
   return (
-    <div className={`flex`}>
+    <div
+      className={classNames(
+        "flex min-h-screen transition-colors duration-300",
+        isDark ? "bg-slate-950" : "bg-slate-50",
+      )}
+    >
       <Navbar isOpen={isOpen} setIsOpen={setIsOpen} />
       <div
         className={classNames(
-          "flex-1 h-screen overflow-y-auto p-5 transition-all duration-300 border-2",
-          isOpen ? "md:ml-64" : "md:ml-20",
-          isDark ? "bg-gray-500" : "bg-gray-100",
+          "flex-1 min-h-screen overflow-y-auto transition-all duration-300",
+          isOpen ? "md:ml-64" : "md:ml-[72px]",
         )}
       >
         {children}
       </div>
-      <div className="fixed bottom-0 left-0 w-full h-7 dark:bg-gray-800 transition-colors duration-300 flex items-center justify-center">
-        <p className="text-center dark:text-gray-300 text-sm">
-          © Copyrights Karanveer Thour 2025. All Rights Reserved.
+      {/* Footer strip */}
+      <div
+        className={classNames(
+          "fixed bottom-0 left-0 w-full h-6 z-40 flex items-center justify-center border-t transition-colors duration-300",
+          isDark
+            ? "bg-slate-900 border-white/5 text-slate-500"
+            : "bg-white border-slate-200 text-slate-400",
+        )}
+      >
+        <p className="text-xs">
+          © 2025 Ricky Mobile Store · All Rights Reserved
         </p>
       </div>
     </div>

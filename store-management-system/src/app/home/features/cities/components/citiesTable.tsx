@@ -3,44 +3,56 @@ import Table from "@/components/table/table";
 import { Edit, TrashIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Delete from "./delete";
+import Delete from "./Delete";
 import ToggleButton from "@/components/togglebutton";
+import { cityService } from "@/services/city.service";
 
 const CityTable = ({ isDark = false }) => {
-  const [customerDeleting, setCustomerDeleting] = useState(false);
+  const [cities, setCities] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [cityDeleting, setCityDeleting] = useState(false);
   const pathName = usePathname();
   const router = useRouter();
-  const [customerData, setCustomerData] = useState({
+  const [selectedCity, setSelectedCity] = useState({
     id: "",
     Name: "",
   });
 
+  const loadCities = async () => {
+    setLoading(true);
+    try {
+      const res = await cityService.fetchCities();
+      setCities(res || []);
+    } catch (err) {
+      console.warn("Failed to load cities:", err);
+      setCities([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadCities();
+  }, []);
+
   const handleDelete = (data: any) => {
-    if (customerDeleting) {
-      setCustomerDeleting(false);
-    } else if (!customerDeleting) {
-      setCustomerDeleting(true);
-      setCustomerData({
-        id: data._id,
+    if (cityDeleting) {
+      setCityDeleting(false);
+    } else {
+      setCityDeleting(true);
+      setSelectedCity({
+        id: data._id || data.id,
         Name: data.name,
       });
     }
   };
 
   const handleUpdate = (data: any) => {
-    if (location.pathname === "/customers") {
-      const Data = {
-        id: data._id,
-        Name: data.name,
-      };
-      setCustomerData(Data);
-      localStorage.setItem("customerData", JSON.stringify(Data));
-    } else if (location.pathname === "/customers/update") {
-      localStorage.removeItem("customerData");
+    if (typeof window !== "undefined") {
+      localStorage.setItem("cityData", JSON.stringify(data));
     }
+    router.push(`${pathName}/update`);
   };
-
-  // Define table columns
 
   const columns = [
     {
@@ -66,13 +78,17 @@ const CityTable = ({ isDark = false }) => {
     {
       header: "Active",
       id: "Active",
-      cell: () => (
+      cell: ({ row }: { row: any }) => (
         <div>
           <ToggleButton
             isDark={isDark}
             activeLabel="Accepting"
             inactiveLabel="Not Accepting"
-            handler={() => {}}
+            activeDefault={row.original.isAccepting ?? true}
+            handler={(status: boolean) => {
+              const cityId = row.original._id || row.original.id;
+              cityService.toggleCityStatus(cityId, status).then(() => loadCities());
+            }}
           />
         </div>
       ),
@@ -83,16 +99,16 @@ const CityTable = ({ isDark = false }) => {
       cell: ({ row }: { row: any }) => (
         <div className="flex gap-2">
           <button
-            onClick={() => handleUpdate(router.push(`${pathName}/update`))}
-            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+            onClick={() => handleUpdate(row.original)}
+            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 cursor-pointer"
           >
-            <Edit />
+            <Edit size={16} />
           </button>
           <button
             onClick={() => handleDelete(row.original)}
-            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 cursor-pointer"
           >
-            <TrashIcon />
+            <TrashIcon size={16} />
           </button>
         </div>
       ),
@@ -136,26 +152,21 @@ const CityTable = ({ isDark = false }) => {
   ]);
 
   return (
-    <div className="w-[95%] mr-10 sm:ms-7">
-      {customerDeleting && (
+    <div className="w-full">
+      {cityDeleting && (
         <Delete
-          handleDelete={() => handleDelete(customerData)}
-          Id={customerData?.id}
-          Name={customerData?.Name}
+          handleDelete={() => {
+            setCityDeleting(false);
+            loadCities();
+          }}
+          Id={selectedCity?.id}
+          Name={selectedCity?.Name}
           isDark={isDark}
         />
       )}
       <Table
         columns={columns}
-        data={[
-          {
-            _id: 1,
-            name: "Khanna",
-            district: "Ludhiana",
-            state: "Punjab",
-            pincode: 141401,
-          },
-        ]}
+        data={cities}
         columnVisibility={columnVisibility}
         setColumnVisibility={setColumnVisibility}
         isDark={isDark}

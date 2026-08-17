@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -73,6 +74,7 @@ export class ProductService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to create a new product');
     }
   }
@@ -120,6 +122,7 @@ export class ProductService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to update a product');
     }
   }
@@ -130,6 +133,9 @@ export class ProductService {
     searchText: string = null,
   ): Promise<baseResponseDto> {
     try {
+      const pageNumber = Math.max(1, page || 1);
+      const limitNumber = Math.max(1, limit || 10);
+
       const queryBuilder = this.productRepository.createQueryBuilder('product');
 
       queryBuilder.where('product.deletedAt IS NULL');
@@ -139,7 +145,7 @@ export class ProductService {
           `(
                       product.name ILIKE :searchText OR 
                       CAST(product.price AS TEXT) ILIKE :searchText OR 
-                      product.quantity ILIKE :searchText OR 
+                      CAST(product.quantity AS TEXT) ILIKE :searchText
                     )`,
           { searchText: `%${searchText}%` },
         );
@@ -149,8 +155,8 @@ export class ProductService {
 
       const products = await queryBuilder
         .orderBy('product.createdAt', 'DESC')
-        .skip((page - 1) * limit)
-        .take(limit)
+        .skip((pageNumber - 1) * limitNumber)
+        .take(limitNumber)
         .getMany();
 
       return {
@@ -159,12 +165,13 @@ export class ProductService {
         data: {
           products,
           total,
-          page,
-          pageSize: limit,
-          totalPages: Math.ceil(total / limit),
+          page: pageNumber,
+          pageSize: limitNumber,
+          totalPages: Math.ceil(total / limitNumber),
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to fetch products');
     }
   }
@@ -183,6 +190,7 @@ export class ProductService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to get a product');
     }
   }
@@ -191,7 +199,7 @@ export class ProductService {
     try {
       const existingProduct = await this.productRepository.findOneBy({ id });
       if (!existingProduct) {
-        throw new NotFoundException('City does not exist');
+        throw new NotFoundException('Product does not exist');
       }
       existingProduct.deletedAt = dateToUTC();
       await this.productRepository.save(existingProduct);
@@ -201,6 +209,7 @@ export class ProductService {
         data: { message: 'Product deleted successfully' },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to delete a product');
     }
   }

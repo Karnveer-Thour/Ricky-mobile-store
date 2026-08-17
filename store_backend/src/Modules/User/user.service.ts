@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -63,7 +64,7 @@ export class UserService {
 
       const { uid, email, name, picture } = decoded;
 
-      const user = this.userRepository.findOneBy({ email });
+      const user = await this.userRepository.findOneBy({ email });
 
       if (!user) {
         const parts = name?.trim().split(' ') ?? [];
@@ -91,6 +92,7 @@ export class UserService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Invalid firebase token');
     }
   }
@@ -127,6 +129,7 @@ export class UserService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Error logging in user');
     }
   }
@@ -154,6 +157,7 @@ export class UserService {
         data: userToken,
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       if (firebaseUser?.uid) {
         await admin.auth().deleteUser(firebaseUser.uid);
       }
@@ -186,6 +190,7 @@ export class UserService {
         data: { message: 'Password changed successfully' },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Error changing password');
     }
   }
@@ -210,7 +215,8 @@ export class UserService {
         },
       };
     } catch (error) {
-      throw new InternalServerErrorException('Error fetching customers');
+      if (error instanceof HttpException) throw error;
+      throw new InternalServerErrorException('Error updating user');
     }
   }
 
@@ -220,6 +226,9 @@ export class UserService {
     searchText: string = null,
   ): Promise<baseResponseDto> {
     try {
+      const pageNumber = Math.max(1, page || 1);
+      const limitNumber = Math.max(1, limit || 10);
+
       const queryBuilder = this.userRepository
         .createQueryBuilder('user')
         .where('user.role = :role', { role: role.Customer })
@@ -234,7 +243,7 @@ export class UserService {
         );
       }
 
-      queryBuilder.skip((page - 1) * limit).take(limit);
+      queryBuilder.skip((pageNumber - 1) * limitNumber).take(limitNumber);
 
       const [customers, total] = await queryBuilder.getManyAndCount();
       const transformedCustomers = customers.map((customer) =>
@@ -247,12 +256,13 @@ export class UserService {
         data: {
           transformedCustomers,
           total,
-          page,
-          pageSize: limit,
-          totalPages: Math.ceil(total / limit),
+          page: pageNumber,
+          pageSize: limitNumber,
+          totalPages: Math.ceil(total / limitNumber),
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Error fetching customers');
     }
   }
@@ -272,6 +282,7 @@ export class UserService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Error fetching user');
     }
   }
@@ -290,6 +301,7 @@ export class UserService {
         data: { message: 'User deleted successfully' },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Error Deleting User');
     }
   }

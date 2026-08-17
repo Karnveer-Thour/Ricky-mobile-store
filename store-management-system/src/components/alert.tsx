@@ -3,6 +3,8 @@ import { CLOSEALERT } from "@/store/slices/alert.slice";
 import { storeType } from "@/types/store.index";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
+import { CheckCircle2, AlertTriangle, X } from "lucide-react";
 
 const Alert = () => {
   const [isVisible, setVisible] = useState(true);
@@ -12,8 +14,8 @@ const Alert = () => {
   const dispatchAlert = useDispatch();
 
   const alertStyles = {
-    success: "bg-green-100 border-green-400 text-green-700",
-    error: "bg-red-100 border-red-400 text-red-700",
+    success: "bg-emerald-950/90 border-emerald-500/50 text-emerald-300 shadow-emerald-500/20",
+    error: "bg-rose-950/90 border-rose-500/50 text-rose-300 shadow-rose-500/20",
   };
 
   const closeAlertLogic = (closeTime?: number, reVisibleTime?: number) => {
@@ -21,57 +23,53 @@ const Alert = () => {
       const timer = setTimeout(() => {
         setVisible(false);
         setTimeout(() => {
-          dispatchAlert(CLOSEALERT(null));
+          dispatchAlert(CLOSEALERT());
           setVisible(true);
         }, reVisibleTime || 1000);
-      }, closeTime || 3000);
+      }, closeTime || 3500);
 
       return () => clearTimeout(timer);
     }
   };
 
   const handleClose = () => {
-    closeAlertLogic(100, 500);
+    closeAlertLogic(100, 300);
   };
 
   useEffect(() => {
-    return closeAlertLogic(3000, 1000);
+    return closeAlertLogic(3500, 800);
   }, [id]);
 
   return (
-    <>
-      {type && (
-        <div
-          className={`z-100 border px-4 py-3 rounded mt-5 w-[90%] md:w-[30%] h-[%] mx-auto overflow-hidden fixed bottom-5 right-5 max-md:left-5 max-md:right-0 flex items-center ${
+    <AnimatePresence>
+      {type && isVisible && (
+        <motion.div
+          initial={{ opacity: 0, y: 50, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 20, scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          className={`z-50 border px-5 py-4 rounded-2xl shadow-2xl backdrop-blur-xl fixed bottom-6 right-6 max-md:left-6 flex items-center gap-3 max-w-md ${
             alertStyles[type]
-          } transition-all duration-1000 ease-in-out ${
-            isVisible
-              ? "opacity-100 translate-x-0"
-              : "opacity-0 translate-x-full"
           }`}
           role="alert"
           aria-live="assertive"
         >
-          <span className="block sm:inline">{message}</span>
+          {type === "success" ? (
+            <CheckCircle2 size={20} className="text-emerald-400 shrink-0" />
+          ) : (
+            <AlertTriangle size={20} className="text-rose-400 shrink-0" />
+          )}
+          <span className="text-sm font-medium pr-6">{message}</span>
           <button
             onClick={handleClose}
-            disabled={!isVisible}
-            className="absolute top-0 bottom-0 right-0 px-4 py-3"
+            className="absolute top-3 right-3 text-current opacity-60 hover:opacity-100 transition-opacity"
             aria-label="Close alert"
           >
-            <svg
-              className="fill-current h-6 w-6"
-              role="button"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-            >
-              <title>Close</title>
-              <path d="M14.348 14.849a1 1 0 01-1.414 0L10 11.414l-2.93 2.93a1 1 0 01-1.414-1.414l2.93-2.93-2.93-2.93a1 1 0 011.414-1.414l2.93 2.93 2.93-2.93a1 1 0 011.414 1.414l-2.93 2.93 2.93 2.93a1 1 0 010 1.414z" />
-            </svg>
+            <X size={16} />
           </button>
-        </div>
+        </motion.div>
       )}
-    </>
+    </AnimatePresence>
   );
 };
 

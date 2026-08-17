@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router";
 import { useApp } from "../AppContext";
-import { PRODUCTS, fmt } from "../data";
+import { fmt } from "../data";
 import { ArrowLeft, Trash2, ShoppingCart } from "lucide-react";
 
 export default function WishlistPage() {
   const navigate = useNavigate();
-  const { wishlist, toggleWishlist, addToCart } = useApp();
+  const { products, wishlist, toggleWishlist, addToCart } = useApp();
 
-  const wishlistedProducts = PRODUCTS.filter((p) => wishlist.includes(p.id));
+  const wishlistedProducts = products.filter((p) => wishlist.includes(p.id));
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-24 pb-16">

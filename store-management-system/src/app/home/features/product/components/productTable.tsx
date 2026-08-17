@@ -4,44 +4,59 @@ import { Edit, TrashIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Delete from "./Delete";
 import { usePathname, useRouter } from "next/navigation";
+import { productService } from "@/services/product.service";
 
 const ProductTable = ({ isDark = false }) => {
-  const [customerDeleting, setCustomerDeleting] = useState(false);
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [productDeleting, setProductDeleting] = useState(false);
   const pathName = usePathname();
   const router = useRouter();
-  const [customerData, setCustomerData] = useState({
+  const [selectedProduct, setSelectedProduct] = useState({
     id: "",
     Name: "",
   });
 
+  const loadProducts = async () => {
+    setLoading(true);
+    try {
+      const res = await productService.fetchProducts();
+      const mapped = (res || []).map((p: any) => ({
+        ...p,
+        name: p.productName || p.name,
+        quantity: p.stockCount ?? p.quantity ?? 0,
+      }));
+      setProducts(mapped);
+    } catch (err) {
+      console.warn("Failed to load products:", err);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
   const handleDelete = (data: any) => {
-    if (customerDeleting) {
-      setCustomerDeleting(false);
-    } else if (!customerDeleting) {
-      setCustomerDeleting(true);
-      setCustomerData({
-        id: data._id,
-        Name: data.name,
+    if (productDeleting) {
+      setProductDeleting(false);
+    } else {
+      setProductDeleting(true);
+      setSelectedProduct({
+        id: data._id || data.id,
+        Name: data.name || data.productName,
       });
     }
   };
 
   const handleUpdate = (data: any) => {
-    if (location.pathname === "/customers") {
-      //   navigate("/customers/update");
-      const Data = {
-        id: data._id,
-        Name: data.name,
-      };
-      setCustomerData(Data);
-      localStorage.setItem("customerData", JSON.stringify(Data));
-    } else if (location.pathname === "/customers/update") {
-      //   navigate("/customers");
-      localStorage.removeItem("customerData");
+    if (typeof window !== "undefined") {
+      localStorage.setItem("productData", JSON.stringify(data));
     }
+    router.push(`${pathName}/update`);
   };
-
-  // Define table columns
 
   const columns = [
     {
@@ -70,16 +85,16 @@ const ProductTable = ({ isDark = false }) => {
       cell: ({ row }: { row: any }) => (
         <div className="flex gap-2">
           <button
-            onClick={() => handleUpdate(router.push(`${pathName}/update`))}
-            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600"
+            onClick={() => handleUpdate(row.original)}
+            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 cursor-pointer"
           >
-            <Edit />
+            <Edit size={16} />
           </button>
           <button
             onClick={() => handleDelete(row.original)}
-            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 cursor-pointer"
           >
-            <TrashIcon />
+            <TrashIcon size={16} />
           </button>
         </div>
       ),
@@ -115,26 +130,21 @@ const ProductTable = ({ isDark = false }) => {
   ]);
 
   return (
-    <div className="w-[95%] mr-10 sm:ms-7">
-      {customerDeleting && (
+    <div className="w-full">
+      {productDeleting && (
         <Delete
-          handleDelete={() => handleDelete(customerData)}
-          Id={customerData?.id}
-          Name={customerData?.Name}
+          handleDelete={() => {
+            setProductDeleting(false);
+            loadProducts();
+          }}
+          Id={selectedProduct?.id}
+          Name={selectedProduct?.Name}
           isDark={isDark}
         />
       )}
       <Table
         columns={columns}
-        data={[
-          {
-            _id: 1,
-            name: "Product 1",
-            category: "Category 1",
-            price: 100,
-            quantity: 10,
-          },
-        ]}
+        data={products}
         columnVisibility={columnVisibility}
         setColumnVisibility={setColumnVisibility}
         isDark={isDark}

@@ -21,23 +21,28 @@ function UploadSale() {
     formState: { errors },
   } = useForm({});
 
+  const onSubmit = (data: any) => {
+    console.log("Uploading sale:", data);
+    router.back();
+  };
+
   return (
     <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
       <p className="text-2xl font-bold mt-5">Upload Sale</p>
-      <form action="" className="flex-1 w-full p-3">
+      <form id="upload-sale-form" onSubmit={handleSubmit(onSubmit)} className="flex-1 w-full p-3">
         <Inputcontainer
           type={"Customer Name"}
-          error={errors?.name}
+          error={errors?.customerName}
           isDark={isDark}
         >
           <Input
             id="Customer Name"
             placeholder="Enter Customer Name"
-            {...register("Group Name")}
+            {...register("customerName")}
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Products"} error={errors?.price} isDark={isDark}>
+        <Inputcontainer type={"Products"} error={errors?.products} isDark={isDark}>
           <MultiSelectorInput
             values={[
               {
@@ -56,33 +61,33 @@ function UploadSale() {
             isDark={isDark}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Amount"} error={errors?.price} isDark={isDark}>
+        <Inputcontainer type={"Amount"} error={errors?.amount} isDark={isDark}>
           <Input
             id="Amount"
             placeholder="Enter Amount"
-            {...register("Group Url")}
+            {...register("amount")}
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
         <Inputcontainer
           type={"Received Amount"}
-          error={errors?.price}
+          error={errors?.receivedAmount}
           isDark={isDark}
         >
           <Input
             id="Received Amount"
             placeholder="Enter Received Amount"
-            {...register("Group Url")}
+            {...register("receivedAmount")}
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Pictures"} error={errors?.price} isDark={isDark}>
+        <Inputcontainer type={"Pictures"} error={errors?.pictures} isDark={isDark}>
           <UploaderInput isDark={isDark} features={{ crop: true }} />
         </Inputcontainer>
       </form>
       <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">
         <Button name={"Cancel"} handler={() => router.back()} />
-        <Button name={"Submit"} handler={() => {}} />
+        <Button name={"Submit"} handler={handleSubmit(onSubmit)} />
       </div>
     </BlurredPopupLayout>
   );

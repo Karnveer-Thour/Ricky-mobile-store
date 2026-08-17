@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -7,7 +8,6 @@ import {
 import { AcceptedCitiesRepository } from './Repositories/accepted-cities.Repo';
 import { AcceptedCitiesDto } from './Dtos/accepted-cities.dto';
 import { baseResponseDto } from 'Common/Dto/BaseResponse.dto';
-import { error } from 'console';
 import { UpdateAcceptedCitiesDto } from './Dtos/update-accepted-cities.dto';
 import { ILike } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
@@ -34,6 +34,7 @@ export class AcceptedCitiesService {
         data: newCity,
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to create a new city');
     }
   }
@@ -56,6 +57,7 @@ export class AcceptedCitiesService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to update a city');
     }
   }
@@ -76,6 +78,7 @@ export class AcceptedCitiesService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to toggle a city');
     }
   }
@@ -94,6 +97,7 @@ export class AcceptedCitiesService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to get a city');
     }
   }
@@ -104,6 +108,9 @@ export class AcceptedCitiesService {
     searchText: string = null,
   ): Promise<baseResponseDto> {
     try {
+      const pageNumber = Math.max(1, page || 1);
+      const limitNumber = Math.max(1, limit || 10);
+
       const queryBuilder = this.acceptedCitiesRepository.createQueryBuilder('city');
 
       // Only include non-deleted entries
@@ -128,8 +135,8 @@ export class AcceptedCitiesService {
       // Apply sorting and pagination
       const cities = await queryBuilder
         .orderBy('city.createdAt', 'DESC')
-        .skip((page - 1) * limit)
-        .take(limit)
+        .skip((pageNumber - 1) * limitNumber)
+        .take(limitNumber)
         .getMany();
 
       const transformedCities = cities.map((city) =>
@@ -144,12 +151,13 @@ export class AcceptedCitiesService {
         data: {
           transformedCities,
           total,
-          page,
-          pageSize: limit,
-          totalPages: Math.ceil(total / limit),
+          page: pageNumber,
+          pageSize: limitNumber,
+          totalPages: Math.ceil(total / limitNumber),
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       console.error(error);
       throw new InternalServerErrorException('Unable to fetch cities');
     }
@@ -169,6 +177,7 @@ export class AcceptedCitiesService {
         data: { message: 'City deleted successfully' },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to delete city');
     }
   }

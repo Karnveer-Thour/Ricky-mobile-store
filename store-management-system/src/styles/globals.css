@@ -1,1 +1,91 @@
 @import "tailwindcss";
+
+/* ── Design Tokens ─────────────────────────────────── */
+:root {
+  --sidebar-width-open: 256px;
+  --sidebar-width-closed: 72px;
+  --accent-cyan: #00cfff;
+  --accent-blue: #0077ff;
+  --surface-dark: rgba(15, 23, 42, 0.85);
+  --surface-card-dark: rgba(30, 41, 59, 0.9);
+  --surface-light: #f8fafc;
+  --surface-card-light: #ffffff;
+  --border-dark: rgba(255,255,255,0.07);
+  --border-light: #e2e8f0;
+}
+
+@layer utilities {
+  /* Glassmorphism surfaces */
+  .glass-card {
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-card-light {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  /* Neon glow accents */
+  .neon-glow-cyan {
+    box-shadow: 0 0 25px rgba(0, 207, 255, 0.25);
+  }
+
+  .neon-border-cyan {
+    border-color: rgba(0, 207, 255, 0.4);
+  }
+
+  .neon-glow-blue {
+    box-shadow: 0 0 25px rgba(0, 119, 255, 0.25);
+  }
+
+  /* Page container */
+  .page-container {
+    padding: 1.5rem 2rem;
+    max-width: 100%;
+  }
+
+  /* Section card */
+  .section-card-dark {
+    background: var(--surface-card-dark);
+    border: 1px solid var(--border-dark);
+    border-radius: 1rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+  }
+
+  .section-card-light {
+    background: var(--surface-card-light);
+    border: 1px solid var(--border-light);
+    border-radius: 1rem;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+  }
+
+  /* Nav sidebar active accent */
+  .nav-active {
+    border-left: 3px solid var(--accent-cyan);
+    background: rgba(0, 207, 255, 0.08);
+    color: var(--accent-cyan);
+  }
+
+  /* Stat badge trend */
+  .trend-up {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.12);
+  }
+
+  .trend-down {
+    color: #f43f5e;
+    background: rgba(244, 63, 94, 0.12);
+  }
+}
+
+/* ── Custom Scrollbar ───────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,207,255,0.3); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,207,255,0.6); }
+

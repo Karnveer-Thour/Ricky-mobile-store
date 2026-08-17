@@ -1,4 +1,5 @@
 import {
+  HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -24,8 +25,8 @@ export class ProductReviewService {
   async create(productReviewData: CreateProductReview): Promise<baseResponseDto> {
     try {
       const [user, product] = await Promise.all([
-        await this.userRepository.findOneBy({ id: productReviewData.reviewedById }),
-        await this.productRepository.findOneBy({ id: productReviewData.reviewedProductId }),
+        this.userRepository.findOneBy({ id: productReviewData.reviewedById }),
+        this.productRepository.findOneBy({ id: productReviewData.reviewedProductId }),
       ]);
       if (!user) {
         throw new NotFoundException('User not existed');
@@ -56,6 +57,7 @@ export class ProductReviewService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       console.error('Problem in create product review is---->', error);
       throw new InternalServerErrorException('Unable to create product review');
     }
@@ -67,8 +69,10 @@ export class ProductReviewService {
       if (!existingProductReview) {
         throw new NotFoundException('Product Review does not found!');
       }
-      for (let key in existingProductReview) {
-        existingProductReview[key] = productReviewData[key] ?? existingProductReview[key];
+      for (let key in productReviewData) {
+        if (productReviewData[key] !== undefined) {
+          existingProductReview[key] = productReviewData[key];
+        }
       }
       await this.productReviewRepository.save(existingProductReview);
       return {
@@ -79,6 +83,7 @@ export class ProductReviewService {
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       console.error('Problem in update product review is---->', error);
       throw new InternalServerErrorException('Unable to update product review');
     }
@@ -86,12 +91,15 @@ export class ProductReviewService {
 
   async getAll(page: number, limit: number): Promise<baseResponseDto> {
     try {
+      const pageNumber = Math.max(1, page || 1);
+      const limitNumber = Math.max(1, limit || 10);
+
       const query = this.productReviewRepository
         .createQueryBuilder('p_reviews')
         .leftJoinAndSelect('p_reviews.reviewedBy', 'reviewedBy')
         .leftJoinAndSelect('p_reviews.reviewedProduct', 'reviewedProduct')
         .where('p_reviews.deletedAt is NULL');
-      query.skip(page - 1).take(limit);
+      query.skip((pageNumber - 1) * limitNumber).take(limitNumber);
       const [productReviews, total] = await query.getManyAndCount();
       return {
         status: true,
@@ -99,12 +107,13 @@ export class ProductReviewService {
         data: {
           productReviews,
           total,
-          page,
-          pageSize: limit,
-          totalPages: Math.ceil(total / limit),
+          page: pageNumber,
+          pageSize: limitNumber,
+          totalPages: Math.ceil(total / limitNumber),
         },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       console.error('Problem in fetching product reviews is---->', error);
       throw new InternalServerErrorException('Unable to fetch product reviews');
     }
@@ -124,6 +133,7 @@ export class ProductReviewService {
         data: { message: 'Product Review deleted successfully' },
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
       console.error('Problem in deleting product review is---->', error);
       throw new InternalServerErrorException('Unable to delet product review');
     }

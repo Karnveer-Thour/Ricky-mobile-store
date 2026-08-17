@@ -2,7 +2,7 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, Logger, ValidationPipe } from '@nestjs/common';
 import { setupSwaggerConfig } from 'Core/Swagger/Swagger.config';
-import { DEFAULT_PORT } from 'Common/constants';
+import { ENV_CONFIG } from 'Common/constants';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -12,15 +12,18 @@ async function bootstrap() {
     new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }),
   );
   app.enableCors({
-    origin: [
-      'http://localhost:5173', // Vite customer storefront
-      'http://localhost:3001', // Next.js admin portal
-    ],
+    origin: (origin, callback) => {
+      if (!origin || /^http:\/\/localhost:\d+$/.test(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, true);
+      }
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
   setupSwaggerConfig('/api-docs/v1', app);
-  const port = process.env.PORT ?? DEFAULT_PORT;
+  const port = ENV_CONFIG.SERVER.PORT;
   await app.listen(port);
   logger.log(`Nest application is running on: http://localhost:${port}`);
   logger.log(`Swagger documentation available at: http://localhost:${port}/api-docs/v1`);

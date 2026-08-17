@@ -86,7 +86,7 @@ export class User extends BaseEntity<User> {
   @JoinColumn({ name: 'addressId' }) // this should match the foreign key column name
   address: Address;
 
-  @Column({ name: 'dateBirth', type: 'date', nullable: false })
+  @Column({ name: 'dateBirth', type: 'date', nullable: true })
   dateBirth: string;
 
   // Inverse relations

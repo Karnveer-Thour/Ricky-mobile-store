@@ -17,16 +17,9 @@ interface DispatchCard {
   status: "pending_override" | "ready_to_pack" | "out_for_delivery" | "delivered";
 }
 
-const INITIAL_CARDS: DispatchCard[] = [
-  { id: "RMS-88392", customer: "Aarav Sharma", phone: "+91 98765 43210", payment: "EMI BAJAJ", lender: "Bajaj Finserv", installment: 10990, landmark: "Near GT Road Temple", items: "iPhone 15 Pro Max ×1", status: "pending_override" },
-  { id: "RMS-88390", customer: "Priya S.", phone: "+91 99123 45678", payment: "UPI", landmark: "Sector 4 Park", items: "OnePlus 12 ×1", status: "ready_to_pack" },
-  { id: "RMS-88389", customer: "Rahul D.", phone: "+91 98877 66554", payment: "CARD", landmark: "Opp. Khanna Railway Stn", items: "Samsung Galaxy S24 Ultra ×1", status: "out_for_delivery" },
-  { id: "RMS-88388", customer: "Meera P.", phone: "+91 97766 55443", payment: "UPI", landmark: "GT Road School", items: "Nothing Phone (2) ×1", status: "delivered" },
-];
-
 export default function DispatchBoardPage() {
   const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
-  const [cards, setCards] = useState<DispatchCard[]>(INITIAL_CARDS);
+  const [cards, setCards] = useState<DispatchCard[]>([]);
   const [selectedCard, setSelectedCard] = useState<DispatchCard | null>(null);
   const [flashCardId, setFlashCardId] = useState<string | null>(null);
 

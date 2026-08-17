@@ -1,13 +1,14 @@
 import { useNavigate } from "react-router";
 import { useApp } from "../AppContext";
-import { PRODUCTS, pct, fmt } from "../data";
+import { pct, fmt } from "../data";
 import { ArrowLeft, Tag, Zap, RotateCcw, Heart } from "lucide-react";
 
 export default function OffersPage() {
   const navigate = useNavigate();
-  const { wishlist, toggleWishlist, addToCart } = useApp();
+  const { products, wishlist, toggleWishlist, addToCart } = useApp();
 
-  const dealProducts = PRODUCTS.filter((p) => p.discount > 0);
+  const dealProducts = products.filter((p) => p.discount > 0);
+  const maxDiscount = products.length ? Math.max(...products.map((p) => pct(p.price, p.discount))) : 0;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-16">
@@ -40,7 +41,7 @@ export default function OffersPage() {
             style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             className="text-5xl font-extrabold text-white tracking-widest mb-2"
           >
-            SAVE UP TO {Math.max(...PRODUCTS.map((p) => pct(p.price, p.discount)))}%
+            SAVE UP TO {maxDiscount}%
           </h2>
           <p className="text-gray-400 text-sm max-w-md">
             Handpicked deals on flagship phones. All orders include free delivery, full warranty, and our 7-day return guarantee.

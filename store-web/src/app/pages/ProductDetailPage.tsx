@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useApp } from "../AppContext";
-import { PRODUCTS, fmt } from "../data";
+import { fmt } from "../data";
 import { ArrowLeft, Heart, Minus, Plus, Shield, CreditCard, Star } from "lucide-react";
 import AffordabilityWidget from "../components/AffordabilityWidget";
 import ChatbotOverlay from "../components/ChatbotOverlay";
@@ -19,15 +19,15 @@ function StarRow({ rating, size = 13 }: { rating: number; size?: number }) {
 export default function ProductDetailPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const { wishlist, toggleWishlist, addToCart } = useApp();
+  const { products, wishlist, toggleWishlist, addToCart } = useApp();
 
-  // Find product by slug
-  const sp = PRODUCTS.find(
-    (p) => p.name.toLowerCase().replace(/ /g, "-") === slug
+  // Find product by slug or id
+  const sp = products.find(
+    (p) => p.name.toLowerCase().replace(/ /g, "-") === slug || String(p.id) === slug
   );
 
   const [selColorId, setSelColorId] = useState<number | null>(
-    sp ? sp.colors[0].id : null
+    sp && sp.colors && sp.colors.length > 0 ? sp.colors[0].id : null
   );
   const [qty, setQty] = useState(1);
   const [activeTab, setActiveTab] = useState<"specs" | "reviews">("specs");

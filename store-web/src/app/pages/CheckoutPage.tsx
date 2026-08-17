@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { useApp } from "../AppContext";
-import { PRODUCTS, fmt, DELIVERY_ADDRESSES, CartItem } from "../data";
+import { fmt, DELIVERY_ADDRESSES, CartItem } from "../data";
 import { ArrowLeft, Home, Briefcase, Check, AlertTriangle } from "lucide-react";
 
 export default function CheckoutPage() {
@@ -28,9 +28,8 @@ export default function CheckoutPage() {
 
   // Handle URL parameters for EMI pre-fill
   const lenderParam = searchParams.get("lender");
-  const tenureParam = searchParams.get("tenure");
-  const productIdParam = searchParams.get("productId");
-  const colorIdParam = searchParams.get("colorId");
+  const productIdParam = searchParams.get("product");
+  const colorIdParam = searchParams.get("color");
   const qtyParam = searchParams.get("qty");
 
   // Local checkout items (defaults to cart, or URL pre-filled item)
@@ -41,9 +40,9 @@ export default function CheckoutPage() {
       const pid = parseInt(productIdParam);
       const cid = parseInt(colorIdParam);
       const qty = parseInt(qtyParam || "1");
-      const p = PRODUCTS.find((pr) => pr.id === pid);
+      const p = products.find((pr) => pr.id === pid);
       if (p) {
-        const color = p.colors.find((c) => c.id === cid);
+        const color = p.colors ? p.colors.find((c) => c.id === cid) : null;
         setCheckoutItems([
           {
             productId: pid,
@@ -59,10 +58,10 @@ export default function CheckoutPage() {
       }
     }
     setCheckoutItems(cart);
-  }, [cart, productIdParam, colorIdParam, qtyParam, lenderParam]);
+  }, [products, cart, productIdParam, colorIdParam, qtyParam, lenderParam]);
 
   const itemsTotal = checkoutItems.reduce((sum, item) => {
-    const p = PRODUCTS.find((pr) => pr.id === item.productId);
+    const p = products.find((pr) => pr.id === item.productId);
     return sum + (p ? (p.price - p.discount) * item.qty : 0);
   }, 0);
 
@@ -412,7 +411,7 @@ export default function CheckoutPage() {
                   </h2>
                   <div className="space-y-3 mb-5">
                     {checkoutItems.map((item) => {
-                      const p = PRODUCTS.find((pr) => pr.id === item.productId);
+                      const p = products.find((pr) => pr.id === item.productId);
                       if (!p) return null;
                       const ep = p.price - p.discount;
                       return (
@@ -495,7 +494,7 @@ export default function CheckoutPage() {
                 </h3>
                 <div className="space-y-2.5 mb-4">
                   {checkoutItems.map((item) => {
-                    const p = PRODUCTS.find((pr) => pr.id === item.productId);
+                    const p = products.find((pr) => pr.id === item.productId);
                     if (!p) return null;
                     return (
                       <div

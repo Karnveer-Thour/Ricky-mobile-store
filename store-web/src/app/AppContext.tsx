@@ -1,8 +1,11 @@
-import { createContext, useContext, useState, useRef, ReactNode } from "react";
-import { PRODUCTS, CartItem, ChatMessage, CHAT_INIT } from "./data";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { PRODUCTS, CATEGORIES, Product, CartItem, ChatMessage, CHAT_INIT } from "./data";
 import { DEFAULT_SUPPORT_REPLY } from "./constants";
+import { apiService } from "./services/apiService";
 
 interface AppContextType {
+  products: Product[];
+  categories: { id: number; name: string }[];
   cart: CartItem[];
   wishlist: number[];
   cartCount: number;
@@ -29,6 +32,8 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const [products, setProducts] = useState<Product[]>(PRODUCTS);
+  const [categories, setCategories] = useState<{ id: number; name: string }[]>(CATEGORIES);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
@@ -43,10 +48,45 @@ export function AppProvider({ children }: { children: ReactNode }) {
     chat: true,
   });
 
+  useEffect(() => {
+    // Fetch live products from backend API
+    apiService.fetchProducts(1, 50).then((liveProducts) => {
+      if (liveProducts && liveProducts.length > 0) {
+        const mappedProducts: Product[] = liveProducts.map((p: any, idx: number) => ({
+          id: p.id || idx + 1,
+          name: p.productName || p.name || 'Unnamed Product',
+          price: Number(p.price) || 0,
+          discount: Number(p.discount) || 0,
+          description: p.description || '',
+          quantity: Number(p.quantity || p.stockCount) || 10,
+          warranty: p.warranty || '1 Year Official Warranty',
+          specifications: p.specifications || p.brand || '',
+          categoryId: Number(p.categoryId) || 1,
+          colors: p.colors && p.colors.length > 0 ? p.colors : [{ id: 1, colorName: 'Default', quantity: 10, hex: '#000000' }],
+          reviews: p.reviews || [],
+          image: p.imageUrl || p.image || 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop&auto=format',
+          badge: p.badge || null,
+        }));
+        setProducts(mappedProducts);
+      }
+    });
+
+    // Fetch live categories from backend API
+    apiService.fetchCategories(1, 50).then((liveCategories) => {
+      if (liveCategories && liveCategories.length > 0) {
+        const mappedCategories = liveCategories.map((c: any, idx: number) => ({
+          id: c.id || idx + 1,
+          name: c.categoryName || c.name || `Category ${idx + 1}`,
+        }));
+        setCategories(mappedCategories);
+      }
+    });
+  }, []);
+
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
   const cartTotal = cart.reduce((s, i) => {
-    const p = PRODUCTS.find((pr) => pr.id === i.productId)!;
-    return s + (p.price - p.discount) * i.qty;
+    const p = products.find((pr) => pr.id === i.productId);
+    return p ? s + (p.price - p.discount) * i.qty : s;
   }, 0);
 
   function addToCart(productId: number, colorId: number, colorName: string, quantity: number) {
@@ -102,6 +142,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   return (
     <AppContext.Provider
       value={{
+        products,
+        categories,
         cart,
         wishlist,
         cartCount,

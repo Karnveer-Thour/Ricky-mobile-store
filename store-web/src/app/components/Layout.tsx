@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet, useNavigate, Link } from "react-router";
 import { useApp } from "../AppContext";
-import { PRODUCTS, fmt } from "../data";
+import { fmt } from "../data";
 import {
   Smartphone, Search, Heart, ShoppingCart, Package, User, X, Menu, Minus, Plus
 } from "lucide-react";
@@ -9,6 +9,7 @@ import {
 export default function Layout() {
   const navigate = useNavigate();
   const {
+    products,
     cart,
     wishlist,
     cartCount,
@@ -18,31 +19,41 @@ export default function Layout() {
     updateQty,
   } = useApp();
 
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [search, setSearch] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (search.trim()) {
-      navigate(`/?search=${encodeURIComponent(search.trim())}`);
+    if (searchQuery.trim()) {
+      navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchOpen(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#07070f] text-white flex flex-col justify-between">
-      {/* nav-001: Global Header Navigation */}
-      <header className="fixed top-0 inset-x-0 z-50 bg-[#07070f]/90 backdrop-blur-xl border-b border-white/5" role="banner">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
-          <Link to="/" className="flex items-center gap-2 shrink-0 group">
-            <div className="w-8 h-8 rounded-xl bg-[#00cfff] flex items-center justify-center group-hover:scale-105 transition-transform">
-              <Smartphone size={15} className="text-[#07070f]" />
+    <div className="min-h-screen bg-[#07070f] text-[#e8ebf0] selection:bg-[#00cfff] selection:text-[#07070f] flex flex-col font-sans">
+      {/* Header / Nav */}
+      <header className="fixed top-0 left-0 right-0 z-40 bg-[#07070f]/80 backdrop-blur-xl border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#00cfff] to-[#0077ff] flex items-center justify-center text-[#07070f] shadow-lg shadow-[#00cfff]/20 group-hover:scale-105 transition-transform duration-300">
+              <Smartphone size={22} className="stroke-[2.5]" />
             </div>
-            <span
-              style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-              className="text-xl font-extrabold tracking-widest text-white"
-            >
-              RICKY<span className="text-[#00cfff]">.</span>
-            </span>
+            <div>
+              <span
+                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="text-2xl font-extrabold tracking-widest text-white block leading-none"
+              >
+                RICKY<span className="text-[#00cfff]">MOBILE</span>
+              </span>
+              <span
+                style={{ fontFamily: "'DM Mono', monospace" }}
+                className="text-[10px] text-gray-400 tracking-widest block mt-0.5"
+              >
+                STORE & REPAIR
+              </span>
+            </div>
           </Link>
 
           <form onSubmit={handleSearchSubmit} className="flex-1 relative max-w-sm mx-auto hidden sm:block">
@@ -276,7 +287,8 @@ export default function Layout() {
               style={{ scrollbarWidth: "none" }}
             >
               {cart.map((item) => {
-                const p = PRODUCTS.find((pr) => pr.id === item.productId)!;
+                const p = products.find((pr) => pr.id === item.productId);
+                if (!p) return null;
                 const ep = p.price - p.discount;
                 return (
                   <div

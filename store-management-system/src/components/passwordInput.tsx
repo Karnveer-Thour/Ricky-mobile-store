@@ -1,12 +1,9 @@
-import React, { ReactElement, useState } from "react";
-import Input from "./Input";
-import { Eye, EyeClosed } from "lucide-react";
-import { useForm } from "react-hook-form";
+import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 const PasswordInput = ({
   children,
-  className,
-  isDark = false,
+  className = "",
 }: {
   children: (argument: { passwordVisible: boolean }) => React.ReactNode;
   className?: string;
@@ -14,18 +11,18 @@ const PasswordInput = ({
 }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   return (
-    <div className="relative mt-1 w-full">
+    <div className="relative w-full">
       <div
-        className={`flex items-center w-full rounded-md border-2 ${isDark ? "border-white" : "border-gray-500"} focus-within:ring-2 focus-within:ring-blue-300 transition ${className}`}
+        className={`flex items-center w-full rounded-2xl bg-white/5 border border-white/10 focus-within:border-[#00cfff]/60 focus-within:bg-white/10 transition-all duration-200 ${className}`}
       >
         {children({ passwordVisible })}
         <button
           type="button"
           onClick={() => setPasswordVisible(!passwordVisible)}
           aria-label={passwordVisible ? "Hide password" : "Show password"}
-          className={`p-2 ${isDark ? "border-white" : "text-gray-600"} hover:text-blue-500 focus:outline-none rounded-md`}
+          className="p-3 text-gray-400 hover:text-white focus:outline-none transition-colors cursor-pointer"
         >
-          {!passwordVisible ? <Eye /> : <EyeClosed />}
+          {passwordVisible ? <EyeOff size={18} /> : <Eye size={18} />}
         </button>
       </div>
     </div>

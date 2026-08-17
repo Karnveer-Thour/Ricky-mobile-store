@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { ArrowLeft, User, MapPin, Heart, Bell } from "lucide-react";
+import { ArrowLeft, User, MapPin, Heart, Bell, Upload, Loader2 } from "lucide-react";
 import { DELIVERY_ADDRESSES } from "../data";
+import { apiService } from "../services/apiService";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
   const [profileTab, setProfileTab] = useState<"info" | "addresses" | "settings">("info");
-  const [profileData] = useState({
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [profileData, setProfileData] = useState({
     firstName: "Ricky",
     lastName: "Sharma",
     email: "ricky.sharma@gmail.com",
@@ -14,6 +16,21 @@ export default function ProfilePage() {
     dateBirth: "1995-07-14",
     pictureUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop&auto=format",
   });
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingAvatar(true);
+    const res = await apiService.uploadImage(file, "avatars");
+    setIsUploadingAvatar(false);
+
+    if (res.status && res.url) {
+      setProfileData((prev) => ({ ...prev, pictureUrl: res.url! }));
+    } else {
+      alert(res.message || "Failed to upload avatar to Cloudinary");
+    }
+  };
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-24 pb-16">
@@ -63,16 +80,35 @@ export default function ProfilePage() {
           {profileTab === "info" && (
             <div className="space-y-6">
               <div className="flex items-center gap-4">
-                <img
-                  src={profileData.pictureUrl}
-                  alt="Profile"
-                  className="w-16 h-16 rounded-full border border-white/10"
-                />
+                <div className="relative group">
+                  <img
+                    src={profileData.pictureUrl}
+                    alt="Profile"
+                    className="w-16 h-16 rounded-full border border-white/10 object-cover"
+                  />
+                  <input
+                    type="file"
+                    id="avatar-upload-input"
+                    accept="image/*"
+                    onChange={handleAvatarUpload}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="avatar-upload-input"
+                    className="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity"
+                  >
+                    {isUploadingAvatar ? (
+                      <Loader2 size={16} className="text-[#00cfff] animate-spin" />
+                    ) : (
+                      <Upload size={16} className="text-white" />
+                    )}
+                  </label>
+                </div>
                 <div>
                   <h3 className="font-bold text-white text-lg">
                     {profileData.firstName} {profileData.lastName}
                   </h3>
-                  <p className="text-xs text-gray-600">Member since 2024</p>
+                  <p className="text-xs text-gray-600">Member since 2024 (Click avatar to change via Cloudinary)</p>
                 </div>
               </div>
 

@@ -16,7 +16,7 @@ export class ProductReviewController {
     return this.productReviewService.create(productReviewData);
   }
 
-  @Patch('id')
+  @Patch(':id')
   async update(
     @Param('id') id: string,
     @Body() productReviewData: UpdateProductReview,
@@ -31,7 +31,7 @@ export class ProductReviewController {
     return this.productReviewService.getAll(pageNumber, limitNumber);
   }
 
-  @Delete('id')
+  @Delete(':id')
   async softDeleteById(@Param('id') id: string): Promise<baseResponseDto> {
     return this.productReviewService.softDeleteById(id);
   }
