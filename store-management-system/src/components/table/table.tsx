@@ -14,7 +14,7 @@ import Head from "./components/head";
 import Row from "./components/row";
 import Pagination from "./features/pagination";
 import MobileCards from "./mobileCards";
-import { Inbox } from "lucide-react";
+import { Inbox, SearchX } from "lucide-react";
 import cn from "classnames";
 
 interface TableProps {
@@ -59,66 +59,74 @@ function Table({
     },
   });
 
+  const visibleColumnsCount = table.getVisibleLeafColumns().length;
+  const filteredRowCount = table.getRowModel().rows.length;
+
   return (
     <div className="h-full w-full">
       {/* ── Desktop Table ───────────────────────────── */}
       {data?.length === 0 ? (
-        /* Empty state */
+        /* Empty dataset state */
         <div
           className={cn(
-            "hidden md:flex flex-col items-center justify-center py-20 rounded-2xl border mx-4",
+            "hidden md:flex flex-col items-center justify-center py-20 rounded-2xl border",
             isDark
-              ? "bg-slate-800/60 border-white/8 text-slate-500"
-              : "bg-white border-slate-200 text-slate-400",
+              ? "bg-slate-900/60 border-white/8 text-slate-400"
+              : "bg-white border-slate-200 text-slate-500 shadow-sm",
           )}
         >
-          <Inbox size={44} strokeWidth={1.2} className="mb-3 opacity-40" />
-          <p className="font-semibold text-sm">No records found</p>
-          <p className="text-xs mt-1 opacity-60">
-            Try adjusting your search or filters
+          <div
+            className={cn(
+              "w-16 h-16 rounded-2xl flex items-center justify-center mb-4",
+              isDark
+                ? "bg-white/5 text-slate-400"
+                : "bg-slate-100 text-slate-500",
+            )}
+          >
+            <Inbox size={32} strokeWidth={1.5} />
+          </div>
+          <p className="font-semibold text-base text-white">No records found</p>
+          <p className="text-xs mt-1 text-slate-400">
+            Get started by adding your first record above.
           </p>
         </div>
       ) : (
-        <>
+        <div
+          className={cn(
+            "hidden md:flex flex-col rounded-2xl border overflow-hidden shadow-sm transition-colors",
+            isDark
+              ? "bg-slate-900/80 border-white/8 backdrop-blur-sm"
+              : "bg-white border-slate-200",
+          )}
+        >
           {/* Filter + Column toolbar */}
           <div
             className={cn(
-              "hidden md:flex justify-between items-center px-5 py-3 rounded-t-2xl border-b",
+              "flex justify-between items-center px-6 py-4 border-b",
               isDark
-                ? "bg-slate-800/80 border-white/8"
-                : "bg-white border-slate-100",
+                ? "border-white/8 bg-slate-900/40"
+                : "border-slate-100 bg-slate-50/40",
             )}
           >
             <GlobalFilter setGlobalFilter={setGlobalFilter} isDark={isDark} />
-            <div className="w-44 h-10">
-              <ColumnVisibility
-                columns={columns}
-                handleColumnVisibility={handleColumnVisibility}
-                columnVisibility={columnVisibility}
-                isDark={isDark}
-              />
-            </div>
+            <ColumnVisibility
+              columns={columns}
+              handleColumnVisibility={handleColumnVisibility}
+              columnVisibility={columnVisibility}
+              isDark={isDark}
+            />
           </div>
 
           {/* Table */}
-          <div
-            className={cn(
-              "overflow-x-auto hidden md:flex w-full md:flex-col",
-              isDark
-                ? "bg-slate-800/80 border-white/8"
-                : "bg-white",
-              "rounded-b-2xl border-x border-b",
-              isDark ? "border-white/8" : "border-slate-200",
-            )}
-          >
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto w-full">
+            <table className="w-full text-sm border-collapse">
               {/* Header */}
               <thead
                 className={cn(
                   "sticky top-0 z-10 border-b",
                   isDark
                     ? "bg-slate-900/90 text-slate-400 border-white/8"
-                    : "bg-slate-50 text-slate-500 border-slate-200",
+                    : "bg-slate-50 text-slate-500 border-slate-100",
                 )}
               >
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -135,8 +143,10 @@ function Table({
                       ) : (
                         <th
                           key={header.id}
-                          className="py-3 px-6 text-left"
-                        />
+                          className="py-3.5 px-6 text-right text-xs font-semibold uppercase tracking-wider text-slate-400"
+                        >
+                          Actions
+                        </th>
                       ),
                     )}
                   </tr>
@@ -145,14 +155,54 @@ function Table({
 
               {/* Body */}
               <tbody>
-                {table.getRowModel().rows.map((row: any) => (
-                  <Row row={row} key={row.id} />
-                ))}
+                {filteredRowCount > 0 ? (
+                  table
+                    .getRowModel()
+                    .rows.map((row: any) => (
+                      <Row row={row} key={row.id} isDark={isDark} />
+                    ))
+                ) : (
+                  /* No search results match */
+                  <tr>
+                    <td
+                      colSpan={visibleColumnsCount}
+                      className="py-14 text-center"
+                    >
+                      <div className="flex flex-col items-center justify-center">
+                        <SearchX
+                          size={32}
+                          className={cn(
+                            "mb-2.5",
+                            isDark ? "text-slate-500" : "text-slate-400",
+                          )}
+                        />
+                        <p
+                          className={cn(
+                            "text-sm font-semibold",
+                            isDark ? "text-slate-300" : "text-slate-700",
+                          )}
+                        >
+                          No matching records found
+                        </p>
+                        <p
+                          className={cn(
+                            "text-xs mt-1",
+                            isDark ? "text-slate-500" : "text-slate-400",
+                          )}
+                        >
+                          Try adjusting your search query or filters
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
-            <Pagination table={table} isDark={isDark} />
           </div>
-        </>
+
+          {/* Pagination */}
+          <Pagination table={table} isDark={isDark} />
+        </div>
       )}
 
       {/* ── Mobile Cards ────────────────────────────── */}

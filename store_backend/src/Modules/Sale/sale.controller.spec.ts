@@ -8,9 +8,7 @@ describe('SaleController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [SaleController],
-      providers: [
-        { provide: SaleService, useValue: { getRiderLocation: jest.fn() } }
-      ],
+      providers: [{ provide: SaleService, useValue: { getRiderLocation: jest.fn() } }],
     }).compile();
 
     controller = module.get<SaleController>(SaleController);

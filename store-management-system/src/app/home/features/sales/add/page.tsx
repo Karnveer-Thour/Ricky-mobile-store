@@ -27,7 +27,11 @@ function addSale() {
   return (
     <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
       <p className="text-2xl font-bold mt-5">Add Sale</p>
-      <form id="add-sale-form" onSubmit={handleSubmit(onSubmit)} className="flex-1 w-full p-3">
+      <form
+        id="add-sale-form"
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex-1 w-full p-3"
+      >
         <Inputcontainer type={"City Name"} error={errors?.name} isDark={isDark}>
           <Input
             id="City Name"
@@ -36,7 +40,11 @@ function addSale() {
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"District"} error={errors?.district} isDark={isDark}>
+        <Inputcontainer
+          type={"District"}
+          error={errors?.district}
+          isDark={isDark}
+        >
           <Input
             id="District"
             placeholder="Enter city district"
@@ -52,7 +60,11 @@ function addSale() {
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Pincode"} error={errors?.pincode} isDark={isDark}>
+        <Inputcontainer
+          type={"Pincode"}
+          error={errors?.pincode}
+          isDark={isDark}
+        >
           <Input
             id="Pincode"
             placeholder="Enter city pincode"

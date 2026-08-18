@@ -72,6 +72,15 @@ export class Product extends BaseEntity<Product> {
   })
   warranty: string;
 
+  @Column({
+    name: 'imageUrl',
+    type: 'varchar',
+    length: '1000',
+    nullable: true,
+  })
+  @IsOptional()
+  imageUrl: string;
+
   //Inverse relations
   @OneToMany(() => ProductReview, (reviews) => reviews.reviewedProduct, {
     cascade: ['soft-remove'],

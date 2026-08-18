@@ -29,7 +29,11 @@ function UploadSale() {
   return (
     <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
       <p className="text-2xl font-bold mt-5">Upload Sale</p>
-      <form id="upload-sale-form" onSubmit={handleSubmit(onSubmit)} className="flex-1 w-full p-3">
+      <form
+        id="upload-sale-form"
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex-1 w-full p-3"
+      >
         <Inputcontainer
           type={"Customer Name"}
           error={errors?.customerName}
@@ -42,7 +46,11 @@ function UploadSale() {
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Products"} error={errors?.products} isDark={isDark}>
+        <Inputcontainer
+          type={"Products"}
+          error={errors?.products}
+          isDark={isDark}
+        >
           <MultiSelectorInput
             values={[
               {
@@ -81,7 +89,11 @@ function UploadSale() {
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Pictures"} error={errors?.pictures} isDark={isDark}>
+        <Inputcontainer
+          type={"Pictures"}
+          error={errors?.pictures}
+          isDark={isDark}
+        >
           <UploaderInput isDark={isDark} features={{ crop: true }} />
         </Inputcontainer>
       </form>

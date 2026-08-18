@@ -86,6 +86,16 @@ export class ProductDto extends BaseDto {
   @MaxLength(100, { message: 'Warranty must be at most 100 characters long' })
   warranty: string;
 
+  @ApiProperty({
+    description: 'Enter Product image URL',
+    example: 'https://images.unsplash.com/...',
+    type: 'string',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  imageUrl?: string;
+
   @IsNotEmpty()
   colors: CreateProductColorDto[];
 }

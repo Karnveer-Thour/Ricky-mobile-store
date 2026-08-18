@@ -37,7 +37,9 @@ const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({
   return (
     <div
       className={`max-w-[95%] sm:ms-7 max-sm:ms-4 p-6 rounded-3xl mt-8 border shadow-md ${
-        isDark ? "bg-gray-900 text-white border-gray-700" : "bg-white text-gray-800 border-gray-300"
+        isDark
+          ? "bg-gray-900 text-white border-gray-700"
+          : "bg-white text-gray-800 border-gray-300"
       }`}
     >
       <div
@@ -61,15 +63,21 @@ const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({
           setIsEditing(false);
         })}
       >
-        <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+        <div
+          className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${isDark ? "text-gray-300" : "text-gray-700"}`}
+        >
           {Object.entries(formData).map(
             ([key, value]) =>
               !(key === "imageURL" || key === "role") && (
                 <div key={key}>
-                  <p className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                  <p
+                    className={`text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}
+                  >
                     {key
                       .split("_")
-                      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                      .map(
+                        (word) => word.charAt(0).toUpperCase() + word.slice(1),
+                      )
                       .join(" ")}
                     {key === "phone" ? " Number" : ""}
                   </p>
@@ -80,8 +88,8 @@ const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({
                           key === "date_birth"
                             ? "date"
                             : key === "email"
-                            ? "email"
-                            : "text"
+                              ? "email"
+                              : "text"
                         }
                         {...register(key)}
                         className={`border rounded-lg p-2 w-full ${
@@ -100,7 +108,7 @@ const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({
                     <p className="font-medium">{value}</p>
                   )}
                 </div>
-              )
+              ),
           )}
         </div>
 

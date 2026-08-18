@@ -56,9 +56,14 @@ export const apiService = {
       const response = await fetch(url.toString());
       if (!response.ok) throw new Error(`HTTP error ${response.status}`);
       const resData = await response.json();
-      return resData.data?.products || resData.data || resData || [];
+      return (
+        resData.data?.products ||
+        resData.data?.transformedProducts ||
+        (Array.isArray(resData.data) ? resData.data : []) ||
+        []
+      );
     } catch (err) {
-      console.warn('Backend API unavailable, using local product catalog.', err);
+      console.warn('Failed to fetch products from backend API:', err);
       return [];
     }
   },
@@ -68,7 +73,7 @@ export const apiService = {
       const response = await fetch(`${API_BASE_URL}/product/${id}`);
       if (!response.ok) throw new Error(`HTTP error ${response.status}`);
       const resData = await response.json();
-      return resData.data || resData;
+      return resData.data?.product || resData.data || resData || null;
     } catch (err) {
       console.warn(`Failed to fetch product ${id} from API`, err);
       return null;
@@ -85,7 +90,12 @@ export const apiService = {
       const response = await fetch(url.toString());
       if (!response.ok) throw new Error(`HTTP error ${response.status}`);
       const resData = await response.json();
-      return resData.data?.categories || resData.data || resData || [];
+      return (
+        resData.data?.transformedCategories ||
+        resData.data?.categories ||
+        (Array.isArray(resData.data) ? resData.data : []) ||
+        []
+      );
     } catch (err) {
       console.warn('Failed to fetch categories from API', err);
       return [];

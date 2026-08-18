@@ -62,7 +62,10 @@ export default function Login() {
         >
           <Inputcontainer type="email" error={errors?.email} isDark={true}>
             <div className="relative flex items-center">
-              <Mail size={16} className="absolute left-4 text-gray-500 pointer-events-none" />
+              <Mail
+                size={16}
+                className="absolute left-4 text-gray-500 pointer-events-none"
+              />
               <Input
                 id="email"
                 placeholder="Ricky@gmail.com"
@@ -72,11 +75,18 @@ export default function Login() {
             </div>
           </Inputcontainer>
 
-          <Inputcontainer type="password" error={errors?.password} isDark={true}>
+          <Inputcontainer
+            type="password"
+            error={errors?.password}
+            isDark={true}
+          >
             <PasswordInput>
               {({ passwordVisible }) => (
                 <div className="relative flex-1 flex items-center">
-                  <Lock size={16} className="absolute left-4 text-gray-500 pointer-events-none" />
+                  <Lock
+                    size={16}
+                    className="absolute left-4 text-gray-500 pointer-events-none"
+                  />
                   <Input
                     type={passwordVisible ? "text" : "password"}
                     id="password"
@@ -89,10 +99,7 @@ export default function Login() {
             </PasswordInput>
           </Inputcontainer>
 
-          <Button
-            name="LOGIN TO DASHBOARD"
-            className="mt-2"
-          />
+          <Button name="LOGIN TO DASHBOARD" className="mt-2" />
         </form>
       </Formcontainer>
 

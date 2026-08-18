@@ -10,7 +10,7 @@
   --surface-card-dark: rgba(30, 41, 59, 0.9);
   --surface-light: #f8fafc;
   --surface-card-light: #ffffff;
-  --border-dark: rgba(255,255,255,0.07);
+  --border-dark: rgba(255, 255, 255, 0.07);
   --border-light: #e2e8f0;
 }
 
@@ -54,14 +54,14 @@
     background: var(--surface-card-dark);
     border: 1px solid var(--border-dark);
     border-radius: 1rem;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
   }
 
   .section-card-light {
     background: var(--surface-card-light);
     border: 1px solid var(--border-light);
     border-radius: 1rem;
-    box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
   }
 
   /* Nav sidebar active accent */
@@ -84,8 +84,17 @@
 }
 
 /* ── Custom Scrollbar ───────────────────────────────── */
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(0,207,255,0.3); border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(0,207,255,0.6); }
-
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 207, 255, 0.3);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 207, 255, 0.6);
+}

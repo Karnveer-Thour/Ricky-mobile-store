@@ -39,13 +39,23 @@ const CityTable = ({ isDark = false }) => {
     {
       header: "Status",
       id: "Status",
-      cell: ({ row }: { row: any }) => (
-        <div className="flex gap-5">
-          <Button name={"accepted"} className="bg-green-500" />
-          <Button name={"pending"} className="bg-yellow-500" />
-          <Button name={"rejected"} className="bg-red-500" />
-        </div>
-      ),
+      cell: ({ row }: { row: any }) => {
+        const status = (row.original?.status || "pending").toLowerCase();
+        const colors =
+          status === "accepted" || status === "completed"
+            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+            : status === "rejected" || status === "cancelled"
+              ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
+              : "bg-amber-500/10 text-amber-400 border-amber-500/20";
+
+        return (
+          <span
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase tracking-wider border ${colors}`}
+          >
+            {row.original?.status || "Pending"}
+          </span>
+        );
+      },
     },
     {
       header: "Amount",

@@ -8,9 +8,7 @@ describe('BanksController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [BanksController],
-      providers: [
-        { provide: BanksService, useValue: { checkEligibility: jest.fn() } }
-      ],
+      providers: [{ provide: BanksService, useValue: { checkEligibility: jest.fn() } }],
     }).compile();
 
     controller = module.get<BanksController>(BanksController);

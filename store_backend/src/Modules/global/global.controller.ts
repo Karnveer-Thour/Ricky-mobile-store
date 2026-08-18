@@ -10,7 +10,7 @@ export class GlobalController {
   constructor(private readonly globalService: GlobalService) {}
 
   @Get('search/:query')
-  async globalSearch(@Query() query:GlobalQueryDto): Promise<baseResponseDto> {
+  async globalSearch(@Query() query: GlobalQueryDto): Promise<baseResponseDto> {
     return this.globalService.globalSearch(query.query);
   }
 }

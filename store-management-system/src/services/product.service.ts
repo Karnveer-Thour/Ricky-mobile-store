@@ -1,4 +1,4 @@
-import { ENV_CONFIG } from '../constants';
+import { ENV_CONFIG } from "../constants";
 
 const API_BASE_URL = ENV_CONFIG.API_BASE_URL;
 
@@ -12,12 +12,16 @@ export interface DashboardProduct {
 }
 
 export const productService = {
-  async fetchProducts(page = 1, limit = 10, search = ''): Promise<DashboardProduct[]> {
+  async fetchProducts(
+    page = 1,
+    limit = 10,
+    search = "",
+  ): Promise<DashboardProduct[]> {
     try {
       const url = new URL(`${API_BASE_URL}/product`);
-      url.searchParams.append('page', String(page));
-      url.searchParams.append('limit', String(limit));
-      if (search) url.searchParams.append('searchText', search);
+      url.searchParams.append("page", String(page));
+      url.searchParams.append("limit", String(limit));
+      if (search) url.searchParams.append("searchText", search);
 
       const response = await fetch(url.toString());
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -28,7 +32,10 @@ export const productService = {
         (Array.isArray(resData.data) ? resData.data : []);
       return Array.isArray(list) ? list : [];
     } catch (err) {
-      console.warn('Backend API connection offline, fallback to local state', err);
+      console.warn(
+        "Backend API connection offline, fallback to local state",
+        err,
+      );
       return [];
     }
   },
@@ -46,18 +53,20 @@ export const productService = {
   },
 
   // ✅ Fixed: POST /product/create (was /product)
-  async createProduct(productData: any): Promise<{ ok: boolean; message?: string }> {
+  async createProduct(
+    productData: any,
+  ): Promise<{ ok: boolean; message?: string }> {
     try {
       const response = await fetch(`${API_BASE_URL}/product/create`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(productData),
       });
       const resData = await response.json().catch(() => ({}));
       return { ok: response.ok, message: resData?.message };
     } catch (err) {
-      console.warn('Failed to create product via API', err);
-      return { ok: false, message: 'Network error. Please try again.' };
+      console.warn("Failed to create product via API", err);
+      return { ok: false, message: "Network error. Please try again." };
     }
   },
 
@@ -68,28 +77,30 @@ export const productService = {
   ): Promise<{ ok: boolean; message?: string }> {
     try {
       const response = await fetch(`${API_BASE_URL}/product/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(productData),
       });
       const resData = await response.json().catch(() => ({}));
       return { ok: response.ok, message: resData?.message };
     } catch (err) {
       console.warn(`Failed to update product ${id} via API`, err);
-      return { ok: false, message: 'Network error. Please try again.' };
+      return { ok: false, message: "Network error. Please try again." };
     }
   },
 
-  async deleteProduct(id: string | number): Promise<{ ok: boolean; message?: string }> {
+  async deleteProduct(
+    id: string | number,
+  ): Promise<{ ok: boolean; message?: string }> {
     try {
       const response = await fetch(`${API_BASE_URL}/product/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
       const resData = await response.json().catch(() => ({}));
       return { ok: response.ok, message: resData?.message };
     } catch (err) {
       console.warn(`Failed to delete product ${id} via API`, err);
-      return { ok: false, message: 'Network error. Please try again.' };
+      return { ok: false, message: "Network error. Please try again." };
     }
   },
 
@@ -99,7 +110,7 @@ export const productService = {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return await response.blob();
     } catch (err) {
-      console.warn('Failed to download CSV from backend API', err);
+      console.warn("Failed to download CSV from backend API", err);
       return null;
     }
   },

@@ -16,9 +16,7 @@ import { Injectable, Logger } from '@nestjs/common';
   },
 })
 @Injectable()
-export class AppGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
-{
+export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
@@ -34,10 +32,7 @@ export class AppGateway
 
   // Bidirectional chat messaging
   @SubscribeMessage('chat:message')
-  handleChatMessage(
-    @MessageBody() data: any,
-    @ConnectedSocket() client: Socket,
-  ) {
+  handleChatMessage(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
     this.logger.log(`Received message: ${JSON.stringify(data)}`);
     // Broadcast to all connected clients (e.g. admin chat list updates)
     this.server.emit('chat:message', data);
@@ -45,10 +40,7 @@ export class AppGateway
 
   // Customer typing indicators
   @SubscribeMessage('chat:typing')
-  handleTyping(
-    @MessageBody() data: any,
-    @ConnectedSocket() client: Socket,
-  ) {
+  handleTyping(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
     this.server.emit('chat:typing', data);
   }
 

@@ -22,19 +22,13 @@ export class SaleController {
 
   @Patch(':id/location')
   @HttpCode(HttpStatus.OK)
-  async updateRiderLocation(
-    @Param('id') id: string,
-    @Body() dto: UpdateLocationDto,
-  ) {
+  async updateRiderLocation(@Param('id') id: string, @Body() dto: UpdateLocationDto) {
     return this.saleService.updateRiderLocation(id, dto.lat, dto.lng);
   }
 
   @Patch(':id/status')
   @HttpCode(HttpStatus.OK)
-  async updateOrderStatus(
-    @Param('id') id: string,
-    @Body() dto: UpdateStatusDto,
-  ) {
+  async updateOrderStatus(@Param('id') id: string, @Body() dto: UpdateStatusDto) {
     return this.saleService.updateOrderStatus(id, dto.status, dto.otp);
   }
 }

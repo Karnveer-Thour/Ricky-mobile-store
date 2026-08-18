@@ -20,6 +20,7 @@ import { Product } from './Entities/Product.entity';
 import { parse } from 'fast-csv';
 import { CategoryRepository } from 'Modules/Category/Repositories/Category.repo';
 import { ProductColor } from './Entities/ProductColor.entity';
+import { AIService } from 'Modules/AI/ai.service';
 
 @Injectable()
 export class ProductService {
@@ -27,6 +28,7 @@ export class ProductService {
     private readonly productRepository: ProductRepository,
     private readonly productColorRepository: ProductColorRepository,
     private readonly categoryRepository: CategoryRepository,
+    private readonly aiService: AIService,
   ) {}
 
   async create(productData: CreateProductDto): Promise<baseResponseDto> {
@@ -39,29 +41,111 @@ export class ProductService {
         throw new NotFoundException('Category does not exist');
       }
 
-      const existingProduct = await this.productRepository.findOneBy({
-        name: productData.name,
+      const existingProduct = await this.productRepository.findOne({
+        where: { name: productData.name },
+        withDeleted: true,
       });
 
+      let quantity = 0;
+      let incomingColors = productData?.productColors || productData?.colors || [];
+      if (incomingColors.length) {
+        incomingColors.forEach(
+          (productColor: any) => (quantity += Number(productColor.quantity) || 0),
+        );
+      } else if (productData.quantity) {
+        quantity = Number(productData.quantity) || 0;
+      } else if (productData.quantiy) {
+        quantity = Number(productData.quantiy) || 0;
+      }
+
+      // ✨ Server-Side AI Auto-Enrichment if fields are missing or default
+      let finalDescription = productData.description;
+      let finalSpecifications = productData.specifications;
+      let finalWarranty = productData.warranty;
+      let finalImageUrl = productData.imageUrl;
+      let finalColors = incomingColors;
+
+      if (
+        !finalImageUrl ||
+        !finalDescription ||
+        finalDescription === `${productData.name} details` ||
+        !finalWarranty ||
+        !finalSpecifications
+      ) {
+        try {
+          const aiEnriched = await this.aiService.enrichProductDetails(
+            productData.name,
+            category.name,
+            productData.price,
+          );
+          if (!finalImageUrl && aiEnriched.imageUrl) {
+            finalImageUrl = aiEnriched.imageUrl;
+          }
+          if (
+            (!finalDescription || finalDescription === `${productData.name} details`) &&
+            aiEnriched.description
+          ) {
+            finalDescription = aiEnriched.description;
+          }
+          if (!finalSpecifications && aiEnriched.specifications) {
+            finalSpecifications = aiEnriched.specifications;
+          }
+          if (!finalWarranty && aiEnriched.warranty) {
+            finalWarranty = aiEnriched.warranty;
+          }
+          if (!finalColors.length && aiEnriched.colors?.length) {
+            finalColors = aiEnriched.colors as any;
+            quantity = finalColors.reduce(
+              (acc: number, curr: any) => acc + (Number(curr.quantity) || 0),
+              0,
+            );
+          }
+        } catch (e) {
+          console.warn('Backend AI auto-enrichment warning:', e);
+        }
+      }
+
       if (existingProduct) {
+        if (existingProduct.deletedAt) {
+          // Restore and update soft-deleted product
+          existingProduct.deletedAt = null;
+          existingProduct.category = category;
+          existingProduct.description = finalDescription;
+          existingProduct.price = parseFloat(productData.price);
+          existingProduct.discount = productData.discount ? parseFloat(productData.discount) : 0;
+          existingProduct.quantity = quantity;
+          existingProduct.specifications = finalSpecifications;
+          existingProduct.warranty = finalWarranty;
+          if (finalImageUrl !== undefined) {
+            existingProduct.imageUrl = finalImageUrl;
+          }
+          if (finalColors.length) {
+            existingProduct.colors = finalColors as any;
+          }
+
+          const restoredProduct = await this.productRepository.save(existingProduct);
+          return {
+            code: 201,
+            status: true,
+            data: {
+              product: restoredProduct,
+            },
+          };
+        }
         throw new ConflictException('Product already existed');
       }
 
-      let quantity = 0;
-      if (productData?.productColors?.length)
-        productData.productColors.forEach((productColor) => (quantity += productColor.quantity));
-      else if (productData.quantiy) quantity = productData.quantiy;
-
       const productDetails: ProductDto = {
         name: productData.name,
-        description: productData.description,
+        description: finalDescription,
         quantity: quantity,
         price: parseFloat(productData.price),
         category: category,
-        specifications: productData.specifications,
-        warranty: productData.warranty,
+        specifications: finalSpecifications,
+        warranty: finalWarranty,
+        imageUrl: finalImageUrl || null,
         discount: productData.discount ? parseFloat(productData.discount) : 0,
-        colors: productData.productColors?.length ? productData.productColors : [],
+        colors: finalColors.length ? (finalColors as any) : [],
       };
 
       const newProduct = await this.productRepository.save(productDetails);
@@ -74,8 +158,9 @@ export class ProductService {
         },
       };
     } catch (error) {
+      console.error('Create product error:', error);
       if (error instanceof HttpException) throw error;
-      throw new InternalServerErrorException('Unable to create a new product');
+      throw new InternalServerErrorException(error?.message || 'Unable to create a new product');
     }
   }
 
@@ -83,7 +168,7 @@ export class ProductService {
     try {
       const existingProduct = await this.productRepository.findOne({
         where: { id },
-        relations: ['colors'],
+        relations: ['colors', 'category'],
       });
       if (!existingProduct) {
         throw new NotFoundException('Product not found!');
@@ -96,29 +181,46 @@ export class ProductService {
         if (!category) {
           throw new NotFoundException('Category does not exist');
         }
+        existingProduct.category = category;
       }
 
-      for (let key in existingProduct) {
-        if (key === 'colors') {
-          existingProduct[key] = productData[key]?.length
-            ? [...existingProduct[key], productData[key]]
-            : existingProduct[key];
-        } else if (key === 'price' && productData[key] !== undefined) {
-          existingProduct[key] = parseFloat(productData[key] as any);
-        } else if (key === 'discount' && productData[key] !== undefined) {
-          existingProduct[key] = parseFloat(productData[key] as any);
-        } else {
-          existingProduct[key] = productData[key] ?? existingProduct[key];
+      if (productData.name !== undefined) existingProduct.name = productData.name;
+      if (productData.price !== undefined)
+        existingProduct.price = parseFloat(productData.price as any);
+      if (productData.discount !== undefined)
+        existingProduct.discount = parseFloat(productData.discount as any);
+      if (productData.description !== undefined)
+        existingProduct.description = productData.description;
+
+      const incomingUpdateColors = productData.productColors || productData.colors;
+      if (incomingUpdateColors && Array.isArray(incomingUpdateColors)) {
+        existingProduct.colors = incomingUpdateColors as any;
+        if (incomingUpdateColors.length > 0) {
+          let colorQty = 0;
+          incomingUpdateColors.forEach((c: any) => (colorQty += Number(c.quantity) || 0));
+          existingProduct.quantity = colorQty;
+        }
+      } else {
+        if (productData.quantity !== undefined) {
+          existingProduct.quantity = Number(productData.quantity);
+        } else if (productData.quantiy !== undefined) {
+          existingProduct.quantity = Number(productData.quantiy);
         }
       }
 
-      await this.productRepository.save(existingProduct);
+      if (productData.specifications !== undefined)
+        existingProduct.specifications = productData.specifications;
+      if (productData.warranty !== undefined) existingProduct.warranty = productData.warranty;
+      if (productData.imageUrl !== undefined) existingProduct.imageUrl = productData.imageUrl;
+
+      const updatedProduct = await this.productRepository.save(existingProduct);
 
       return {
         status: true,
-        code: 204,
+        code: 200,
         data: {
-          message: 'Product updated successfully.',
+          message: 'Product updated successfully',
+          product: updatedProduct,
         },
       };
     } catch (error) {
@@ -138,14 +240,18 @@ export class ProductService {
 
       const queryBuilder = this.productRepository.createQueryBuilder('product');
 
-      queryBuilder.where('product.deletedAt IS NULL');
+      queryBuilder
+        .leftJoinAndSelect('product.category', 'category')
+        .leftJoinAndSelect('product.colors', 'colors')
+        .where('product.deletedAt IS NULL');
 
       if (searchText) {
         queryBuilder.andWhere(
           `(
-                      product.name ILIKE :searchText OR 
-                      CAST(product.price AS TEXT) ILIKE :searchText OR 
-                      CAST(product.quantity AS TEXT) ILIKE :searchText
+                      product.name LIKE :searchText OR 
+                      category.name LIKE :searchText OR
+                      CAST(product.price AS TEXT) LIKE :searchText OR 
+                      CAST(product.quantity AS TEXT) LIKE :searchText
                     )`,
           { searchText: `%${searchText}%` },
         );
@@ -178,7 +284,10 @@ export class ProductService {
 
   async getById(id: string): Promise<baseResponseDto> {
     try {
-      const existingProduct = await this.productRepository.findOneBy({ id });
+      const existingProduct = await this.productRepository.findOne({
+        where: { id },
+        relations: ['category', 'colors'],
+      });
       if (!existingProduct) {
         throw new NotFoundException('Product does not exist');
       }

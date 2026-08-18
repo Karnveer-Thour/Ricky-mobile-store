@@ -39,7 +39,11 @@ export class Sale extends BaseEntity<Sale> {
   @Column({ name: 'riderLng', type: 'decimal', precision: 10, scale: 6, nullable: true })
   riderLng: number;
 
-  @Column({ name: 'riderLocationUpdatedAt', type: ENV_CONFIG.DATABASE.TYPE === 'postgres' ? 'timestamp' : 'datetime', nullable: true })
+  @Column({
+    name: 'riderLocationUpdatedAt',
+    type: ENV_CONFIG.DATABASE.TYPE === 'postgres' ? 'timestamp' : 'datetime',
+    nullable: true,
+  })
   riderLocationUpdatedAt: Date;
 
   //Inverse relations

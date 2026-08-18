@@ -1,51 +1,49 @@
 "use client";
-import Select from "@/components/select";
-import { flexRender } from "@tanstack/react-table";
-import { Header } from "@tanstack/react-table";
+import { flexRender, Header } from "@tanstack/react-table";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import cn from "classnames";
 
 type HeadProps = {
   header: Header<any, any>;
-  handleColumnVisibility: (id: string) => void;
-  setSorting: (sorting: Array<{ id: string; desc: boolean }>) => void;
+  handleColumnVisibility?: (id: string) => void;
+  setSorting?: (sorting: Array<{ id: string; desc: boolean }>) => void;
   isDark?: boolean;
 };
 
-function Head({
-  header,
-  handleColumnVisibility,
-  setSorting,
-  isDark = false,
-}: HeadProps) {
+function Head({ header, isDark = false }: HeadProps) {
+  const canSort = header.column.getCanSort();
+  const isSorted = header.column.getIsSorted();
+
   return (
     <th
       className={cn(
-        "py-3 px-5 text-left text-xs font-semibold uppercase tracking-wider whitespace-nowrap",
+        "py-3.5 px-6 text-left text-xs font-semibold uppercase tracking-wider select-none whitespace-nowrap transition-colors",
+        canSort ? "cursor-pointer hover:bg-white/5" : "",
         isDark ? "text-slate-400" : "text-slate-500",
       )}
+      onClick={header.column.getToggleSortingHandler()}
     >
       <div className="flex items-center gap-2">
-        <span className="flex-1">
+        <span className="flex-1 font-medium">
           {flexRender(header.column.columnDef.header, header.getContext())}
         </span>
-        <Select
-          onChange={(e) => {
-            const value = e.target.value;
-            if (value === "Asc") {
-              setSorting([{ id: header.column.id, desc: false }]);
-            } else if (value === "Desc") {
-              setSorting([{ id: header.column.id, desc: true }]);
-            } else if (value === "Hide") {
-              handleColumnVisibility(header.id);
-            }
-          }}
-          isDark={isDark}
-        >
-          <option value="">⇅</option>
-          <option value="Asc">↑ Asc</option>
-          <option value="Desc">↓ Desc</option>
-          <option value="Hide">Hide</option>
-        </Select>
+        {canSort && (
+          <span className="shrink-0 transition-colors">
+            {isSorted === "asc" ? (
+              <ArrowUp size={14} className="text-[#00cfff]" />
+            ) : isSorted === "desc" ? (
+              <ArrowDown size={14} className="text-[#00cfff]" />
+            ) : (
+              <ArrowUpDown
+                size={13}
+                className={cn(
+                  "opacity-30 hover:opacity-100 transition-opacity",
+                  isDark ? "text-slate-400" : "text-slate-500",
+                )}
+              />
+            )}
+          </span>
+        )}
       </div>
     </th>
   );

@@ -11,7 +11,7 @@ describe('SaleService', () => {
       providers: [
         SaleService,
         { provide: SaleRepository, useValue: { findOne: jest.fn() } },
-        { provide: AppGateway, useValue: { server: {} } }
+        { provide: AppGateway, useValue: { server: {} } },
       ],
     }).compile();
 

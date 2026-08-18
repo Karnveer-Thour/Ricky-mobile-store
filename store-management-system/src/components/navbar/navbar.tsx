@@ -30,13 +30,7 @@ interface NavbarProps {
 }
 
 /** Section divider label — only shown when sidebar is open */
-function SectionLabel({
-  label,
-  isOpen,
-}: {
-  label: string;
-  isOpen: boolean;
-}) {
+function SectionLabel({ label, isOpen }: { label: string; isOpen: boolean }) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -116,7 +110,11 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
             onClick={toggleSidebar}
             className="w-full flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-white/5 transition-all duration-200 max-md:text-slate-800"
           >
-            {isOpen ? <X size={20} /> : <Menu size={20} className="max-md:text-slate-800" />}
+            {isOpen ? (
+              <X size={20} />
+            ) : (
+              <Menu size={20} className="max-md:text-slate-800" />
+            )}
           </button>
         </div>
 
@@ -223,7 +221,9 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
             onClick={toggleMenuVisibility}
           >
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shrink-0 shadow-sm shadow-cyan-400/30">
-              <span className="text-white text-xs font-bold">{adminInitials}</span>
+              <span className="text-white text-xs font-bold">
+                {adminInitials}
+              </span>
             </div>
             <AnimatePresence>
               {isOpen && (

@@ -14,7 +14,8 @@ const Alert = () => {
   const dispatchAlert = useDispatch();
 
   const alertStyles = {
-    success: "bg-emerald-950/90 border-emerald-500/50 text-emerald-300 shadow-emerald-500/20",
+    success:
+      "bg-emerald-950/90 border-emerald-500/50 text-emerald-300 shadow-emerald-500/20",
     error: "bg-rose-950/90 border-rose-500/50 text-rose-300 shadow-rose-500/20",
   };
 

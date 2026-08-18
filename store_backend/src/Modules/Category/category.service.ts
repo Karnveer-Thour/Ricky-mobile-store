@@ -77,7 +77,7 @@ export class CategoryService {
       // Apply search filter
       if (searchText) {
         queryBuilder.andWhere(
-          '(category.name ILIKE :searchText OR category.description ILIKE :searchText)',
+          '(category.name LIKE :searchText OR category.description LIKE :searchText)',
           { searchText: `%${searchText}%` },
         );
       }

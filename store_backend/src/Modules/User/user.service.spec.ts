@@ -11,9 +11,12 @@ describe('UserService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
-        { provide: UserRepository, useValue: { find: jest.fn(), findOne: jest.fn(), save: jest.fn() } },
+        {
+          provide: UserRepository,
+          useValue: { find: jest.fn(), findOne: jest.fn(), save: jest.fn() },
+        },
         { provide: JwtService, useValue: { sign: jest.fn(), verify: jest.fn() } },
-        { provide: FirebaseService, useValue: { verifyToken: jest.fn() } }
+        { provide: FirebaseService, useValue: { verifyToken: jest.fn() } },
       ],
     }).compile();
 

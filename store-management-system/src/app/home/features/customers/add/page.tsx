@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
 import PasswordInput from "@/components/passwordInput";
 import { customerService } from "@/services/customer.service";
+import { UserPlus, Check, X } from "lucide-react";
 
 function addCustomer() {
   const router = useRouter();
@@ -21,7 +22,15 @@ function addCustomer() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({});
+  } = useForm({
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      mobileNumber: "",
+    },
+  });
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
@@ -42,88 +51,129 @@ function addCustomer() {
     if (res.ok) {
       router.back();
     } else {
-      setSubmitError(res.message || "Failed to create customer. Please try again.");
+      setSubmitError(
+        res.message || "Failed to create customer. Please try again.",
+      );
     }
   };
 
   return (
-    <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
-      <p className="text-2xl font-bold mt-5">Add Customer</p>
+    <BlurredPopupLayout
+      title="Add New Customer"
+      subtitle="Register a new customer account and credentials"
+      icon={<UserPlus size={20} />}
+      isDark={isDark}
+      maxWidth="max-w-xl"
+    >
       {submitError && (
-        <p className="text-sm text-red-500 font-semibold mt-2">{submitError}</p>
+        <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold flex items-center gap-2">
+          <X size={14} className="shrink-0" />
+          <span>{submitError}</span>
+        </div>
       )}
-      <form id="add-customer-form" onSubmit={handleSubmit(onSubmit)} className="flex-1 w-full p-3">
+
+      <form
+        id="add-customer-form"
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Inputcontainer
+            label="First Name"
+            required
+            error={errors?.firstName}
+            isDark={isDark}
+          >
+            <Input
+              id="firstName"
+              placeholder="e.g. Rahul"
+              {...register("firstName", { required: "First name is required" })}
+            />
+          </Inputcontainer>
+
+          <Inputcontainer
+            label="Last Name"
+            required
+            error={errors?.lastName}
+            isDark={isDark}
+          >
+            <Input
+              id="lastName"
+              placeholder="e.g. Sharma"
+              {...register("lastName", { required: "Last name is required" })}
+            />
+          </Inputcontainer>
+        </div>
+
         <Inputcontainer
-          type={"First Name"}
-          error={errors?.firstName}
+          label="Email Address"
+          required
+          error={errors?.email}
           isDark={isDark}
         >
           <Input
-            id="First Name"
-            placeholder="Enter First Name"
-            {...register("firstName", { required: true })}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
-          />
-        </Inputcontainer>
-        <Inputcontainer
-          type={"Last Name"}
-          error={errors?.lastName}
-          isDark={isDark}
-        >
-          <Input
-            id="Last Name"
-            placeholder="Enter Last Name"
-            {...register("lastName")}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
-          />
-        </Inputcontainer>
-        <Inputcontainer type={"Email"} error={errors?.email} isDark={isDark}>
-          <Input
-            id="Email"
+            id="email"
             type="email"
-            placeholder="Enter Email Address"
-            {...register("email", { required: true })}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
+            placeholder="e.g. rahul.sharma@example.com"
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^\S+@\S+$/i,
+                message: "Please enter a valid email address",
+              },
+            })}
           />
         </Inputcontainer>
+
         <Inputcontainer
-          type={"Mobile Number"}
+          label="Mobile Number"
           error={errors?.mobileNumber}
           isDark={isDark}
         >
           <Input
-            id="Mobile Number"
-            placeholder="Enter Mobile Number"
+            id="mobileNumber"
+            type="tel"
+            placeholder="e.g. +91 98765 43210"
             {...register("mobileNumber")}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer type={"Password"} error={errors?.password} isDark={isDark}>
-          <PasswordInput
-            isDark={isDark}
-            className="focus-within:ring-blue-600 focus-within:ring-inset"
-          >
+
+        <Inputcontainer
+          label="Password"
+          required
+          error={errors?.password}
+          isDark={isDark}
+        >
+          <PasswordInput isDark={isDark}>
             {({ passwordVisible }) => (
               <Input
-                type={passwordVisible ? "text" : "password"}
                 id="password"
-                placeholder="Enter password (e.g. Customer@123)"
-                className={`flex-1 px-4 py-2 rounded-md focus:outline-none border-none bg-transparent font-bold ${isDark ? " text-white" : "text-gray-500"}`}
-                customMargin="mt-0"
-                {...register("password")}
+                type={passwordVisible ? "text" : "password"}
+                placeholder="Enter password"
+                {...register("password", { required: "Password is required" })}
+                className="bg-transparent border-0 focus:ring-0 focus:bg-transparent"
               />
             )}
           </PasswordInput>
         </Inputcontainer>
+
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800/80">
+          <Button
+            type="button"
+            name="Cancel"
+            variant="ghost"
+            handler={() => router.back()}
+          />
+          <Button
+            type="submit"
+            name="Create Account"
+            variant="primary"
+            loading={isSubmitting}
+            disabled={isSubmitting}
+            icon={<Check size={16} />}
+          />
+        </div>
       </form>
-      <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">
-        <Button name={"Cancel"} handler={() => router.back()} />
-        <Button
-          name={isSubmitting ? "Submitting..." : "Submit"}
-          handler={handleSubmit(onSubmit)}
-          disabled={isSubmitting}
-        />
-      </div>
     </BlurredPopupLayout>
   );
 }

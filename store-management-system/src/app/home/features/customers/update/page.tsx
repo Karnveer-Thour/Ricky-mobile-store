@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
 import { customerService } from "@/services/customer.service";
+import { UserCheck, Check, X } from "lucide-react";
 
 function updateCustomer() {
   const router = useRouter();
@@ -22,7 +23,14 @@ function updateCustomer() {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm({});
+  } = useForm({
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      mobileNumber: "",
+    },
+  });
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -31,8 +39,14 @@ function updateCustomer() {
         try {
           const parsed = JSON.parse(stored);
           setCustomerId(parsed._id || parsed.id || "");
-          setValue("firstName", parsed.firstName || parsed.name || "");
-          setValue("lastName", parsed.lastName || "");
+          setValue(
+            "firstName",
+            parsed.firstName || parsed.name?.split(" ")[0] || "",
+          );
+          setValue(
+            "lastName",
+            parsed.lastName || parsed.name?.split(" ").slice(1).join(" ") || "",
+          );
           setValue("email", parsed.email || "");
           setValue("mobileNumber", parsed.mobile || parsed.mobileNumber || "");
         } catch (e) {
@@ -67,71 +81,110 @@ function updateCustomer() {
       }
       router.back();
     } else {
-      setSubmitError(res.message || "Failed to update customer. Please try again.");
+      setSubmitError(
+        res.message || "Failed to update customer. Please try again.",
+      );
     }
   };
 
   return (
-    <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
-      <p className="text-2xl font-bold mt-5">Update Customer</p>
+    <BlurredPopupLayout
+      title="Edit Customer Profile"
+      subtitle="Update contact information and user attributes"
+      icon={<UserCheck size={20} />}
+      isDark={isDark}
+      maxWidth="max-w-xl"
+    >
       {submitError && (
-        <p className="text-sm text-red-500 font-semibold mt-2">{submitError}</p>
+        <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold flex items-center gap-2">
+          <X size={14} className="shrink-0" />
+          <span>{submitError}</span>
+        </div>
       )}
-      <form id="update-customer-form" onSubmit={handleSubmit(onSubmit)} className="flex-1 w-full p-3">
+
+      <form
+        id="update-customer-form"
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Inputcontainer
+            label="First Name"
+            required
+            error={errors?.firstName}
+            isDark={isDark}
+          >
+            <Input
+              id="firstName"
+              placeholder="Enter First Name"
+              {...register("firstName", { required: "First name is required" })}
+            />
+          </Inputcontainer>
+
+          <Inputcontainer
+            label="Last Name"
+            required
+            error={errors?.lastName}
+            isDark={isDark}
+          >
+            <Input
+              id="lastName"
+              placeholder="Enter Last Name"
+              {...register("lastName", { required: "Last name is required" })}
+            />
+          </Inputcontainer>
+        </div>
+
         <Inputcontainer
-          type={"First Name"}
-          error={errors?.firstName}
+          label="Email Address"
+          required
+          error={errors?.email}
           isDark={isDark}
         >
           <Input
-            id="First Name"
-            placeholder="Enter First Name"
-            {...register("firstName", { required: true })}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
-          />
-        </Inputcontainer>
-        <Inputcontainer
-          type={"Last Name"}
-          error={errors?.lastName}
-          isDark={isDark}
-        >
-          <Input
-            id="Last Name"
-            placeholder="Enter Last Name"
-            {...register("lastName")}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
-          />
-        </Inputcontainer>
-        <Inputcontainer type={"Email"} error={errors?.email} isDark={isDark}>
-          <Input
-            id="Email"
+            id="email"
             type="email"
             placeholder="Enter Email Address"
-            {...register("email", { required: true })}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^\S+@\S+$/i,
+                message: "Please enter a valid email address",
+              },
+            })}
           />
         </Inputcontainer>
+
         <Inputcontainer
-          type={"Mobile Number"}
+          label="Mobile Number"
           error={errors?.mobileNumber}
           isDark={isDark}
         >
           <Input
-            id="Mobile Number"
-            placeholder="Enter Mobile Number"
+            id="mobileNumber"
+            type="tel"
+            placeholder="Mobile Number"
             {...register("mobileNumber")}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
+
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800/80">
+          <Button
+            type="button"
+            name="Cancel"
+            variant="ghost"
+            handler={() => router.back()}
+          />
+          <Button
+            type="submit"
+            name="Save Changes"
+            variant="primary"
+            loading={isSubmitting}
+            disabled={isSubmitting}
+            icon={<Check size={16} />}
+          />
+        </div>
       </form>
-      <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">
-        <Button name={"Cancel"} handler={() => router.back()} />
-        <Button
-          name={isSubmitting ? "Updating..." : "Submit"}
-          handler={handleSubmit(onSubmit)}
-          disabled={isSubmitting}
-        />
-      </div>
     </BlurredPopupLayout>
   );
 }

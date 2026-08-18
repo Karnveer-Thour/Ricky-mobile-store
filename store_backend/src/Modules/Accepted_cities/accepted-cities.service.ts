@@ -120,10 +120,10 @@ export class AcceptedCitiesService {
       if (searchText) {
         queryBuilder.andWhere(
           `(
-          city.cityName ILIKE :searchText OR 
-          CAST(city.cityPincode AS TEXT) ILIKE :searchText OR 
-          city.district ILIKE :searchText OR 
-          city.state ILIKE :searchText
+          city.cityName LIKE :searchText OR 
+          CAST(city.cityPincode AS TEXT) LIKE :searchText OR 
+          city.district LIKE :searchText OR 
+          city.state LIKE :searchText
         )`,
           { searchText: `%${searchText}%` },
         );

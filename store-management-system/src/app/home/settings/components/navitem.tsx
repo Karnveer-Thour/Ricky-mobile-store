@@ -30,7 +30,7 @@ const Navitem: React.FC<NavitemProps> = ({
       href={linkTo}
       onClick={menu}
       className={`flex items-center gap-4 p-3 rounded-lg cursor-pointer overflow-hidden transition-colors duration-200
-        ${isDark ? "text-gray-900":"text-white"}
+        ${isDark ? "text-gray-900" : "text-white"}
         ${isActive ? "bg-gray-700 text-white" : ""}
         hover:bg-gray-700`}
     >

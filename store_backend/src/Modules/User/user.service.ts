@@ -236,10 +236,11 @@ export class UserService {
 
       if (searchText) {
         queryBuilder.andWhere(
-          `(LOWER(CONCAT(user.firstName, ' ', user.lastName)) ILIKE :searchText 
-           OR LOWER(user.email) ILIKE :searchText 
-           OR user.mobileNumber ILIKE :searchText)`,
-          { searchText: `%${searchText.toLowerCase()}%` },
+          `(user.firstName LIKE :searchText 
+           OR user.lastName LIKE :searchText 
+           OR user.email LIKE :searchText 
+           OR user.mobileNumber LIKE :searchText)`,
+          { searchText: `%${searchText}%` },
         );
       }
 

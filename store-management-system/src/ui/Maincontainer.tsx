@@ -8,9 +8,7 @@ function Maincontainer({ children }: { children: ReactNode }) {
       <div className="absolute -bottom-32 right-1/4 w-[600px] h-[400px] bg-[#8b5cf6]/10 blur-[140px] pointer-events-none rounded-full" />
 
       {/* Grid line pattern */}
-      <div
-        className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none"
-      />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-md flex flex-col items-center">
         {children}

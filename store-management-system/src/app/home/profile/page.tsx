@@ -30,8 +30,12 @@ function Profile() {
         }}
         isDark={isDark}
       />
-      <PersonalInfoCard formData={{}} Cardname={"Personal Information"} isDark={isDark} />
-      <PersonalInfoCard formData={{}} Cardname={"Address"} isDark={isDark}/>
+      <PersonalInfoCard
+        formData={{}}
+        Cardname={"Personal Information"}
+        isDark={isDark}
+      />
+      <PersonalInfoCard formData={{}} Cardname={"Address"} isDark={isDark} />
     </>
   );
 }

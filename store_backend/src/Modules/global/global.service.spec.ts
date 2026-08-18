@@ -19,7 +19,7 @@ describe('GlobalService', () => {
         { provide: AcceptedCitiesRepository, useValue: { find: jest.fn() } },
         { provide: CategoryRepository, useValue: { find: jest.fn() } },
         { provide: whatsappDetailsRepository, useValue: { find: jest.fn() } },
-        { provide: SaleRepository, useValue: { find: jest.fn() } }
+        { provide: SaleRepository, useValue: { find: jest.fn() } },
       ],
     }).compile();
 

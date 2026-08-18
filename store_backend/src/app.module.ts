@@ -25,6 +25,7 @@ import { BanksModule } from './Modules/banks/banks.module';
 import { GlobalModule } from 'Modules/global/global.module';
 import { GatewayModule } from 'Core/Gateways/gateway.module';
 import { UploadModule } from './Modules/Upload/upload.module';
+import { AIModule } from './Modules/AI/ai.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { UploadModule } from './Modules/Upload/upload.module';
     GlobalModule,
     GatewayModule,
     UploadModule,
+    AIModule,
   ],
   controllers: [AppController],
   providers: [

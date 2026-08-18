@@ -11,14 +11,14 @@
 
 ## 📋 Overview
 
-| Property | Value |
-|:---|:---|
-| Framework | Next.js 15 (App Router) |
-| Language | TypeScript 5 |
+| Property         | Value                           |
+| :--------------- | :------------------------------ |
+| Framework        | Next.js 15 (App Router)         |
+| Language         | TypeScript 5                    |
 | State Management | Redux Toolkit + `redux-persist` |
-| UI Library | Material UI (MUI) |
-| Testing | Vitest + React Testing Library |
-| Dev Port | `http://localhost:3001` |
+| UI Library       | Material UI (MUI)               |
+| Testing          | Vitest + React Testing Library  |
+| Dev Port         | `http://localhost:3001`         |
 
 ---
 
@@ -50,11 +50,11 @@ npm run dev
 
 Create a `.env.local` file in the `store-management-system/` directory:
 
-| Variable | Default | Description |
-|:---|:---|:---|
-| `NEXT_PUBLIC_API_URL` | `http://localhost:3000` | Base URL for the NestJS backend API |
-| `NEXT_PUBLIC_APP_TITLE` | `Ricky Mobile Store Admin` | Browser tab title for the portal |
-| `NEXT_PUBLIC_UPI_SPLIT_PAY_URL` | `https://upi.rickystore.in/pay/rms-split-pay` | UPI split-pay link used in support chat replies |
+| Variable                         | Default                                           | Description                                      |
+| :------------------------------- | :------------------------------------------------ | :----------------------------------------------- |
+| `NEXT_PUBLIC_API_URL`            | `http://localhost:3000`                           | Base URL for the NestJS backend API              |
+| `NEXT_PUBLIC_APP_TITLE`          | `Ricky Mobile Store Admin`                        | Browser tab title for the portal                 |
+| `NEXT_PUBLIC_UPI_SPLIT_PAY_URL`  | `https://upi.rickystore.in/pay/rms-split-pay`     | UPI split-pay link used in support chat replies  |
 | `NEXT_PUBLIC_CHECKOUT_RETRY_URL` | `https://rickymobilestore.in/checkout?retry=true` | Checkout retry link used in support chat replies |
 
 ---
@@ -75,46 +75,57 @@ npm run test     # Run all unit tests with Vitest
 ## ✨ Admin Features
 
 ### 📊 Dashboard
+
 - KPI summary cards (total sales, active orders, low stock alerts)
 - Sales trend charts and recent activity feed
 
 ### 📱 Products
+
 - Full product catalog CRUD (create, edit, soft-delete)
 - Colour variant and quantity management
 - Category assignment and pricing controls
 - CSV bulk import and export
 
 ### 👥 Customers
+
 - Customer account management (view, add, update)
 - Customer rating and manual login toggle
 
 ### 📦 Orders
+
 - Order listing with status filters
 - Order detail view with line items and delivery address
 - Link to live dispatch tracking
 
 ### 🗺️ Dispatch Tracking
+
 - Live map view of delivery rider locations
 - Socket.io-powered real-time position updates
 
 ### 🏷️ Inventory
+
 - Stock level monitoring per product variant
 - Low-stock alerts and reorder management
 
 ### 💬 Chat (Support)
+
 - Admin view of customer support conversations
 - Send and receive messages via Socket.io in real-time
 
 ### 📲 WhatsApp Integration
+
 - Send order updates and promotional messages via WhatsApp API
 
 ### 🏙️ Cities
+
 - Manage the list of cities where delivery is active (accepted cities whitelist)
 
 ### 🗂️ Categories
+
 - Create and manage product categories
 
 ### 💰 Sales
+
 - Sales history, revenue reports, and EMI transaction records
 
 ---
@@ -123,14 +134,14 @@ npm run test     # Run all unit tests with Vitest
 
 The portal uses a centralised Redux store with `redux-persist` for session continuity across page reloads.
 
-| Slice | State Managed |
-|:---|:---|
-| `Auth` | Admin profile, access token, login state |
-| `Products` | Product list cache for catalog tables |
-| `Orders` | Active orders, dispatch tracking registry |
-| `DarkMode` | Theme preference (`isDarkMode: boolean`) |
-| `Alert` | Global toast notification state (type, message, id) |
-| `Chat` | Support chat message streams |
+| Slice      | State Managed                                       |
+| :--------- | :-------------------------------------------------- |
+| `Auth`     | Admin profile, access token, login state            |
+| `Products` | Product list cache for catalog tables               |
+| `Orders`   | Active orders, dispatch tracking registry           |
+| `DarkMode` | Theme preference (`isDarkMode: boolean`)            |
+| `Alert`    | Global toast notification state (type, message, id) |
+| `Chat`     | Support chat message streams                        |
 
 ---
 
@@ -163,6 +174,7 @@ npm run test     # Run Vitest test suite
 ```
 
 Tests are located in `src/**/*.spec.ts` files. Current coverage:
+
 - `alert.slice.spec.ts` — Redux alert slice: SUCCESSALERT, ERRORALERT, CLOSEALERT actions
 
 **Current status:** All tests passing ✅

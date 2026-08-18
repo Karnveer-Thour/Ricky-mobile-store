@@ -13,7 +13,7 @@ describe('ProductReviewService', () => {
         ProductReviewService,
         { provide: ProductReviewRepository, useValue: { find: jest.fn() } },
         { provide: ProductRepository, useValue: { findOneBy: jest.fn() } },
-        { provide: UserRepository, useValue: { findOneBy: jest.fn() } }
+        { provide: UserRepository, useValue: { findOneBy: jest.fn() } },
       ],
     }).compile();
 

@@ -8,9 +8,7 @@ describe('DeliveryAddressController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [DeliveryAddressController],
-      providers: [
-        { provide: DeliveryAddressService, useValue: { create: jest.fn() } }
-      ],
+      providers: [{ provide: DeliveryAddressService, useValue: { create: jest.fn() } }],
     }).compile();
 
     controller = module.get<DeliveryAddressController>(DeliveryAddressController);

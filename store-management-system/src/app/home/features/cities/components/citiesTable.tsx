@@ -87,7 +87,9 @@ const CityTable = ({ isDark = false }) => {
             activeDefault={row.original.isAccepting ?? true}
             handler={(status: boolean) => {
               const cityId = row.original._id || row.original.id;
-              cityService.toggleCityStatus(cityId, status).then(() => loadCities());
+              cityService
+                .toggleCityStatus(cityId, status)
+                .then(() => loadCities());
             }}
           />
         </div>
@@ -97,16 +99,18 @@ const CityTable = ({ isDark = false }) => {
       header: "Actions",
       id: "Actions",
       cell: ({ row }: { row: any }) => (
-        <div className="flex gap-2">
+        <div className="flex items-center justify-end gap-1.5">
           <button
             onClick={() => handleUpdate(row.original)}
-            className="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-[#00cfff] hover:bg-[#00cfff]/10 transition-colors cursor-pointer"
+            title="Edit City"
           >
             <Edit size={16} />
           </button>
           <button
             onClick={() => handleDelete(row.original)}
-            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+            title="Delete City"
           >
             <TrashIcon size={16} />
           </button>

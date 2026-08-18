@@ -1,4 +1,5 @@
-import React from "react";
+import React, { forwardRef } from "react";
+import cn from "classnames";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id?: string;
@@ -7,30 +8,27 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   customMargin?: string;
 }
 
-function Input({
-  id,
-  placeholder,
-  className = "",
-  customMargin,
-  ...props
-}: InputProps) {
-  return (
-    <input
-      id={id}
-      placeholder={placeholder}
-      className={`
-        w-full px-4 py-3 
-        rounded-2xl
-        ${customMargin ?? "mt-0"}
-        text-sm text-white placeholder-gray-500
-        bg-white/5 border border-white/10
-        focus:outline-none focus:border-[#00cfff]/60 focus:bg-white/10
-        transition-all duration-200
-        ${className}
-      `}
-      {...props}
-    />
-  );
-}
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ id, placeholder, className = "", customMargin, ...props }, ref) => {
+    return (
+      <input
+        ref={ref}
+        id={id}
+        placeholder={placeholder}
+        className={cn(
+          "w-full px-4 py-2.5 rounded-xl text-sm text-slate-100 placeholder-slate-500",
+          "bg-slate-950/60 border border-slate-700/60",
+          "focus:outline-none focus:border-[#00cfff] focus:ring-1 focus:ring-[#00cfff]/30 focus:bg-slate-900/90",
+          "transition-all duration-150",
+          customMargin,
+          className,
+        )}
+        {...props}
+      />
+    );
+  },
+);
+
+Input.displayName = "Input";
 
 export default Input;

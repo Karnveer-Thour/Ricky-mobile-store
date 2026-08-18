@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
 import ToggleButton from "@/components/togglebutton";
 import { cityService } from "@/services/city.service";
+import { MapPin, Check, X } from "lucide-react";
 
 function updateCity() {
   const router = useRouter();
@@ -24,7 +25,14 @@ function updateCity() {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm({});
+  } = useForm({
+    defaultValues: {
+      name: "",
+      district: "",
+      state: "",
+      pincode: "",
+    },
+  });
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -36,7 +44,7 @@ function updateCity() {
           setValue("name", parsed.name || "");
           setValue("district", parsed.district || "");
           setValue("state", parsed.state || "");
-          setValue("pincode", parsed.pincode || "");
+          setValue("pincode", String(parsed.pincode || ""));
           setIsAccepting(parsed.isAccepting ?? true);
         } catch (e) {
           console.warn("Failed to parse cityData from localStorage", e);
@@ -76,62 +84,115 @@ function updateCity() {
   };
 
   return (
-    <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
-      <p className="text-2xl font-bold mt-5">Update City</p>
+    <BlurredPopupLayout
+      title="Edit Deliverable City"
+      subtitle="Update coverage status, PIN code, and dispatch settings"
+      icon={<MapPin size={20} />}
+      isDark={isDark}
+      maxWidth="max-w-xl"
+    >
       {submitError && (
-        <p className="text-sm text-red-500 font-semibold mt-2">{submitError}</p>
+        <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold flex items-center gap-2">
+          <X size={14} className="shrink-0" />
+          <span>{submitError}</span>
+        </div>
       )}
-      <form id="update-city-form" onSubmit={handleSubmit(onSubmit)} className="flex-1 w-full p-3">
-        <Inputcontainer type={"City Name"} error={errors?.name} isDark={isDark}>
+
+      <form
+        id="update-city-form"
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
+        <Inputcontainer
+          label="City Name"
+          required
+          error={errors?.name}
+          isDark={isDark}
+        >
           <Input
-            id="City Name"
+            id="name"
             placeholder="Enter city name"
-            {...register("name", { required: true })}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
+            {...register("name", { required: "City name is required" })}
           />
         </Inputcontainer>
-        <Inputcontainer type={"District"} error={errors?.district} isDark={isDark}>
-          <Input
-            id="District"
-            placeholder="Enter city district"
-            {...register("district", { required: true })}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
-          />
-        </Inputcontainer>
-        <Inputcontainer type={"State"} error={errors?.state} isDark={isDark}>
-          <Input
-            id="State"
-            placeholder="Enter city State"
-            {...register("state", { required: true })}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
-          />
-        </Inputcontainer>
-        <Inputcontainer type={"Pincode"} error={errors?.pincode} isDark={isDark}>
-          <Input
-            id="Pincode"
-            type="number"
-            placeholder="Enter city pincode"
-            {...register("pincode", { required: true })}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
-          />
-        </Inputcontainer>
-        <div className="mt-2">
-          <ToggleButton
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Inputcontainer
+            label="District"
+            required
+            error={errors?.district}
             isDark={isDark}
-            activeLabel="Accepting"
-            inactiveLabel="Not Accepting"
-            handler={(val: boolean) => setIsAccepting(val)}
+          >
+            <Input
+              id="district"
+              placeholder="District name"
+              {...register("district", { required: "District is required" })}
+            />
+          </Inputcontainer>
+
+          <Inputcontainer
+            label="State"
+            required
+            error={errors?.state}
+            isDark={isDark}
+          >
+            <Input
+              id="state"
+              placeholder="State name"
+              {...register("state", { required: "State is required" })}
+            />
+          </Inputcontainer>
+        </div>
+
+        <Inputcontainer
+          label="Postal Code / PIN"
+          required
+          error={errors?.pincode}
+          isDark={isDark}
+        >
+          <Input
+            id="pincode"
+            type="number"
+            placeholder="PIN Code"
+            {...register("pincode", { required: "PIN code is required" })}
+          />
+        </Inputcontainer>
+
+        <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-950/40 border border-slate-800">
+          <div>
+            <p className="text-sm font-semibold text-white">
+              Accept Online Delivery Orders
+            </p>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Toggle live checkout availability for this zone
+            </p>
+          </div>
+          <ToggleButton
+            activeLabel="Active"
+            inactiveLabel="Disabled"
+            defaultActive={isAccepting}
+            handler={(val) => setIsAccepting(val)}
+            isDark={isDark}
+          />
+        </div>
+
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800/80">
+          <Button
+            type="button"
+            name="Cancel"
+            variant="ghost"
+            handler={() => router.back()}
+          />
+          <Button
+            type="submit"
+            name="Save Changes"
+            variant="primary"
+            loading={isSubmitting}
+            disabled={isSubmitting}
+            icon={<Check size={16} />}
           />
         </div>
       </form>
-      <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">
-        <Button name={"Cancel"} handler={() => router.back()} />
-        <Button
-          name={isSubmitting ? "Updating..." : "Submit"}
-          handler={handleSubmit(onSubmit)}
-          disabled={isSubmitting}
-        />
-      </div>
     </BlurredPopupLayout>
   );
 }

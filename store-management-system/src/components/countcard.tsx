@@ -96,11 +96,7 @@ function CountCard({
               isUp ? "trend-up" : "trend-down",
             )}
           >
-            {isUp ? (
-              <TrendingUp size={11} />
-            ) : (
-              <TrendingDown size={11} />
-            )}
+            {isUp ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
             {Math.abs(trend)}%
           </div>
         )}

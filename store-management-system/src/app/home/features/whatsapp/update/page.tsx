@@ -27,7 +27,11 @@ function updateWhatsappGroup() {
   return (
     <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
       <p className="text-2xl font-bold mt-5">Update Whatsapp Group</p>
-      <form id="update-whatsapp-form" onSubmit={handleSubmit(onSubmit)} className="flex-1 w-full p-3">
+      <form
+        id="update-whatsapp-form"
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex-1 w-full p-3"
+      >
         <Inputcontainer
           type={"Group Name"}
           error={errors?.name}
@@ -40,11 +44,7 @@ function updateWhatsappGroup() {
             className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
           />
         </Inputcontainer>
-        <Inputcontainer
-          type={"Group Url"}
-          error={errors?.url}
-          isDark={isDark}
-        >
+        <Inputcontainer type={"Group Url"} error={errors?.url} isDark={isDark}>
           <Input
             id="Group Url"
             placeholder="Enter Group Url"

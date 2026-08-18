@@ -14,7 +14,11 @@ interface DispatchCard {
   installment?: number;
   landmark: string;
   items: string;
-  status: "pending_override" | "ready_to_pack" | "out_for_delivery" | "delivered";
+  status:
+    | "pending_override"
+    | "ready_to_pack"
+    | "out_for_delivery"
+    | "delivered";
 }
 
 export default function DispatchBoardPage() {
@@ -56,7 +60,7 @@ export default function DispatchBoardPage() {
 
   const moveCard = (id: string, newStatus: DispatchCard["status"]) => {
     setCards((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, status: newStatus } : c))
+      prev.map((c) => (c.id === id ? { ...c, status: newStatus } : c)),
     );
     if (selectedCard && selectedCard.id === id) {
       setSelectedCard((prev) => (prev ? { ...prev, status: newStatus } : null));
@@ -74,11 +78,14 @@ export default function DispatchBoardPage() {
       {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-700 pb-4">
         <div>
-          <h1 className={`text-3xl font-semibold ${isDark ? "text-white" : "text-gray-700"}`}>
+          <h1
+            className={`text-3xl font-semibold ${isDark ? "text-white" : "text-gray-700"}`}
+          >
             Order Dispatch Board
           </h1>
           <p className="text-xs text-gray-500 mt-1">
-            Real-time fulfillment stream. Drag/move cards to advance delivery state.
+            Real-time fulfillment stream. Drag/move cards to advance delivery
+            state.
           </p>
         </div>
       </div>
@@ -86,7 +93,9 @@ export default function DispatchBoardPage() {
       {/* Kanban Board Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Column 1: Pending Overrides */}
-        <div className={`p-4 rounded-2xl ${isDark ? "bg-gray-800/30" : "bg-gray-100"}`}>
+        <div
+          className={`p-4 rounded-2xl ${isDark ? "bg-gray-800/30" : "bg-gray-100"}`}
+        >
           <div className="flex items-center justify-between mb-4">
             <span className="text-xs font-bold uppercase tracking-wider text-red-400">
               Pending Overrides
@@ -112,7 +121,9 @@ export default function DispatchBoardPage() {
         </div>
 
         {/* Column 2: Ready to Pack */}
-        <div className={`p-4 rounded-2xl ${isDark ? "bg-gray-800/30" : "bg-gray-100"}`}>
+        <div
+          className={`p-4 rounded-2xl ${isDark ? "bg-gray-800/30" : "bg-gray-100"}`}
+        >
           <div className="mb-4">
             <span className="text-xs font-bold uppercase tracking-wider text-yellow-400">
               Ready to Pack
@@ -132,7 +143,9 @@ export default function DispatchBoardPage() {
         </div>
 
         {/* Column 3: Out for Delivery */}
-        <div className={`p-4 rounded-2xl ${isDark ? "bg-gray-800/30" : "bg-gray-100"}`}>
+        <div
+          className={`p-4 rounded-2xl ${isDark ? "bg-gray-800/30" : "bg-gray-100"}`}
+        >
           <div className="mb-4">
             <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
               Out for Delivery
@@ -152,7 +165,9 @@ export default function DispatchBoardPage() {
         </div>
 
         {/* Column 4: Delivered */}
-        <div className={`p-4 rounded-2xl ${isDark ? "bg-gray-800/30" : "bg-gray-100"}`}>
+        <div
+          className={`p-4 rounded-2xl ${isDark ? "bg-gray-800/30" : "bg-gray-100"}`}
+        >
           <div className="mb-4">
             <span className="text-xs font-bold uppercase tracking-wider text-green-400">
               Delivered
@@ -175,9 +190,13 @@ export default function DispatchBoardPage() {
       {/* Details Side Panel */}
       {selectedCard && (
         <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm">
-          <div className={`w-full max-w-md h-screen p-6 shadow-2xl flex flex-col justify-between ${
-            isDark ? "bg-gray-900 border-l border-gray-800 text-white" : "bg-white border-l border-gray-200 text-gray-800"
-          }`}>
+          <div
+            className={`w-full max-w-md h-screen p-6 shadow-2xl flex flex-col justify-between ${
+              isDark
+                ? "bg-gray-900 border-l border-gray-800 text-white"
+                : "bg-white border-l border-gray-200 text-gray-800"
+            }`}
+          >
             <div>
               <div className="flex items-center justify-between border-b border-gray-700 pb-4 mb-6">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#00cfff]">
@@ -197,28 +216,43 @@ export default function DispatchBoardPage() {
                   <p className="text-sm text-gray-500">{selectedCard.phone}</p>
                 </div>
 
-                <div className={`p-4 rounded-xl ${isDark ? "bg-gray-800/50" : "bg-gray-50"}`}>
-                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-2">Items</p>
+                <div
+                  className={`p-4 rounded-xl ${isDark ? "bg-gray-800/50" : "bg-gray-50"}`}
+                >
+                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-2">
+                    Items
+                  </p>
                   <p className="text-sm font-semibold">{selectedCard.items}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <span className="text-xs text-gray-500 block">Payment Method</span>
-                    <span className="text-sm font-bold">{selectedCard.payment}</span>
+                    <span className="text-xs text-gray-500 block">
+                      Payment Method
+                    </span>
+                    <span className="text-sm font-bold">
+                      {selectedCard.payment}
+                    </span>
                   </div>
                   {selectedCard.lender && (
                     <div>
-                      <span className="text-xs text-gray-500 block">Lender Provider</span>
-                      <span className="text-sm font-bold">{selectedCard.lender}</span>
+                      <span className="text-xs text-gray-500 block">
+                        Lender Provider
+                      </span>
+                      <span className="text-sm font-bold">
+                        {selectedCard.lender}
+                      </span>
                     </div>
                   )}
                 </div>
 
                 <div>
-                  <span className="text-xs text-gray-500 block mb-1">Landmark Affiliation</span>
+                  <span className="text-xs text-gray-500 block mb-1">
+                    Landmark Affiliation
+                  </span>
                   <p className="text-sm flex items-center gap-1">
-                    <MapPin size={14} className="text-red-400" /> {selectedCard.landmark}
+                    <MapPin size={14} className="text-red-400" />{" "}
+                    {selectedCard.landmark}
                   </p>
                 </div>
               </div>
@@ -256,7 +290,13 @@ interface CardProps {
   onMove: (status: DispatchCard["status"]) => void;
 }
 
-function KanbanCard({ card, isDark, isFlashed = false, onClick, onMove }: CardProps) {
+function KanbanCard({
+  card,
+  isDark,
+  isFlashed = false,
+  onClick,
+  onMove,
+}: CardProps) {
   return (
     <div
       onClick={onClick}
@@ -264,12 +304,15 @@ function KanbanCard({ card, isDark, isFlashed = false, onClick, onMove }: CardPr
         isFlashed
           ? "border-red-500 bg-red-500/10 shadow-[0_0_15px_rgba(239,68,68,0.5)] animate-pulse"
           : isDark
-          ? "bg-gray-900 border-gray-800 hover:border-gray-700 text-white"
-          : "bg-white border-gray-200 hover:border-gray-300 text-gray-800"
+            ? "bg-gray-900 border-gray-800 hover:border-gray-700 text-white"
+            : "bg-white border-gray-200 hover:border-gray-300 text-gray-800"
       }`}
     >
       <div className="flex items-start justify-between mb-2">
-        <span className="text-[10px] font-bold text-gray-500" style={{ fontFamily: "'DM Mono', monospace" }}>
+        <span
+          className="text-[10px] font-bold text-gray-500"
+          style={{ fontFamily: "'DM Mono', monospace" }}
+        >
           {card.id}
         </span>
         {card.status === "pending_override" && (
@@ -280,7 +323,10 @@ function KanbanCard({ card, isDark, isFlashed = false, onClick, onMove }: CardPr
       <p className="text-xs text-gray-500 mt-0.5 truncate">{card.items}</p>
 
       {/* Quick Move Action buttons inside card */}
-      <div className="mt-3 flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="mt-3 flex items-center justify-end gap-1.5"
+        onClick={(e) => e.stopPropagation()}
+      >
         {card.status === "pending_override" && (
           <button
             onClick={() => onMove("ready_to_pack")}

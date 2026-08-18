@@ -17,7 +17,7 @@ import { SaleRepository } from 'Modules/Sale/Repositories/Sale.repo';
     AcceptedCitiesRepository,
     CategoryRepository,
     whatsappDetailsRepository,
-    SaleRepository
+    SaleRepository,
   ],
 })
 export class GlobalModule {}

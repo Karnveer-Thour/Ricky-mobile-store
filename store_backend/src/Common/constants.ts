@@ -8,7 +8,8 @@ export const FIREBASE_DEFAULTS = {
   TYPE: 'service_account',
   PROJECT_ID: 'mock-project-id',
   PRIVATE_KEY_ID: 'mock-private-key-id',
-  PRIVATE_KEY: '-----BEGIN PRIVATE KEY-----\nMOCK_PRIVATE_KEY_CREDENTIAL_DATA\n-----END PRIVATE KEY-----\n',
+  PRIVATE_KEY:
+    '-----BEGIN PRIVATE KEY-----\nMOCK_PRIVATE_KEY_CREDENTIAL_DATA\n-----END PRIVATE KEY-----\n',
   CLIENT_EMAIL: 'mock@project.iam.gserviceaccount.com',
   CLIENT_ID: '123456789',
   AUTH_URI: 'https://accounts.google.com/o/oauth2/auth',

@@ -19,7 +19,7 @@ export default function Layout() {
     updateQty,
   } = useApp();
 
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -59,8 +59,8 @@ export default function Layout() {
           <form onSubmit={handleSearchSubmit} className="flex-1 relative max-w-sm mx-auto hidden sm:block">
             <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600" />
             <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search phones, brands..."
               className="w-full bg-white/4 border border-white/8 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#00cfff]/40 transition-all"
             />
@@ -127,8 +127,8 @@ export default function Layout() {
             <form onSubmit={handleSearchSubmit} className="relative">
               <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600" />
               <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search phones..."
                 className="w-full bg-white/4 border border-white/8 rounded-xl pl-9 pr-4 py-2 text-sm text-white placeholder-gray-600 focus:outline-none"
               />

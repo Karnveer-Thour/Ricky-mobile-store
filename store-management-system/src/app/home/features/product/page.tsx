@@ -5,7 +5,6 @@ import ProductTable from "./components/productTable";
 import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
 import CsvDownload from "./components/csvDownload";
-import { handleSaveFile } from "./utils/fileFunctions";
 import CsvUpload from "./components/csvUpload";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
@@ -17,6 +16,7 @@ function page() {
   const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
   const [isDownloadingCsv, setIsDownloadingCsv] = React.useState(false);
   const [isUploadingCsv, setIsUploadingCsv] = React.useState(false);
+  const [refreshKey, setRefreshKey] = React.useState(0);
   const pathName = usePathname();
   const router = useRouter();
 
@@ -25,15 +25,13 @@ function page() {
       {isDownloadingCsv && (
         <CsvDownload
           cancelDownload={() => setIsDownloadingCsv(false)}
-          downloadCsv={() => {
-            handleSaveFile({ name: "John Doe", email: "john@example.com" });
-          }}
           isDark={isDark}
         />
       )}
       {isUploadingCsv && (
         <CsvUpload
           cancelUpload={() => setIsUploadingCsv(false)}
+          onImportSuccess={() => setRefreshKey((prev) => prev + 1)}
           isDark={isDark}
         />
       )}
@@ -77,26 +75,26 @@ function page() {
             <button
               onClick={() => setIsDownloadingCsv(true)}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-semibold transition-all duration-200",
+                "flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-semibold transition-all duration-200 cursor-pointer",
                 isDark
                   ? "border-white/10 text-slate-300 hover:bg-white/5"
                   : "border-slate-200 text-slate-600 hover:bg-slate-50",
               )}
             >
               <Download size={15} />
-              Export CSV
+              Export Excel / CSV
             </button>
             <button
               onClick={() => setIsUploadingCsv(true)}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-semibold transition-all duration-200",
+                "flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-semibold transition-all duration-200 cursor-pointer",
                 isDark
                   ? "border-white/10 text-slate-300 hover:bg-white/5"
                   : "border-slate-200 text-slate-600 hover:bg-slate-50",
               )}
             >
               <Upload size={15} />
-              Import CSV
+              Import Excel / CSV
             </button>
           </div>
         </motion.div>
@@ -113,7 +111,7 @@ function page() {
               : "border-slate-200 shadow-sm",
           )}
         >
-          <ProductTable isDark={isDark} />
+          <ProductTable isDark={isDark} refreshKey={refreshKey} />
         </motion.div>
       </div>
     </>

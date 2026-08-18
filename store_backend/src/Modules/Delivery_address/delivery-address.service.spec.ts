@@ -11,7 +11,7 @@ describe('DeliveryAddressService', () => {
       providers: [
         DeliveryAddressService,
         { provide: DeliveryAddressRepository, useValue: { find: jest.fn() } },
-        { provide: UserRepository, useValue: { findOne: jest.fn() } }
+        { provide: UserRepository, useValue: { findOne: jest.fn() } },
       ],
     }).compile();
 

@@ -7,7 +7,7 @@ import { ArrowLeft, Home, Briefcase, Check, AlertTriangle } from "lucide-react";
 export default function CheckoutPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { cart, clearCart, cartTotal, setTrackedOrderId } = useApp();
+  const { cart, clearCart, cartTotal, setTrackedOrderId, products } = useApp();
 
   const [checkoutStep, setCheckoutStep] = useState(1);
   const [payMethod, setPayMethod] = useState("UPI");
@@ -28,6 +28,7 @@ export default function CheckoutPage() {
 
   // Handle URL parameters for EMI pre-fill
   const lenderParam = searchParams.get("lender");
+  const tenureParam = searchParams.get("tenure");
   const productIdParam = searchParams.get("product");
   const colorIdParam = searchParams.get("color");
   const qtyParam = searchParams.get("qty");
@@ -37,16 +38,16 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (productIdParam && colorIdParam) {
-      const pid = parseInt(productIdParam);
-      const cid = parseInt(colorIdParam);
+      const pid = productIdParam;
+      const cid = colorIdParam;
       const qty = parseInt(qtyParam || "1");
-      const p = products.find((pr) => pr.id === pid);
+      const p = products.find((pr) => String(pr.id) === String(pid));
       if (p) {
-        const color = p.colors ? p.colors.find((c) => c.id === cid) : null;
+        const color = p.colors ? p.colors.find((c: any) => String(c.id) === String(cid)) : null;
         setCheckoutItems([
           {
-            productId: pid,
-            colorId: cid,
+            productId: pid as any,
+            colorId: cid as any,
             colorName: color ? color.colorName : "Default",
             qty,
           },
@@ -61,7 +62,7 @@ export default function CheckoutPage() {
   }, [products, cart, productIdParam, colorIdParam, qtyParam, lenderParam]);
 
   const itemsTotal = checkoutItems.reduce((sum, item) => {
-    const p = products.find((pr) => pr.id === item.productId);
+    const p = products.find((pr) => String(pr.id) === String(item.productId));
     return sum + (p ? (p.price - p.discount) * item.qty : 0);
   }, 0);
 
@@ -81,9 +82,7 @@ export default function CheckoutPage() {
       return;
     }
 
-    setIsVerifyingOtp(true);
-
-    // Simulate POST /sale
+    // Process Order
     setTimeout(() => {
       setIsVerifyingOtp(false);
       setShowOtpVerification(false);
@@ -92,6 +91,32 @@ export default function CheckoutPage() {
 
       const simulatedOrderId = "RMS-" + Math.floor(Math.random() * 900000 + 100000);
       setTrackedOrderId(simulatedOrderId);
+
+      // Save real placed order to localStorage
+      try {
+        const existingOrders = JSON.parse(localStorage.getItem("placedOrders") || "[]");
+        const orderRecord = {
+          id: simulatedOrderId,
+          status: "PENDING",
+          items: checkoutItems.map((item) => {
+            const p = products.find((pr) => String(pr.id) === String(item.productId));
+            return {
+              name: p ? p.name : "Product Item",
+              color: item.colorName,
+              qty: item.qty,
+              price: p ? p.price - p.discount : 0,
+            };
+          }),
+          total: itemsTotal,
+          date: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }),
+          payment: payMethod,
+          landmark,
+          pin_code: pincode,
+        };
+        localStorage.setItem("placedOrders", JSON.stringify([orderRecord, ...existingOrders]));
+      } catch (err) {
+        console.error("Failed to save placed order:", err);
+      }
 
       setTimeout(() => {
         setOrderPlaced(false);
@@ -411,7 +436,7 @@ export default function CheckoutPage() {
                   </h2>
                   <div className="space-y-3 mb-5">
                     {checkoutItems.map((item) => {
-                      const p = products.find((pr) => pr.id === item.productId);
+                      const p = products.find((pr: any) => String(pr.id) === String(item.productId));
                       if (!p) return null;
                       const ep = p.price - p.discount;
                       return (
@@ -494,7 +519,7 @@ export default function CheckoutPage() {
                 </h3>
                 <div className="space-y-2.5 mb-4">
                   {checkoutItems.map((item) => {
-                    const p = products.find((pr) => pr.id === item.productId);
+                    const p = products.find((pr: any) => String(pr.id) === String(item.productId));
                     if (!p) return null;
                     return (
                       <div

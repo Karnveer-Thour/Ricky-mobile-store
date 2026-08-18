@@ -25,4 +25,3 @@ export const CustomerUpdateformvalidationschema = yup.object().shape({
     .max(5, "Maximum rating is 5")
     .required("Rating is required"),
 });
-

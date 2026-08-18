@@ -8,9 +8,7 @@ describe('GlobalController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [GlobalController],
-      providers: [
-        { provide: GlobalService, useValue: { globalSearch: jest.fn() } }
-      ],
+      providers: [{ provide: GlobalService, useValue: { globalSearch: jest.fn() } }],
     }).compile();
 
     controller = module.get<GlobalController>(GlobalController);

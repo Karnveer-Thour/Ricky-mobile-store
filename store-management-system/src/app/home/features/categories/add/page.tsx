@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
 import { categoryService } from "@/services/category.service";
+import { FolderPlus, Check, X } from "lucide-react";
 
 function addCategory() {
   const router = useRouter();
@@ -20,7 +21,12 @@ function addCategory() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({});
+  } = useForm({
+    defaultValues: {
+      name: "",
+      description: "",
+    },
+  });
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
@@ -37,46 +43,76 @@ function addCategory() {
     if (res.ok) {
       router.back();
     } else {
-      setSubmitError(res.message || "Failed to create category. Please try again.");
+      setSubmitError(
+        res.message || "Failed to create category. Please try again.",
+      );
     }
   };
 
   return (
-    <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
-      <p className="text-2xl font-bold mt-5">Add Category</p>
+    <BlurredPopupLayout
+      title="Add New Category"
+      subtitle="Organize your store inventory into structured product groups"
+      icon={<FolderPlus size={20} />}
+      isDark={isDark}
+      maxWidth="max-w-lg"
+    >
       {submitError && (
-        <p className="text-sm text-red-500 font-semibold mt-2">{submitError}</p>
+        <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold flex items-center gap-2">
+          <X size={14} className="shrink-0" />
+          <span>{submitError}</span>
+        </div>
       )}
-      <form id="add-category-form" onSubmit={handleSubmit(onSubmit)} className="flex-1 w-full p-3">
-        <Inputcontainer type={"Name"} error={errors?.name} isDark={isDark}>
-          <Input
-            id="Name"
-            placeholder="Enter category name"
-            {...register("name", { required: true })}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
-          />
-        </Inputcontainer>
+
+      <form
+        id="add-category-form"
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
         <Inputcontainer
-          type={"Description"}
-          error={errors?.description}
+          label="Category Name"
+          required
+          error={errors?.name}
           isDark={isDark}
         >
           <Input
-            id="Description"
-            placeholder="Enter category description"
-            {...register("description")}
-            className={`border-2 ${isDark ? "border-white text-white" : "border-gray-500"} font-bold`}
+            id="name"
+            placeholder="e.g. Flagship Smartphones, Tablets, Audio Accessories"
+            {...register("name", { required: "Category name is required" })}
           />
         </Inputcontainer>
+
+        <Inputcontainer
+          label="Description (Optional)"
+          error={errors?.description}
+          isDark={isDark}
+        >
+          <textarea
+            id="description"
+            rows={3}
+            placeholder="Brief description of this product classification..."
+            {...register("description")}
+            className="w-full px-4 py-2.5 rounded-xl text-sm text-slate-100 placeholder-slate-500 bg-slate-950/60 border border-slate-700/60 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/25 transition-all resize-none"
+          />
+        </Inputcontainer>
+
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800/80">
+          <Button
+            type="button"
+            name="Cancel"
+            variant="ghost"
+            handler={() => router.back()}
+          />
+          <Button
+            type="submit"
+            name="Create Category"
+            variant="primary"
+            loading={isSubmitting}
+            disabled={isSubmitting}
+            icon={<Check size={16} />}
+          />
+        </div>
       </form>
-      <div className="flex flex-row justify-between items-center w-full h-[20%] p-2 gap-4">
-        <Button name={"Cancel"} handler={() => router.back()} />
-        <Button
-          name={isSubmitting ? "Submitting..." : "Submit"}
-          handler={handleSubmit(onSubmit)}
-          disabled={isSubmitting}
-        />
-      </div>
     </BlurredPopupLayout>
   );
 }

@@ -13,7 +13,7 @@ describe('ProductService', () => {
         ProductService,
         { provide: ProductRepository, useValue: { find: jest.fn() } },
         { provide: ProductColorRepository, useValue: { find: jest.fn() } },
-        { provide: CategoryRepository, useValue: { findOne: jest.fn() } }
+        { provide: CategoryRepository, useValue: { findOne: jest.fn() } },
       ],
     }).compile();
 

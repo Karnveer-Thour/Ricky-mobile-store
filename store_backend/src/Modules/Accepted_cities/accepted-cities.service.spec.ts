@@ -9,7 +9,7 @@ describe('AcceptedCitiesService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AcceptedCitiesService,
-        { provide: AcceptedCitiesRepository, useValue: { find: jest.fn() } }
+        { provide: AcceptedCitiesRepository, useValue: { find: jest.fn() } },
       ],
     }).compile();
 

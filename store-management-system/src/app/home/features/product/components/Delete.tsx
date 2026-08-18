@@ -30,7 +30,9 @@ function Delete({ handleDelete, Id, Name, isDark = false }: DeleteProps) {
   return (
     <BlurredPopupLayout width={"30%"} height={"auto"} isDark={isDark}>
       <h2 className="text-xl font-bold mb-4 text-center">Delete Product</h2>
-      {error && <p className="text-sm text-red-500 text-center mb-2">{error}</p>}
+      {error && (
+        <p className="text-sm text-red-500 text-center mb-2">{error}</p>
+      )}
       <p className="text-sm font-semibold mb-6 text-center text-red-500">
         Are you sure you want to delete {Name}?
       </p>

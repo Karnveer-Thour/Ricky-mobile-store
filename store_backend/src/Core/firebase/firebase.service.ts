@@ -13,9 +13,13 @@ export class FirebaseService implements OnModuleInit {
         admin.initializeApp({
           credential: admin.credential.cert(firebaseConfig as admin.ServiceAccount),
         });
-        this.logger.log(`Firebase initialized successfully with project ID: ${firebaseConfig.project_id}`);
+        this.logger.log(
+          `Firebase initialized successfully with project ID: ${firebaseConfig.project_id}`,
+        );
       } catch (error: any) {
-        this.logger.warn(`Firebase failed to initialize (running in offline mock mode): ${error.message}`);
+        this.logger.warn(
+          `Firebase failed to initialize (running in offline mock mode): ${error.message}`,
+        );
       }
     }
   }

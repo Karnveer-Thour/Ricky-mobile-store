@@ -43,7 +43,9 @@ function Topactionbar({
         >
           <input
             className={`h-full w-[88%] outline-none px-4 rounded-full font-medium text-sm ${
-              isDark ? "bg-transparent text-white placeholder-gray-400" : "bg-transparent text-gray-700 placeholder-gray-400"
+              isDark
+                ? "bg-transparent text-white placeholder-gray-400"
+                : "bg-transparent text-gray-700 placeholder-gray-400"
             }`}
             id="search"
             name="search"
@@ -54,13 +56,17 @@ function Topactionbar({
           <Search
             size={18}
             className={`me-3 cursor-pointer ${
-              isDark ? "text-gray-400 hover:text-[#00cfff]" : "text-gray-400 hover:text-blue-600"
+              isDark
+                ? "text-gray-400 hover:text-[#00cfff]"
+                : "text-gray-400 hover:text-blue-600"
             } transition-colors`}
           />
         </motion.div>
         {/* Date */}
         <div className="w-50 ms-4 h-full px-3 flex items-center justify-center max-lg:hidden overflow-hidden">
-          <h3 className={`font-semibold text-xs tracking-wide uppercase ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+          <h3
+            className={`font-semibold text-xs tracking-wide uppercase ${isDark ? "text-gray-400" : "text-gray-500"}`}
+          >
             {formattedDate}
           </h3>
         </div>

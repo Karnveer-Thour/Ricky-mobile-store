@@ -1,9 +1,4 @@
-import {
-  DEFAULT_PORT,
-  DEFAULT_DB_PORT,
-  DEFAULT_DB_HOST,
-  FIREBASE_DEFAULTS,
-} from '../constants';
+import { DEFAULT_PORT, DEFAULT_DB_PORT, DEFAULT_DB_HOST, FIREBASE_DEFAULTS } from '../constants';
 
 export const ENV_KEYS = {
   // Server
@@ -60,7 +55,9 @@ export const ENV_CONFIG = {
       PORT: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : DEFAULT_DB_PORT,
       USERNAME: process.env.DB_USERNAME || 'postgres',
       PASSWORD: process.env.DB_PASSWORD || 'postgres',
-      DATABASE: process.env.DB_DATABASE || (type === 'sqlite' ? 'ricky_mobile_store.sqlite' : 'ricky_mobile_store'),
+      DATABASE:
+        process.env.DB_DATABASE ||
+        (type === 'sqlite' ? 'ricky_mobile_store.sqlite' : 'ricky_mobile_store'),
       SYNCHRONIZE: process.env.DB_SYNCHRONIZE !== 'false',
       LOGGING: process.env.DB_LOGGING === 'true',
     };
@@ -91,8 +88,10 @@ export const ENV_CONFIG = {
       CLIENT_ID: process.env.CLIENT_ID || FIREBASE_DEFAULTS.CLIENT_ID,
       AUTH_URI: process.env.AUTH_URI || FIREBASE_DEFAULTS.AUTH_URI,
       TOKEN_URI: process.env.TOKEN_URI || FIREBASE_DEFAULTS.TOKEN_URI,
-      AUTH_PROVIDER_X509_CERT_URL: process.env.AUTH_PROVIDER_X509_CERT_URL || FIREBASE_DEFAULTS.AUTH_PROVIDER_X509_CERT_URL,
-      CLIENT_X509_CERT_URL: process.env.CLIENT_X509_CERT_URL || FIREBASE_DEFAULTS.CLIENT_X509_CERT_URL,
+      AUTH_PROVIDER_X509_CERT_URL:
+        process.env.AUTH_PROVIDER_X509_CERT_URL || FIREBASE_DEFAULTS.AUTH_PROVIDER_X509_CERT_URL,
+      CLIENT_X509_CERT_URL:
+        process.env.CLIENT_X509_CERT_URL || FIREBASE_DEFAULTS.CLIENT_X509_CERT_URL,
     };
   },
 

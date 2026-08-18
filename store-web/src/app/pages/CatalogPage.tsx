@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { useApp } from "../AppContext";
 import { pct, fmt } from "../data";
 import {
-  Smartphone, Heart, Zap, Truck, Shield, CreditCard, MapPin, CheckCircle2, BadgePercent, ChevronRight, Star
+  Smartphone, Heart, Zap, Truck, Shield, CreditCard, MapPin, CheckCircle2, BadgePercent, ChevronRight, Star, Search
 } from "lucide-react";
 import { AffordabilityBadge } from "../components/AffordabilityWidget";
 
@@ -19,15 +19,17 @@ function StarRow({ rating, size = 13 }: { rating: number; size?: number }) {
 
 export default function CatalogPage() {
   const navigate = useNavigate();
-  const { products, categories, wishlist, toggleWishlist, addToCart } = useApp();
-  const [catFilter, setCatFilter] = useState<number | null>(null);
+  const { products, loadingProducts, categories, wishlist, toggleWishlist, addToCart } = useApp();
+  const [catFilter, setCatFilter] = useState<string | number | null>(null);
   const [search, setSearch] = useState("");
 
   const filtered = products.filter((p) => {
-    const mc = catFilter === null || p.categoryId === catFilter;
+    const mc = catFilter === null || String(p.categoryId) === String(catFilter);
     const ms = search === "" || p.name.toLowerCase().includes(search.toLowerCase());
     return mc && ms;
   });
+
+  const featuredProduct = products.length > 0 ? products[0] : null;
 
   return (
     <div className="pt-20">
@@ -40,7 +42,7 @@ export default function CatalogPage() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#00cfff]/8 border border-[#00cfff]/15 rounded-full text-xs text-[#00cfff] mb-6" style={{ fontFamily: "'DM Mono', monospace" }}>
               <Zap size={10} fill="currentColor" />
-              NEW ARRIVALS — SUMMER 2024
+              NEW ARRIVALS — 2026 EDITION
             </div>
             <h1
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
@@ -51,7 +53,7 @@ export default function CatalogPage() {
               STORE
             </h1>
             <p className="text-gray-500 text-sm sm:text-base leading-relaxed mb-8 max-w-sm">
-              Flagship smartphones, exclusive deals, and same-day delivery. Every phone you want, at prices that make sense.
+              Flagship smartphones, genuine devices, and official manufacturer warranty. Every device you need at competitive prices.
             </p>
             <div className="flex flex-wrap gap-3">
               <button
@@ -89,19 +91,21 @@ export default function CatalogPage() {
               <div className="absolute inset-6 rounded-full border border-[#00cfff]/5 bg-[#00cfff]/3" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <img
-                  src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop&auto=format"
-                  alt="Featured iPhone 15 Pro Max"
+                  src={featuredProduct?.image || "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop&auto=format"}
+                  alt={featuredProduct?.name || "Featured Smartphone"}
                   className="w-56 h-56 object-cover rounded-3xl shadow-2xl shadow-[#00cfff]/10 hover:scale-105 transition-transform duration-500 cursor-pointer"
-                  onClick={() => navigate("/products/iphone-15-pro-max")}
+                  onClick={() => featuredProduct && navigate(`/products/${featuredProduct.name.toLowerCase().replace(/ /g, "-")}`)}
                 />
               </div>
-              <div className="absolute top-4 right-0 px-3 py-1.5 bg-[#0e0e1c] border border-white/10 rounded-xl shadow-xl">
-                <p className="text-xs text-[#00cfff] font-bold" style={{ fontFamily: "'DM Mono', monospace" }}>{fmt(129900)}</p>
-                <p className="text-[10px] text-gray-600">iPhone 15 Pro Max</p>
-              </div>
+              {featuredProduct && (
+                <div className="absolute top-4 right-0 px-3 py-1.5 bg-[#0e0e1c] border border-white/10 rounded-xl shadow-xl">
+                  <p className="text-xs text-[#00cfff] font-bold" style={{ fontFamily: "'DM Mono', monospace" }}>{fmt(featuredProduct.price - featuredProduct.discount)}</p>
+                  <p className="text-[10px] text-gray-600 truncate max-w-[120px]">{featuredProduct.name}</p>
+                </div>
+              )}
               <div className="absolute bottom-6 left-0 flex items-center gap-2 px-3 py-2 bg-[#0e0e1c] border border-white/10 rounded-xl shadow-xl">
                 <CheckCircle2 size={13} className="text-green-400" />
-                <p className="text-[10px] text-gray-400">In Stock · Ships today</p>
+                <p className="text-[10px] text-gray-400">In Stock · Official Store</p>
               </div>
             </div>
           </div>
@@ -111,13 +115,13 @@ export default function CatalogPage() {
       {/* Promo banner */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-2">
         <div
-          onClick={() => navigate("/products/samsung-galaxy-s24-ultra")}
+          onClick={() => document.getElementById("products")?.scrollIntoView({ behavior: "smooth" })}
           className="flex items-center gap-3 px-5 py-3.5 bg-[#ff2d55]/8 border border-[#ff2d55]/20 rounded-2xl cursor-pointer hover:bg-[#ff2d55]/12 transition-all"
         >
           <BadgePercent size={16} className="text-[#ff2d55] shrink-0" />
           <p className="text-sm text-white">
-            <span className="font-bold text-[#ff2d55]">SALE ON NOW</span>{" "}
-            <span className="text-gray-400">— Up to {products[1] ? pct(products[1].price, products[1].discount) : 15}% off flagship devices. Limited stock.</span>
+            <span className="font-bold text-[#ff2d55]">EXCLUSIVE OFFERS</span>{" "}
+            <span className="text-gray-400">— Shop our latest catalog with genuine manufacturer warranties and direct store pricing.</span>
           </p>
           <ChevronRight size={14} className="text-gray-600 ml-auto shrink-0" />
         </div>
@@ -145,7 +149,7 @@ export default function CatalogPage() {
           </div>
 
           <div className="relative w-full max-w-sm">
-            <SearchIcon size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600" />
+            <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -160,12 +164,28 @@ export default function CatalogPage() {
             style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             className="text-3xl font-extrabold text-white tracking-widest"
           >
-            {search ? `"${search}"` : "FEATURED PHONES"}
+            {search ? `"${search}"` : "OUR PRODUCTS"}
           </h2>
           <span className="text-xs text-gray-700" style={{ fontFamily: "'DM Mono', monospace" }}>{filtered.length} products</span>
         </div>
 
-        {filtered.length === 0 ? (
+        {loadingProducts ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div
+                key={i}
+                className="bg-[#0e0e1c] border border-white/5 rounded-3xl p-4 overflow-hidden animate-pulse flex flex-col justify-between"
+              >
+                <div className="aspect-square bg-white/5 rounded-2xl mb-4 w-full" />
+                <div className="space-y-2">
+                  <div className="h-4 bg-white/10 rounded w-3/4" />
+                  <div className="h-3 bg-white/5 rounded w-1/2" />
+                  <div className="h-6 bg-white/10 rounded w-1/3 mt-4" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="text-center py-24 text-gray-700">
             <Smartphone size={44} className="mx-auto mb-4 opacity-30" />
             <p className="text-sm">No products match your search.</p>

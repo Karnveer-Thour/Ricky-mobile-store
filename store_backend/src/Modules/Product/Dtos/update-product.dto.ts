@@ -63,6 +63,16 @@ export class UpdateProductDto extends BaseDto {
   description: string;
 
   @ApiProperty({
+    description: 'Enter Product quantity',
+    example: 35,
+    type: 'number',
+    required: false,
+  })
+  @IsNumber()
+  @IsOptional()
+  quantity?: number;
+
+  @ApiProperty({
     description: 'Enter Product quantiy',
     example: 35,
     type: 'number',
@@ -97,12 +107,24 @@ export class UpdateProductDto extends BaseDto {
   warranty: string;
 
   @ApiProperty({
+    description: 'Enter Product image URL',
+    example: 'https://images.unsplash.com/...',
+    type: 'string',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  imageUrl?: string;
+
+  @ApiProperty({
     description: 'Enter Product colors and Quantity',
     example: 'one year',
     type: 'string',
     required: false,
   })
-  @IsObject()
   @IsOptional()
-  productColors: ProductColorDto[];
+  productColors?: ProductColorDto[];
+
+  @IsOptional()
+  colors?: any[];
 }
