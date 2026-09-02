@@ -1,7 +1,8 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import alertReducer from "@/store/slices/alert.slice";
 import darkModeReducer from "@/store/slices/isDarkMode.slice";
-import storage from "redux-persist/lib/storage";
+import confirmReducer from "@/store/slices/confirm.slice";
+import storage from "./storage";
 import {
   persistReducer,
   FLUSH,
@@ -21,6 +22,7 @@ const persistConfig = {
 const reducer = combineReducers({
   Alert: alertReducer,
   DarkMode: darkModeReducer,
+  Confirm: confirmReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);

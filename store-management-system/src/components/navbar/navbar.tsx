@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
@@ -19,10 +19,19 @@ import {
   Columns3 as DispatchIcon,
   MessageSquare as ChatIcon,
   Smartphone,
-  ChevronRight,
+  ChevronUp,
+  ChevronDown,
+  ShieldCheck,
+  UserCheck,
+  Sparkles,
+  PanelLeftClose,
 } from "lucide-react";
 import cn from "classnames";
 import Navitem from "./navItem";
+import { useRouter, usePathname } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { SUCCESSALERT } from "@/store/slices/alert.slice";
+import { openGlobalConfirm } from "@/store/slices/confirm.slice";
 
 interface NavbarProps {
   isOpen: boolean;
@@ -38,7 +47,7 @@ function SectionLabel({ label, isOpen }: { label: string; isOpen: boolean }) {
           initial={{ opacity: 0, x: -8 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.18 }}
+          transition={{ duration: 0.15 }}
           className="px-3 pt-3 pb-1"
         >
           <span className="text-[10px] font-semibold tracking-widest uppercase text-slate-500 select-none">
@@ -52,70 +61,172 @@ function SectionLabel({ label, isOpen }: { label: string; isOpen: boolean }) {
 
 const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
   const [menuVisible, setMenuVisible] = useState(false);
-  const [fallbackName, setFallbackName] = useState<string | null>(null);
+  const [adminName, setAdminName] = useState<string>("Ricky Thour");
+  const [adminEmail, setAdminEmail] = useState<string>("ricky@rickymobile.com");
+  const [adminRole, setAdminRole] = useState<string>("Super Admin");
+  const [adminAvatar, setAdminAvatar] = useState<string>("");
+  const router = useRouter();
+  const pathname = usePathname();
+  const dispatch = useDispatch();
+  const profileMenuRef = useRef<HTMLDivElement>(null);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
-  const toggleMenuVisibility = () => setMenuVisible(!menuVisible);
+
+  // Sync profile details dynamically
+  const loadAdminProfile = () => {
+    if (typeof window !== "undefined") {
+      try {
+        const storedProfile = localStorage.getItem("ricky_admin_profile");
+        if (storedProfile) {
+          const parsed = JSON.parse(storedProfile);
+          if (parsed.first_name || parsed.last_name) {
+            setAdminName(`${parsed.first_name || ""} ${parsed.last_name || ""}`.trim());
+          }
+          if (parsed.email) setAdminEmail(parsed.email);
+          if (parsed.role) setAdminRole(parsed.role);
+          if (parsed.imageURL) setAdminAvatar(parsed.imageURL);
+        } else {
+          const legacyName = localStorage.getItem("name");
+          if (legacyName) setAdminName(legacyName);
+        }
+      } catch {}
+    }
+  };
 
   useEffect(() => {
-    setFallbackName(localStorage.getItem("name"));
+    loadAdminProfile();
+    const handleStorageChange = () => loadAdminProfile();
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  const adminInitials = (fallbackName || "Admin")
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
+  // Proactively prefetch all routes for instant 0ms navigation
+  useEffect(() => {
+    const routes = [
+      "/home/features/dashboard",
+      "/home/features/customers",
+      "/home/features/product",
+      "/home/features/categories",
+      "/home/features/cities",
+      "/home/features/inventory",
+      "/home/features/dispatch",
+      "/home/features/sales",
+      "/home/features/chat",
+      "/home/features/whatsapp",
+      "/home/profile",
+      "/home/settings",
+    ];
+    routes.forEach((r) => {
+      try {
+        router.prefetch(r);
+      } catch {}
+    });
+  }, [router]);
+
+  // Close dropup when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(event.target as Node)
+      ) {
+        setMenuVisible(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    setMenuVisible(false);
+    openGlobalConfirm(dispatch, {
+      title: "Sign Out of Ricky Mobile Store?",
+      message:
+        "Are you sure you want to end your current administrative session?",
+      confirmText: "Yes, Sign Out",
+      cancelText: "Stay Logged In",
+      variant: "danger",
+      onConfirm: () => {
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("token");
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("auth");
+        }
+        dispatch(SUCCESSALERT("Logged out successfully. See you soon!"));
+        router.push("/auth/login");
+      },
+    });
+  };
+
+  const adminInitials =
+    adminName
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2) || "RA";
 
   return (
-    <div className="flex top-0 overflow-hidden max-md:fixed max-md:right-0 bottom-0 md:fixed z-50">
+    <div className="flex top-0 max-md:fixed max-md:right-0 bottom-0 md:fixed z-50">
       <motion.div
         animate={{ width: isOpen ? 256 : 72 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
+        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
-          "h-screen flex flex-col overflow-hidden",
-          "bg-slate-900 border-r border-white/5 shadow-2xl",
+          "h-screen flex flex-col will-change-[width]",
+          "bg-slate-900 border-r border-white/5 shadow-2xl relative",
           !isOpen && "max-md:bg-transparent",
         )}
       >
-        {/* ── Brand Header ─────────────────────────────── */}
-        <div className="flex items-center gap-3 px-4 py-5 border-b border-white/5 shrink-0">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 shrink-0">
-            <Smartphone size={18} className="text-white" />
+        {/* ── Executive Brand Header with Integrated Collapse ────────────── */}
+        <div className="flex items-center justify-between px-3.5 py-4 border-b border-white/5 shrink-0 h-18">
+          <div
+            onClick={!isOpen ? toggleSidebar : undefined}
+            className={cn(
+              "flex items-center gap-3 cursor-pointer select-none",
+              !isOpen && "w-full justify-center",
+            )}
+            title={!isOpen ? "Expand Sidebar" : undefined}
+          >
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 shrink-0 hover:scale-105 transition-transform">
+              <Smartphone size={18} className="text-slate-950 stroke-[2.5]" />
+            </div>
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="overflow-hidden min-w-0"
+                >
+                  <p className="text-white font-extrabold text-sm leading-none whitespace-nowrap">
+                    Ricky Store
+                  </p>
+                  <p className="text-cyan-400 text-[10px] font-bold tracking-wide whitespace-nowrap mt-1">
+                    Management Hub
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
+
+          {/* Sleek inline collapse toggle button when expanded */}
           <AnimatePresence>
             {isOpen && (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="overflow-hidden"
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.15 }}
+                onClick={toggleSidebar}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-white/5 transition-colors cursor-pointer"
+                title="Collapse Sidebar"
+                aria-label="Collapse Sidebar"
               >
-                <p className="text-white font-bold text-sm leading-none whitespace-nowrap">
-                  Ricky Store
-                </p>
-                <p className="text-cyan-400 text-[10px] font-medium tracking-wide whitespace-nowrap">
-                  Management System
-                </p>
-              </motion.div>
+                <PanelLeftClose size={17} />
+              </motion.button>
             )}
           </AnimatePresence>
-        </div>
-
-        {/* ── Toggle Button ─────────────────────────────── */}
-        <div className="px-4 pt-4 pb-2 shrink-0">
-          <button
-            onClick={toggleSidebar}
-            className="w-full flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-white/5 transition-all duration-200 max-md:text-slate-800"
-          >
-            {isOpen ? (
-              <X size={20} />
-            ) : (
-              <Menu size={20} className="max-md:text-slate-800" />
-            )}
-          </button>
         </div>
 
         {/* ── Navigation ───────────────────────────────── */}
@@ -198,33 +309,126 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
           />
         </div>
 
-        {/* ── Bottom Settings + Profile ─────────────────── */}
+        {/* ── Bottom Admin Profile Strip with Drop-up Popover ── */}
         <div
+          ref={profileMenuRef}
           className={cn(
-            "border-t border-white/5 px-3 pt-3 pb-4 flex flex-col gap-0.5 shrink-0",
+            "border-t border-white/5 px-3 pt-3 pb-4 flex flex-col gap-1 shrink-0 relative",
             !isOpen && "max-md:hidden",
           )}
         >
-          <Navitem
-            icon={<Settings size={18} />}
-            label="Settings"
-            isOpen={isOpen}
-            linkTo="/home/settings"
-          />
+          {/* Drop-up Menu Popover */}
+          <AnimatePresence>
+            {menuVisible && (
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  scale: 0.95,
+                  y: isOpen ? 10 : 0,
+                  x: isOpen ? 0 : -10,
+                }}
+                animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.95,
+                  y: isOpen ? 8 : 0,
+                  x: isOpen ? 0 : -8,
+                }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
+                className={cn(
+                  "rounded-2xl overflow-hidden shadow-2xl border bg-slate-900/98 backdrop-blur-2xl border-slate-700/80 shadow-cyan-950/50 p-2 flex flex-col gap-1 z-50",
+                  isOpen
+                    ? "absolute bottom-full left-3 right-3 mb-2"
+                    : "absolute left-full bottom-2 ml-3 w-64 shadow-2xl shadow-black/90",
+                )}
+              >
+                {/* User Summary Header */}
+                <div className="px-3 py-2.5 border-b border-white/10 flex items-center gap-2.5">
+                  {adminAvatar ? (
+                    <img
+                      src={adminAvatar}
+                      alt="Avatar"
+                      className="w-8 h-8 rounded-full object-cover border border-cyan-400/40 shrink-0"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                      {adminInitials}
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <p className="text-white text-xs font-extrabold truncate">
+                      {adminName}
+                    </p>
+                    <p className="text-slate-400 text-[10px] truncate">
+                      {adminEmail}
+                    </p>
+                  </div>
+                </div>
 
-          {/* Admin profile strip */}
-          <div
-            className={cn(
-              "mt-2 flex items-center gap-3 rounded-xl p-2.5 cursor-pointer",
-              "hover:bg-white/5 transition-all duration-200",
+                {/* Option 1: Profile */}
+                <button
+                  onClick={() => {
+                    setMenuVisible(false);
+                    router.push("/home/profile");
+                  }}
+                  className="w-full px-3 py-2 rounded-xl text-left text-xs font-semibold text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-400 flex items-center gap-2.5 transition-colors cursor-pointer"
+                >
+                  <Profile size={15} className="text-cyan-400 shrink-0" />
+                  <span>My Profile</span>
+                </button>
+
+                {/* Option 2: Settings */}
+                <button
+                  onClick={() => {
+                    setMenuVisible(false);
+                    router.push("/home/settings");
+                  }}
+                  className="w-full px-3 py-2 rounded-xl text-left text-xs font-semibold text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-400 flex items-center gap-2.5 transition-colors cursor-pointer"
+                >
+                  <Settings size={15} className="text-blue-400 shrink-0" />
+                  <span>Account Settings</span>
+                </button>
+
+                <div className="border-t border-white/10 my-0.5" />
+
+                {/* Option 3: Logout */}
+                <button
+                  onClick={handleLogout}
+                  className="w-full px-3 py-2 rounded-xl text-left text-xs font-bold text-rose-400 hover:bg-rose-500/15 hover:text-rose-300 flex items-center gap-2.5 transition-colors cursor-pointer"
+                >
+                  <LogOut size={15} className="text-rose-400 shrink-0" />
+                  <span>Sign Out / Logout</span>
+                </button>
+              </motion.div>
             )}
-            onClick={toggleMenuVisibility}
+          </AnimatePresence>
+
+          {/* Profile Strip Clicker */}
+          <div
+            onClick={() => setMenuVisible(!menuVisible)}
+            className={cn(
+              "flex items-center gap-3 rounded-xl p-2 cursor-pointer transition-all duration-150 group select-none",
+              !isOpen && "justify-center",
+              menuVisible || pathname === "/home/profile"
+                ? "bg-cyan-500/15 border border-cyan-500/30"
+                : "hover:bg-white/5",
+            )}
+            title="Click for Profile & Logout options"
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shrink-0 shadow-sm shadow-cyan-400/30">
-              <span className="text-white text-xs font-bold">
-                {adminInitials}
-              </span>
-            </div>
+            {adminAvatar ? (
+              <img
+                src={adminAvatar}
+                alt="Admin"
+                className="w-8 h-8 rounded-full object-cover shrink-0 border border-cyan-400/40"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shrink-0 shadow-sm shadow-cyan-400/30">
+                <span className="text-white text-xs font-extrabold">
+                  {adminInitials}
+                </span>
+              </div>
+            )}
+
             <AnimatePresence>
               {isOpen && (
                 <motion.div
@@ -233,39 +437,23 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
                   exit={{ opacity: 0 }}
                   className="flex-1 overflow-hidden"
                 >
-                  <p className="text-white text-xs font-semibold truncate whitespace-nowrap">
-                    {fallbackName || "Admin"}
+                  <p className="text-white text-xs font-bold truncate whitespace-nowrap group-hover:text-cyan-400 transition-colors">
+                    {adminName}
                   </p>
-                  <p className="text-slate-500 text-[10px] truncate whitespace-nowrap">
-                    Store Manager
+                  <p className="text-slate-400 text-[10px] truncate whitespace-nowrap flex items-center gap-1">
+                    <ShieldCheck size={10} className="text-cyan-400" />
+                    {adminRole}
                   </p>
                 </motion.div>
               )}
             </AnimatePresence>
+
             {isOpen && (
-              <ChevronRight size={14} className="text-slate-600 shrink-0" />
+              <div className="text-slate-500 group-hover:text-cyan-400 transition-colors shrink-0">
+                {menuVisible ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+              </div>
             )}
           </div>
-
-          {/* Logout dropdown */}
-          <AnimatePresence>
-            {menuVisible && (
-              <motion.div
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 6 }}
-                className="mt-1"
-              >
-                <Navitem
-                  icon={<LogOut size={18} />}
-                  label="Logout"
-                  isOpen={isOpen}
-                  linkTo="/home/logout"
-                  menu={toggleMenuVisibility}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </motion.div>
     </div>

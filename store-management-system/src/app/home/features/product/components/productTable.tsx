@@ -2,11 +2,13 @@
 import Table from "@/components/table/table";
 import { Edit, TrashIcon, Smartphone, Eye } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import Delete from "./Delete";
 import ProductViewModal from "./productViewModal";
 import { usePathname, useRouter } from "next/navigation";
 import { productService } from "@/services/product.service";
 import cn from "classnames";
+import { useDispatch } from "react-redux";
+import { openGlobalConfirm } from "@/store/slices/confirm.slice";
+import { SUCCESSALERT, ERRORALERT } from "@/store/slices/alert.slice";
 
 const ProductTable = ({
   isDark = false,
@@ -15,16 +17,12 @@ const ProductTable = ({
   isDark?: boolean;
   refreshKey?: number;
 }) => {
+  const dispatch = useDispatch();
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [productDeleting, setProductDeleting] = useState(false);
   const [viewingProduct, setViewingProduct] = useState<any | null>(null);
   const pathName = usePathname();
   const router = useRouter();
-  const [selectedProduct, setSelectedProduct] = useState({
-    id: "",
-    Name: "",
-  });
 
   const loadProducts = async () => {
     setLoading(true);
@@ -43,8 +41,8 @@ const ProductTable = ({
         imageUrl: p.imageUrl || p.image || "",
       }));
       setProducts(mapped);
-    } catch (err) {
-      console.warn("Failed to load products:", err);
+    } catch (e) {
+      console.warn("Failed to fetch products:", e);
       setProducts([]);
     } finally {
       setLoading(false);
@@ -56,15 +54,25 @@ const ProductTable = ({
   }, [refreshKey]);
 
   const handleDelete = (data: any) => {
-    if (productDeleting) {
-      setProductDeleting(false);
-    } else {
-      setProductDeleting(true);
-      setSelectedProduct({
-        id: data._id || data.id,
-        Name: data.name || data.productName,
-      });
-    }
+    const id = data._id || data.id;
+    const name = data.name || data.productName || "this Product";
+
+    openGlobalConfirm(dispatch, {
+      title: "Delete Product Catalog Item?",
+      message: `Are you sure you want to permanently delete "${name}"? This item will be removed from store inventory.`,
+      confirmText: "Yes, Delete Product",
+      cancelText: "Cancel",
+      variant: "danger",
+      onConfirm: async () => {
+        try {
+          await productService.deleteProduct(id);
+          dispatch(SUCCESSALERT(`Product "${name}" deleted successfully`));
+          loadProducts();
+        } catch {
+          dispatch(ERRORALERT("Failed to delete product"));
+        }
+      },
+    });
   };
 
   const handleUpdate = (data: any) => {
@@ -275,23 +283,13 @@ const ProductTable = ({
           isDark={isDark}
         />
       )}
-      {productDeleting && (
-        <Delete
-          handleDelete={() => {
-            setProductDeleting(false);
-            loadProducts();
-          }}
-          Id={selectedProduct?.id}
-          Name={selectedProduct?.Name}
-          isDark={isDark}
-        />
-      )}
       <Table
         columns={columns}
         data={products}
         columnVisibility={columnVisibility}
         setColumnVisibility={setColumnVisibility}
         isDark={isDark}
+        isLoading={loading}
       />
     </div>
   );

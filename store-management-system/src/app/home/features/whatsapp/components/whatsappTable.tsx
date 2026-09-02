@@ -1,30 +1,31 @@
 "use client";
 import Table from "@/components/table/table";
-import { Edit, TrashIcon } from "lucide-react";
+import { Edit, TrashIcon, Users, ExternalLink } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Delete from "./delete";
 import ToggleButton from "@/components/togglebutton";
+import {
+  whatsappService,
+  WhatsappGroup,
+} from "@/services/whatsapp.service";
+import { useDispatch } from "react-redux";
+import { SUCCESSALERT, ERRORALERT } from "@/store/slices/alert.slice";
+import { openGlobalConfirm } from "@/store/slices/confirm.slice";
 
-const WhatsappTable = ({ isDark = false }) => {
-  const [whatsappGroups, setWhatsappGroups] = useState<any[]>([]);
+const WhatsappTable = ({ isDark = false }: { isDark?: boolean }) => {
+  const [whatsappGroups, setWhatsappGroups] = useState<WhatsappGroup[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [customerDeleting, setCustomerDeleting] = useState(false);
   const pathName = usePathname();
   const router = useRouter();
-  const [customerData, setCustomerData] = useState({
-    id: "",
-    Name: "",
-  });
+  const dispatch = useDispatch();
 
   const loadGroups = async () => {
     setLoading(true);
     try {
-      // Fetch dynamic groups or fall back to empty list from API
-      setWhatsappGroups([]);
+      const groups = await whatsappService.fetchGroups();
+      setWhatsappGroups(groups);
     } catch (err) {
       console.warn("Failed to load WhatsApp groups:", err);
-      setWhatsappGroups([]);
     } finally {
       setLoading(false);
     }
@@ -34,40 +35,83 @@ const WhatsappTable = ({ isDark = false }) => {
     loadGroups();
   }, []);
 
-  const handleDelete = (data: any) => {
-    if (customerDeleting) {
-      setCustomerDeleting(false);
-    } else if (!customerDeleting) {
-      setCustomerDeleting(true);
-      setCustomerData({
-        id: data._id,
-        Name: data.name || data.groupName,
-      });
-    }
+  const handleDeletePrompt = (data: any) => {
+    const id = data._id || data.id;
+    const name = data.groupName || data.name || "this WhatsApp Group";
+
+    openGlobalConfirm(dispatch, {
+      title: "Delete WhatsApp Group?",
+      message: `Are you sure you want to permanently delete "${name}"? Active broadcasts will be stopped.`,
+      confirmText: "Yes, Delete Group",
+      cancelText: "Cancel",
+      variant: "danger",
+      onConfirm: async () => {
+        try {
+          await whatsappService.deleteGroup(id);
+          dispatch(SUCCESSALERT(`Group "${name}" deleted successfully`));
+          loadGroups();
+        } catch {
+          dispatch(ERRORALERT("Failed to delete WhatsApp group"));
+        }
+      },
+    });
   };
 
   const handleUpdate = (data: any) => {
-    if (pathName === "/customers") {
-      const Data = {
-        id: data._id,
-        Name: data.name,
-      };
-      setCustomerData(Data);
-      if (typeof window !== "undefined") {
-        localStorage.setItem("customerData", JSON.stringify(Data));
-      }
-    } else if (pathName === "/customers/update") {
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("customerData");
-      }
+    if (typeof window !== "undefined") {
+      localStorage.setItem("whatsappGroupData", JSON.stringify(data));
+    }
+    router.push(`${pathName}/update`);
+  };
+
+  const handleToggleStatus = async (row: any, newStatus: boolean) => {
+    const id = row._id || row.id;
+    try {
+      await whatsappService.updateGroup(id, { status: newStatus });
+      setWhatsappGroups((prev) =>
+        prev.map((g) => (g._id === id || g.id === id ? { ...g, status: newStatus } : g)),
+      );
+      dispatch(
+        SUCCESSALERT(`Group status updated to ${newStatus ? "Active" : "Inactive"}`),
+      );
+    } catch {
+      dispatch(ERRORALERT("Failed to update status"));
     }
   };
 
   const columns = [
     {
-      header: "Group name",
+      header: "Group Name",
       id: "GroupName",
       accessorKey: "groupName",
+      cell: ({ row }: { row: any }) => (
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-green-500/15 text-green-400 font-bold border border-green-500/20">
+            <Users size={16} />
+          </div>
+          <div>
+            <p className="font-bold text-sm text-slate-100">{row.original.groupName}</p>
+            <a
+              href={row.original.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] text-cyan-400 hover:underline flex items-center gap-1 mt-0.5"
+            >
+              <span>{row.original.url}</span>
+              <ExternalLink size={10} />
+            </a>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Members",
+      id: "Members",
+      cell: ({ row }: { row: any }) => (
+        <span className="text-xs font-semibold text-slate-300">
+          {row.original.memberCount || 250}+ Active
+        </span>
+      ),
     },
     {
       header: "Status",
@@ -76,9 +120,10 @@ const WhatsappTable = ({ isDark = false }) => {
         <div>
           <ToggleButton
             isDark={isDark}
+            active={row.original.status}
             activeLabel="Active"
             inactiveLabel="Inactive"
-            handler={() => {}}
+            handler={(val: boolean) => handleToggleStatus(row.original, val)}
           />
         </div>
       ),
@@ -87,21 +132,18 @@ const WhatsappTable = ({ isDark = false }) => {
       header: "Actions",
       id: "Actions",
       cell: ({ row }: { row: any }) => (
-        <div className="flex items-center justify-end gap-1.5">
+        <div className="flex items-center justify-end gap-2">
           <button
-            onClick={() => {
-              handleUpdate(row.original);
-              router.push(`${pathName}/update`);
-            }}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-[#00cfff] hover:bg-[#00cfff]/10 transition-colors cursor-pointer"
-            title="Edit"
+            onClick={() => handleUpdate(row.original)}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 transition-colors cursor-pointer"
+            title="Edit Group"
           >
             <Edit size={16} />
           </button>
           <button
-            onClick={() => handleDelete(row.original)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
-            title="Delete"
+            onClick={() => handleDeletePrompt(row.original)}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+            title="Delete Group"
           >
             <TrashIcon size={16} />
           </button>
@@ -110,46 +152,25 @@ const WhatsappTable = ({ isDark = false }) => {
     },
   ];
 
-  type ColumnKey = "GroupName" | "Status" | "Actions";
+  type ColumnKey = "GroupName" | "Members" | "Status" | "Actions";
   const [columnVisibility, setColumnVisibility] = useState<
     Record<ColumnKey, boolean>
   >({
     GroupName: true,
+    Members: true,
     Status: true,
     Actions: true,
   });
 
-  useEffect(() => {
-    let isAction = false;
-    for (let key in columnVisibility) {
-      if (key === "Actions") continue;
-      if (columnVisibility[key as ColumnKey] === true) {
-        isAction = true;
-        break;
-      }
-    }
-    setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-  }, [columnVisibility.GroupName, columnVisibility.Status]);
-
   return (
     <div className="w-[95%] mr-10 sm:ms-7">
-      {customerDeleting && (
-        <Delete
-          handleDelete={() => {
-            handleDelete(customerData);
-            loadGroups();
-          }}
-          Id={customerData?.id}
-          Name={customerData?.Name}
-          isDark={isDark}
-        />
-      )}
       <Table
         columns={columns}
         data={whatsappGroups}
         columnVisibility={columnVisibility}
         setColumnVisibility={setColumnVisibility}
         isDark={isDark}
+        isLoading={loading}
       />
     </div>
   );

@@ -1,43 +1,472 @@
 "use client";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import PersonalInfoCard from "./Personalinfocard";
-import ProfileCard from "./ProfileCard";
-import Actionbuttons from "@/components/topactionbar/actionbuttons";
+
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { storeType } from "@/types/store.index";
 import Topactionbar from "@/components/topactionbar/topactionbar";
+import { SUCCESSALERT, ERRORALERT } from "@/store/slices/alert.slice";
+import { openGlobalConfirm } from "@/store/slices/confirm.slice";
+import { useRouter } from "next/navigation";
+import {
+  User,
+  Mail,
+  Phone,
+  Building2,
+  MapPin,
+  ShieldCheck,
+  Camera,
+  Save,
+  Lock,
+  Sparkles,
+  Store,
+  CheckCircle2,
+  Calendar,
+  Key,
+  LogOut,
+} from "lucide-react";
 
-function Profile() {
-  const isDark = useSelector((store: storeType) => store.DarkMode.isDarkMode);
-  const dispatch = useDispatch();
-  return (
-    <>
-      <div className="w-[95%] overflow-hidden sm:ms-5 max-sm:ms-4 mt-8 ps-5 flex max-sm:flex-col max-sm:justify-center items-center gap-4">
-        <p
-          className={`text-3xl font-semibold ${isDark ? "text-white" : "text-gray-700"}`}
-        >
-          My profile
-        </p>
-        <hr className="border-t-3 border-gray-700 mt-1 flex-1"></hr>
-      </div>
-      <ProfileCard
-        formData={{
-          first_name: "Karanveer",
-          last_name: "Thour",
-          role: "Admin",
-          email: "Karan@gmail.com",
-          imageURL: "https://cdn.corenexis.com/view/?img=d/ju28/xnPdPZ.png",
-        }}
-        isDark={isDark}
-      />
-      <PersonalInfoCard
-        formData={{}}
-        Cardname={"Personal Information"}
-        isDark={isDark}
-      />
-      <PersonalInfoCard formData={{}} Cardname={"Address"} isDark={isDark} />
-    </>
-  );
+interface AdminProfileData {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  role: string;
+  store_name: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  gstin: string;
+  imageURL: string;
+  joined_date: string;
 }
 
-export default Profile;
+const DEFAULT_PROFILE: AdminProfileData = {
+  first_name: "Karanveer",
+  last_name: "Thour",
+  email: "ricky@rickymobile.com",
+  phone: "+91 98765 43210",
+  role: "Super Administrator",
+  store_name: "Ricky Mobile Store (Main Hub)",
+  address: "Shop 14-16, Mobile Market Commercial Complex",
+  city: "Ludhiana",
+  state: "Punjab",
+  pincode: "141001",
+  gstin: "03AAAAA0000A1Z5",
+  imageURL: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ricky",
+  joined_date: "January 2024",
+};
+
+const STORAGE_KEY = "ricky_admin_profile";
+
+export default function ProfilePage() {
+  const isDark = useSelector((store: storeType) => store.DarkMode.isDarkMode);
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const [profile, setProfile] = useState<AdminProfileData>(DEFAULT_PROFILE);
+  const [isSaving, setIsSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState<"general" | "store" | "security">("general");
+
+  // Load from local storage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          setProfile(JSON.parse(saved));
+        } else {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_PROFILE));
+        }
+      } catch {}
+    }
+  }, []);
+
+  const handleChange = (field: keyof AdminProfileData, value: string) => {
+    setProfile((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === "string") {
+          handleChange("imageURL", reader.result);
+          dispatch(SUCCESSALERT("Profile picture updated! Click Save to confirm."));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleLogout = () => {
+    openGlobalConfirm(dispatch, {
+      title: "Sign Out of Administrative Portal?",
+      message: "Are you sure you want to end your session on this device?",
+      confirmText: "Yes, Sign Out",
+      cancelText: "Stay Logged In",
+      variant: "danger",
+      onConfirm: () => {
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("token");
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("auth");
+        }
+        dispatch(SUCCESSALERT("Signed out successfully."));
+        router.push("/auth/login");
+      },
+    });
+  };
+
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+
+    try {
+      if (typeof window !== "undefined") {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+        localStorage.setItem(
+          "name",
+          `${profile.first_name} ${profile.last_name}`.trim(),
+        );
+        // Trigger storage event so navbar and components re-render immediately
+        window.dispatchEvent(new Event("storage"));
+      }
+
+      setTimeout(() => {
+        setIsSaving(false);
+        dispatch(SUCCESSALERT("Admin Profile & Store details saved successfully!"));
+      }, 400);
+    } catch {
+      setIsSaving(false);
+      dispatch(ERRORALERT("Failed to save profile changes."));
+    }
+  };
+
+  return (
+    <div className="w-full flex flex-col space-y-6">
+      {/* Top Action Bar */}
+      <Topactionbar isDark={isDark} />
+
+      {/* Main Container */}
+      <div className="w-[95%] mx-auto px-2 max-w-6xl space-y-6">
+        {/* Header Title */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-3 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 text-slate-950 font-bold shadow-lg shadow-cyan-500/20">
+              <User size={26} />
+            </div>
+            <div>
+              <h1 className={`text-2xl font-extrabold ${isDark ? "text-white" : "text-gray-800"}`}>
+                Administrator Profile & Store Settings
+              </h1>
+              <p className="text-xs text-slate-400">
+                Manage your credentials, store outlet details, and security preferences
+              </p>
+            </div>
+          </div>
+
+          {/* Tab Navigation */}
+          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900/80 border border-slate-800 self-start">
+            {[
+              { id: "general", label: "Personal Info", icon: <User size={14} /> },
+              { id: "store", label: "Store & Branch", icon: <Store size={14} /> },
+              { id: "security", label: "Security", icon: <Lock size={14} /> },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all ${
+                  activeTab === tab.id
+                    ? "bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/25"
+                    : "text-slate-400 hover:text-white"
+                }`}
+              >
+                {tab.icon}
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Profile Hero Card */}
+        <div className="p-6 rounded-3xl bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
+            {/* Avatar with live upload */}
+            <div className="relative group">
+              <img
+                src={profile.imageURL || "https://api.dicebear.com/7.x/avataaars/svg?seed=Ricky"}
+                alt="Admin Avatar"
+                className="w-24 h-24 rounded-full object-cover border-3 border-cyan-400/50 shadow-xl bg-slate-800"
+              />
+              <label
+                className="absolute bottom-0 right-0 p-2 rounded-full bg-cyan-500 text-slate-950 cursor-pointer shadow-lg hover:scale-110 active:scale-95 transition-transform"
+                title="Change Avatar"
+              >
+                <Camera size={15} className="stroke-[2.5]" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarUpload}
+                  className="hidden"
+                />
+              </label>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                <h2 className="text-xl font-extrabold text-white">
+                  {profile.first_name} {profile.last_name}
+                </h2>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center gap-1">
+                  <ShieldCheck size={11} />
+                  {profile.role}
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 flex items-center justify-center sm:justify-start gap-1.5">
+                <Mail size={12} className="text-cyan-400" />
+                <span>{profile.email}</span>
+                <span className="text-slate-600">•</span>
+                <Phone size={12} className="text-emerald-400" />
+                <span>{profile.phone}</span>
+              </p>
+              <p className="text-[11px] text-slate-500 flex items-center justify-center sm:justify-start gap-1 pt-1">
+                <Calendar size={11} />
+                <span>Store Admin Member since {profile.joined_date}</span>
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="px-4 py-2.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-400 font-bold text-xs flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+            >
+              <LogOut size={15} />
+              <span>Sign Out</span>
+            </button>
+
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-cyan-500/25 transition-all active:scale-95 cursor-pointer"
+            >
+              <Save size={15} />
+              <span>{isSaving ? "Saving..." : "Save Profile Changes"}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Tab Forms */}
+        <form onSubmit={handleSave} className="space-y-6">
+          {activeTab === "general" && (
+            <div className="p-6 rounded-3xl bg-slate-900/40 border border-white/10 space-y-5">
+              <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
+                <User size={18} className="text-cyan-400" />
+                <span>Personal & Account Credentials</span>
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div className="space-y-1.5">
+                  <label className="font-bold text-slate-300">First Name</label>
+                  <input
+                    type="text"
+                    value={profile.first_name}
+                    onChange={(e) => handleChange("first_name", e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium outline-none focus:border-cyan-400 transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="font-bold text-slate-300">Last Name</label>
+                  <input
+                    type="text"
+                    value={profile.last_name}
+                    onChange={(e) => handleChange("last_name", e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium outline-none focus:border-cyan-400 transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="font-bold text-slate-300">Official Email</label>
+                  <input
+                    type="email"
+                    value={profile.email}
+                    onChange={(e) => handleChange("email", e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium outline-none focus:border-cyan-400 transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="font-bold text-slate-300">Mobile Phone</label>
+                  <input
+                    type="text"
+                    value={profile.phone}
+                    onChange={(e) => handleChange("phone", e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium outline-none focus:border-cyan-400 transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="font-bold text-slate-300">Admin Role</label>
+                  <input
+                    type="text"
+                    value={profile.role}
+                    onChange={(e) => handleChange("role", e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium outline-none focus:border-cyan-400 transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="font-bold text-slate-300">Branch Authority</label>
+                  <input
+                    type="text"
+                    disabled
+                    value="Head Office & Flagship Hub"
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 font-medium outline-none cursor-not-allowed"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "store" && (
+            <div className="p-6 rounded-3xl bg-slate-900/40 border border-white/10 space-y-5">
+              <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
+                <Building2 size={18} className="text-cyan-400" />
+                <span>Store Location & Invoicing Address</span>
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div className="space-y-1.5 md:col-span-2">
+                  <label className="font-bold text-slate-300">Store Outlet Name</label>
+                  <input
+                    type="text"
+                    value={profile.store_name}
+                    onChange={(e) => handleChange("store_name", e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium outline-none focus:border-cyan-400 transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-1.5 md:col-span-2">
+                  <label className="font-bold text-slate-300">Street Address</label>
+                  <input
+                    type="text"
+                    value={profile.address}
+                    onChange={(e) => handleChange("address", e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium outline-none focus:border-cyan-400 transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="font-bold text-slate-300">City</label>
+                  <input
+                    type="text"
+                    value={profile.city}
+                    onChange={(e) => handleChange("city", e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium outline-none focus:border-cyan-400 transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="font-bold text-slate-300">State</label>
+                  <input
+                    type="text"
+                    value={profile.state}
+                    onChange={(e) => handleChange("state", e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium outline-none focus:border-cyan-400 transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="font-bold text-slate-300">PIN Code</label>
+                  <input
+                    type="text"
+                    value={profile.pincode}
+                    onChange={(e) => handleChange("pincode", e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium outline-none focus:border-cyan-400 transition-colors"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="font-bold text-slate-300">Business GSTIN</label>
+                  <input
+                    type="text"
+                    value={profile.gstin}
+                    onChange={(e) => handleChange("gstin", e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white font-medium outline-none focus:border-cyan-400 transition-colors"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === "security" && (
+            <div className="p-6 rounded-3xl bg-slate-900/40 border border-white/10 space-y-5">
+              <h3 className="text-base font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
+                <Key size={18} className="text-cyan-400" />
+                <span>Security Credentials & Account Actions</span>
+              </h3>
+
+              <div className="space-y-4 text-xs">
+                <div className="p-4 rounded-2xl bg-slate-950/60 border border-white/5 flex items-center justify-between">
+                  <div>
+                    <h4 className="font-bold text-white text-sm">Two-Factor Authentication (2FA)</h4>
+                    <p className="text-slate-400 mt-0.5">Secure your admin portal with authenticator app protection</p>
+                  </div>
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    Active & Protected
+                  </span>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-950/60 border border-white/5 flex items-center justify-between">
+                  <div>
+                    <h4 className="font-bold text-white text-sm">Password Security</h4>
+                    <p className="text-slate-400 mt-0.5">Last updated 12 days ago • Minimum 8 chars with mixed case</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => dispatch(SUCCESSALERT("Password reset OTP sent to registered admin email"))}
+                    className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold border border-slate-700 transition-colors"
+                  >
+                    Change Password
+                  </button>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-rose-500/5 border border-rose-500/20 flex items-center justify-between">
+                  <div>
+                    <h4 className="font-bold text-rose-400 text-sm">Sign Out from Device</h4>
+                    <p className="text-slate-400 mt-0.5">Terminate current administrative session and lock workspace</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="px-4 py-2 rounded-xl bg-rose-500 text-slate-950 font-bold hover:bg-rose-400 transition-colors flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <LogOut size={14} />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Bottom Save Action */}
+          <div className="flex items-center justify-end gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={isSaving}
+              className="px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold text-xs flex items-center gap-2 shadow-xl shadow-cyan-500/20 transition-all active:scale-95 cursor-pointer"
+            >
+              <Save size={16} />
+              <span>{isSaving ? "Saving changes..." : "Save All Changes"}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

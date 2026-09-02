@@ -332,17 +332,6 @@ export default function InventoryTable({
     },
   ];
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-24">
-        <RefreshCw size={28} className="animate-spin text-cyan-400 mb-3" />
-        <p className="text-sm text-slate-400">
-          Loading live product inventory...
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4">
       {viewingProduct && (
@@ -358,6 +347,7 @@ export default function InventoryTable({
         columnVisibility={columnVisibility}
         setColumnVisibility={setColumnVisibility}
         isDark={isDark}
+        isLoading={loading}
       />
     </div>
   );

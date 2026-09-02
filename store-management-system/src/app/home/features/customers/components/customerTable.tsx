@@ -3,19 +3,17 @@ import Table from "@/components/table/table";
 import { Edit, TrashIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Delete from "./delete";
 import { customerService } from "@/services/customer.service";
+import { useDispatch } from "react-redux";
+import { openGlobalConfirm } from "@/store/slices/confirm.slice";
+import { SUCCESSALERT, ERRORALERT } from "@/store/slices/alert.slice";
 
-const CustomerTable = ({ isDark = false }) => {
+const CustomerTable = ({ isDark = false }: { isDark?: boolean }) => {
   const [customers, setCustomers] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [customerDeleting, setCustomerDeleting] = useState(false);
   const pathName = usePathname();
   const router = useRouter();
-  const [selectedCustomer, setSelectedCustomer] = useState({
-    id: "",
-    Name: "",
-  });
+  const dispatch = useDispatch();
 
   const loadCustomers = async () => {
     setLoading(true);
@@ -35,15 +33,25 @@ const CustomerTable = ({ isDark = false }) => {
   }, []);
 
   const handleDelete = (data: any) => {
-    if (customerDeleting) {
-      setCustomerDeleting(false);
-    } else {
-      setCustomerDeleting(true);
-      setSelectedCustomer({
-        id: data._id || data.id,
-        Name: data.name || "Customer",
-      });
-    }
+    const id = data._id || data.id;
+    const name = data.name || data.email || "this Customer";
+
+    openGlobalConfirm(dispatch, {
+      title: "Delete Customer Record?",
+      message: `Are you sure you want to delete customer "${name}"? Order history and EMI records associated with this profile will be archived.`,
+      confirmText: "Yes, Delete Customer",
+      cancelText: "Cancel",
+      variant: "danger",
+      onConfirm: async () => {
+        try {
+          await customerService.deleteCustomer(id);
+          dispatch(SUCCESSALERT(`Customer "${name}" deleted successfully`));
+          loadCustomers();
+        } catch {
+          dispatch(ERRORALERT("Failed to delete customer"));
+        }
+      },
+    });
   };
 
   const handleUpdate = (data: any) => {
@@ -67,7 +75,10 @@ const CustomerTable = ({ isDark = false }) => {
     {
       header: "Mobile Number",
       id: "Mobile Number",
-      accessorKey: "mobile",
+      accessorKey: "phone",
+      cell: ({ row }: { row: any }) => (
+        <span>{row.original.phone || row.original.mobile || "—"}</span>
+      ),
     },
     {
       header: "Actions",
@@ -121,23 +132,13 @@ const CustomerTable = ({ isDark = false }) => {
 
   return (
     <div className="w-full">
-      {customerDeleting && (
-        <Delete
-          handleDelete={() => {
-            setCustomerDeleting(false);
-            loadCustomers();
-          }}
-          Id={selectedCustomer?.id}
-          Name={selectedCustomer?.Name}
-          isDark={isDark}
-        />
-      )}
       <Table
         columns={columns}
         data={customers}
         columnVisibility={columnVisibility}
         setColumnVisibility={setColumnVisibility}
         isDark={isDark}
+        isLoading={loading}
       />
     </div>
   );

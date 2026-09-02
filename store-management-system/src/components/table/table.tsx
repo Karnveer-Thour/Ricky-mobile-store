@@ -25,6 +25,7 @@ interface TableProps {
     React.SetStateAction<Record<string, boolean>>
   >;
   isDark?: boolean;
+  isLoading?: boolean;
 }
 
 function Table({
@@ -33,6 +34,7 @@ function Table({
   columnVisibility,
   setColumnVisibility,
   isDark = false,
+  isLoading = false,
 }: TableProps) {
   const handleColumnVisibility = (columnId: string | number) => {
     setColumnVisibility((prev) => ({
@@ -65,7 +67,65 @@ function Table({
   return (
     <div className="h-full w-full">
       {/* ── Desktop Table ───────────────────────────── */}
-      {data?.length === 0 ? (
+      {isLoading ? (
+        /* Shimmer skeleton while loading */
+        <div
+          className={cn(
+            "hidden md:flex flex-col rounded-2xl border overflow-hidden shadow-sm",
+            isDark
+              ? "bg-slate-900/80 border-white/8"
+              : "bg-white border-slate-200",
+          )}
+        >
+          {/* Toolbar skeleton */}
+          <div
+            className={cn(
+              "flex justify-between items-center px-6 py-4 border-b",
+              isDark ? "border-white/8" : "border-slate-100",
+            )}
+          >
+            <div className="h-8 w-48 animate-pulse rounded-lg bg-slate-800/50" />
+            <div className="h-8 w-28 animate-pulse rounded-lg bg-slate-800/50" />
+          </div>
+          {/* Header skeleton */}
+          <div
+            className={cn(
+              "flex gap-6 px-6 py-3.5 border-b",
+              isDark
+                ? "border-white/8 bg-slate-900/60"
+                : "border-slate-100 bg-slate-50",
+            )}
+          >
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-3 animate-pulse rounded bg-slate-700/40"
+                style={{ width: `${[120, 160, 100, 60][i] ?? 80}px` }}
+              />
+            ))}
+          </div>
+          {/* Row skeletons */}
+          {Array.from({ length: 7 }).map((_, i) => (
+            <div
+              key={i}
+              className={cn(
+                "flex gap-6 items-center px-6 py-4 border-b",
+                isDark ? "border-white/5" : "border-slate-50",
+              )}
+              style={{ opacity: 1 - i * 0.1 }}
+            >
+              <div className="h-8 w-8 animate-pulse rounded-lg bg-slate-700/40 shrink-0" />
+              <div className="h-3 w-36 animate-pulse rounded bg-slate-700/30" />
+              <div className="h-3 w-48 animate-pulse rounded bg-slate-700/30" />
+              <div className="h-3 w-24 animate-pulse rounded bg-slate-700/30" />
+              <div className="ml-auto flex gap-2">
+                <div className="h-7 w-7 animate-pulse rounded-lg bg-slate-700/30" />
+                <div className="h-7 w-7 animate-pulse rounded-lg bg-slate-700/30" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : data?.length === 0 ? (
         /* Empty dataset state */
         <div
           className={cn(

@@ -3,19 +3,17 @@ import Table from "@/components/table/table";
 import { Edit, TrashIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Delete from "./Delete";
 import { categoryService } from "@/services/category.service";
+import { useDispatch } from "react-redux";
+import { openGlobalConfirm } from "@/store/slices/confirm.slice";
+import { SUCCESSALERT, ERRORALERT } from "@/store/slices/alert.slice";
 
-const CategoryTable = ({ isDark = false }) => {
+const CategoryTable = ({ isDark = false }: { isDark?: boolean }) => {
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [categoryDeleting, setCategoryDeleting] = useState(false);
   const pathName = usePathname();
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState({
-    id: "",
-    Name: "",
-  });
+  const dispatch = useDispatch();
 
   const loadCategories = async () => {
     setLoading(true);
@@ -35,15 +33,25 @@ const CategoryTable = ({ isDark = false }) => {
   }, []);
 
   const handleDelete = (data: any) => {
-    if (categoryDeleting) {
-      setCategoryDeleting(false);
-    } else {
-      setCategoryDeleting(true);
-      setSelectedCategory({
-        id: data._id || data.id,
-        Name: data.name,
-      });
-    }
+    const id = data._id || data.id;
+    const name = data.name || "this Category";
+
+    openGlobalConfirm(dispatch, {
+      title: "Delete Product Category?",
+      message: `Are you sure you want to delete category "${name}"? Existing products under this group may need reclassification.`,
+      confirmText: "Yes, Delete Category",
+      cancelText: "Cancel",
+      variant: "danger",
+      onConfirm: async () => {
+        try {
+          await categoryService.deleteCategory(id);
+          dispatch(SUCCESSALERT(`Category "${name}" deleted successfully`));
+          loadCategories();
+        } catch {
+          dispatch(ERRORALERT("Failed to delete category"));
+        }
+      },
+    });
   };
 
   const handleUpdate = (data: any) => {
@@ -111,23 +119,13 @@ const CategoryTable = ({ isDark = false }) => {
 
   return (
     <div className="w-full">
-      {categoryDeleting && (
-        <Delete
-          handleDelete={() => {
-            setCategoryDeleting(false);
-            loadCategories();
-          }}
-          Id={selectedCategory?.id}
-          Name={selectedCategory?.Name}
-          isDark={isDark}
-        />
-      )}
       <Table
         columns={columns}
         data={categories}
         columnVisibility={columnVisibility}
         setColumnVisibility={setColumnVisibility}
         isDark={isDark}
+        isLoading={loading}
       />
     </div>
   );

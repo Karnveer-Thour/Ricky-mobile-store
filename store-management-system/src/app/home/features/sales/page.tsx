@@ -1,48 +1,96 @@
 "use client";
 
-import Button from "@/components/Button";
 import { storeType } from "@/types/store.index";
 import { useSelector } from "react-redux";
 import CategoryTable from "./components/categoryTable";
+import { usePathname, useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Plus, Download } from "lucide-react";
+import cn from "classnames";
 import { useState } from "react";
 import CsvDownload from "./components/csvDownload";
 
 function page() {
   const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
+  const pathName = usePathname();
+  const router = useRouter();
   const [isDownloading, setIsDownloading] = useState(false);
+
   return (
     <>
       {isDownloading && (
         <CsvDownload
           isDark={isDark}
-          cancelDownload={() => setIsDownloading((prev) => !prev)}
+          cancelDownload={() => setIsDownloading(false)}
           downloadCsv={() => {}}
         />
       )}
-      <div className=" w-[93%] overflow-hidden sm:ms-10 me-9 mt-8 max-sm:ms-4 h-auto flex max-sm:flex-col max-sm:justify-center items-center gap-4">
-        <p
-          className={`text-3xl font-semibold ${isDark ? "text-white" : "text-gray-700"}`}
+
+      <div className="page-container">
+        {/* Page header */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6"
         >
-          Sales
-        </p>
-        <hr
-          className={`border-t-3 ${isDark ? "text-gray-100" : "text-gray-700"} mt-1 flex-1`}
-        ></hr>
-      </div>
-      <div className="w-[95%] h-[50vh] mt-8 ms-6 flex flex-col items-center justify-center">
-        <div className=" w-full flex flex-row justify-between items-center">
-          <div className="flex-1 overflow-hidden sm:ms-7 max-sm:ms-4 h-auto p-3 flex justify-center items-center">
-            <Button
-              name={"Download Sale"}
-              handler={() => {
-                setIsDownloading((prev) => !prev);
-              }}
-            />
+          <div>
+            <p
+              className={cn(
+                "text-xs font-medium mb-1",
+                isDark ? "text-slate-500" : "text-slate-400",
+              )}
+            >
+              Home &rsaquo; Sales
+            </p>
+            <h1
+              className={cn(
+                "text-2xl font-bold tracking-tight",
+                isDark ? "text-white" : "text-slate-900",
+              )}
+            >
+              Sales
+            </h1>
           </div>
-        </div>
-        <div className="w-full h-[80%] ms-7 overflow-hidden flex justify-center items-center">
+
+          {/* Action buttons */}
+          <div className="flex items-center gap-3 flex-wrap">
+            <button
+              onClick={() => router.push(`${pathName}/add`)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-semibold shadow-md hover:shadow-cyan-500/30 hover:opacity-90 transition-all duration-200"
+            >
+              <Plus size={16} />
+              Add Sale
+            </button>
+            <button
+              onClick={() => setIsDownloading(true)}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-semibold transition-all duration-200 cursor-pointer",
+                isDark
+                  ? "border-white/10 text-slate-300 hover:bg-white/5"
+                  : "border-slate-200 text-slate-600 hover:bg-slate-50",
+              )}
+            >
+              <Download size={15} />
+              Download Sales
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Table card */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.1 }}
+          className={cn(
+            "rounded-2xl overflow-hidden border transition-colors duration-300",
+            isDark
+              ? "border-white/8 shadow-xl shadow-black/20"
+              : "border-slate-200 shadow-sm",
+          )}
+        >
           <CategoryTable isDark={isDark} />
-        </div>
+        </motion.div>
       </div>
     </>
   );

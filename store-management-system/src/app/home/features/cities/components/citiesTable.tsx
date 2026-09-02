@@ -3,20 +3,18 @@ import Table from "@/components/table/table";
 import { Edit, TrashIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import Delete from "./Delete";
 import ToggleButton from "@/components/togglebutton";
 import { cityService } from "@/services/city.service";
+import { useDispatch } from "react-redux";
+import { openGlobalConfirm } from "@/store/slices/confirm.slice";
+import { SUCCESSALERT, ERRORALERT } from "@/store/slices/alert.slice";
 
-const CityTable = ({ isDark = false }) => {
+const CityTable = ({ isDark = false }: { isDark?: boolean }) => {
   const [cities, setCities] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [cityDeleting, setCityDeleting] = useState(false);
   const pathName = usePathname();
   const router = useRouter();
-  const [selectedCity, setSelectedCity] = useState({
-    id: "",
-    Name: "",
-  });
+  const dispatch = useDispatch();
 
   const loadCities = async () => {
     setLoading(true);
@@ -36,15 +34,25 @@ const CityTable = ({ isDark = false }) => {
   }, []);
 
   const handleDelete = (data: any) => {
-    if (cityDeleting) {
-      setCityDeleting(false);
-    } else {
-      setCityDeleting(true);
-      setSelectedCity({
-        id: data._id || data.id,
-        Name: data.name,
-      });
-    }
+    const id = data._id || data.id;
+    const name = data.name || "this City";
+
+    openGlobalConfirm(dispatch, {
+      title: "Remove Serviceable City?",
+      message: `Are you sure you want to remove "${name}" from accepted delivery zones? Orders to this pincode will be paused.`,
+      confirmText: "Yes, Remove City",
+      cancelText: "Cancel",
+      variant: "danger",
+      onConfirm: async () => {
+        try {
+          await cityService.deleteCity(id);
+          dispatch(SUCCESSALERT(`City "${name}" removed successfully`));
+          loadCities();
+        } catch {
+          dispatch(ERRORALERT("Failed to remove city"));
+        }
+      },
+    });
   };
 
   const handleUpdate = (data: any) => {
@@ -157,23 +165,13 @@ const CityTable = ({ isDark = false }) => {
 
   return (
     <div className="w-full">
-      {cityDeleting && (
-        <Delete
-          handleDelete={() => {
-            setCityDeleting(false);
-            loadCities();
-          }}
-          Id={selectedCity?.id}
-          Name={selectedCity?.Name}
-          isDark={isDark}
-        />
-      )}
       <Table
         columns={columns}
         data={cities}
         columnVisibility={columnVisibility}
         setColumnVisibility={setColumnVisibility}
         isDark={isDark}
+        isLoading={loading}
       />
     </div>
   );

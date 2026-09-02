@@ -82,6 +82,7 @@ const CityTable = ({ isDark = false }) => {
         columnVisibility={columnVisibility}
         setColumnVisibility={setColumnVisibility}
         isDark={isDark}
+        isLoading={loading}
       />
     </div>
   );
