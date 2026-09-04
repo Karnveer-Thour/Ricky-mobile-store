@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Bell,
@@ -26,45 +27,6 @@ export interface StoreNotification {
   actionUrl?: string;
 }
 
-const INITIAL_NOTIFICATIONS: StoreNotification[] = [
-  {
-    id: "notif-1",
-    title: "Bajaj Finserv EMI Approved",
-    message: "Customer Ricky (Order #BK-9082) approved for ₹89,999 @ 6-Mo EMI.",
-    category: "emi",
-    time: "2 mins ago",
-    unread: true,
-    actionUrl: "/home/features/sales",
-  },
-  {
-    id: "notif-2",
-    title: "WhatsApp Flash Sale Uploaded",
-    message: "iPhone 16 Pro Max 256GB Desert Titanium recorded in VIP Group.",
-    category: "sales",
-    time: "15 mins ago",
-    unread: true,
-    actionUrl: "/home/features/whatsapp",
-  },
-  {
-    id: "notif-3",
-    title: "Low Inventory Alert",
-    message: "Samsung Galaxy S24 Ultra stock fell below minimum threshold (2 left).",
-    category: "stock",
-    time: "1 hour ago",
-    unread: true,
-    actionUrl: "/home/features/inventory",
-  },
-  {
-    id: "notif-4",
-    title: "Dispatch Out for Delivery",
-    message: "Rider Amit is en route for Order #9812 with live GPS tracking active.",
-    category: "dispatch",
-    time: "3 hours ago",
-    unread: false,
-    actionUrl: "/home/features/dispatch",
-  },
-];
-
 interface NotificationCenterProps {
   isOpen: boolean;
   onClose: () => void;
@@ -80,9 +42,8 @@ export default function NotificationCenter({
   unreadCount,
   setUnreadCount,
 }: NotificationCenterProps) {
-  const [notifications, setNotifications] = useState<StoreNotification[]>(
-    INITIAL_NOTIFICATIONS,
-  );
+  const [mounted, setMounted] = useState(false);
+  const [notifications, setNotifications] = useState<StoreNotification[]>([]);
   const [activeTab, setActiveTab] = useState<
     "all" | "sales" | "emi" | "stock" | "dispatch"
   >("all");
@@ -90,6 +51,7 @@ export default function NotificationCenter({
   const router = useRouter();
 
   useEffect(() => {
+    setMounted(true);
     if (typeof window !== "undefined" && "Notification" in window) {
       setPushEnabled(Notification.permission === "granted");
     }
@@ -161,13 +123,13 @@ export default function NotificationCenter({
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-start justify-end pr-8 pt-16">
+      <div className="fixed inset-0 z-[9999] flex items-start justify-end pr-8 pt-16">
         {/* Backdrop */}
-        <div className="fixed inset-0" onClick={onClose} />
+        <div className="fixed inset-0 bg-black/20" onClick={onClose} />
 
         {/* Flyout Window */}
         <motion.div
@@ -175,10 +137,10 @@ export default function NotificationCenter({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -10 }}
           transition={{ duration: 0.18, ease: "easeOut" }}
-          className={`relative w-96 rounded-2xl overflow-hidden shadow-2xl border ${
+          className={`relative z-10 w-96 rounded-2xl overflow-hidden shadow-2xl border ${
             isDark
-              ? "bg-slate-900/95 backdrop-blur-xl border-slate-700/80 shadow-cyan-950/40 text-slate-100"
-              : "bg-white border-slate-200 shadow-slate-300/50 text-slate-800"
+              ? "bg-slate-900/98 backdrop-blur-xl border-slate-700/90 shadow-cyan-950/60 text-slate-100"
+              : "bg-white border-slate-200 shadow-slate-400/40 text-slate-800"
           }`}
         >
           {/* Header */}
@@ -304,6 +266,8 @@ export default function NotificationCenter({
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
+

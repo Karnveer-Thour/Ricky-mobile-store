@@ -3,6 +3,9 @@ import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from 'class-val
 import { BaseDto } from 'Common/Dto/Base.dto';
 import { Category } from 'Modules/Category/Entities/Category.entity';
 import { CreateProductColorDto } from './create-color.dto';
+import { CreateProductVariantDto } from './create-variant.dto';
+import { ProductColor } from '../Entities/ProductColor.entity';
+import { ProductVariant } from '../Entities/ProductVariant.entity';
 
 export class ProductDto extends BaseDto {
   @ApiProperty({
@@ -97,5 +100,8 @@ export class ProductDto extends BaseDto {
   imageUrl?: string;
 
   @IsNotEmpty()
-  colors: CreateProductColorDto[];
+  colors: ProductColor[] | CreateProductColorDto[];
+
+  @IsOptional()
+  variants?: ProductVariant[] | CreateProductVariantDto[];
 }

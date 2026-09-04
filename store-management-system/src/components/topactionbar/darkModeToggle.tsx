@@ -2,36 +2,36 @@
 import { toggleDarkMode } from "@/store/slices/isDarkMode.slice";
 import { storeType } from "@/types/store.index";
 import { useDispatch, useSelector } from "react-redux";
+import { Sun, Moon } from "lucide-react";
 
 function DarkModeToggle() {
   const isDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
   const dispatch = useDispatch();
 
   return (
-    <div className="flex items-center max-lg:hidden max-md:ms-3">
-      <label className="relative inline-flex items-center cursor-pointer">
-        <input
-          type="checkbox"
-          className="sr-only"
-          checked={isDark}
-          onChange={() => dispatch(toggleDarkMode())}
-        />
-        <div
-          className={`w-12 h-6 rounded-full transition-colors duration-300 ${
-            isDark ? "bg-gray-700" : "bg-gray-300"
-          } ${isDark ? "border-2 border-white p-3" : ""}`}
-        ></div>
-        <div
-          className={`absolute w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
-            isDark ? "translate-x-6" : "translate-x-1"
-          }`}
-        ></div>
-      </label>
-      <span className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+    <button
+      onClick={() => dispatch(toggleDarkMode())}
+      className={`relative flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all duration-200 cursor-pointer ${
+        isDark
+          ? "bg-slate-800/90 border-slate-700/80 hover:border-cyan-500/50 text-slate-200"
+          : "bg-slate-100 border-slate-200 hover:border-amber-400/80 text-slate-700 shadow-xs"
+      }`}
+      aria-label="Toggle dark mode"
+      title={`Switch to ${isDark ? "Light" : "Dark"} Mode`}
+    >
+      <div
+        className={`w-5 h-5 rounded-full flex items-center justify-center transition-transform ${
+          isDark ? "text-cyan-400" : "text-amber-500"
+        }`}
+      >
+        {isDark ? <Moon size={14} className="fill-cyan-400/20" /> : <Sun size={14} className="fill-amber-400/30" />}
+      </div>
+      <span className="text-xs font-semibold select-none">
         {isDark ? "Dark Mode" : "Light Mode"}
       </span>
-    </div>
+    </button>
   );
 }
 
 export default DarkModeToggle;
+

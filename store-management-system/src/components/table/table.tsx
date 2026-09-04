@@ -145,8 +145,20 @@ function Table({
           >
             <Inbox size={32} strokeWidth={1.5} />
           </div>
-          <p className="font-semibold text-base text-white">No records found</p>
-          <p className="text-xs mt-1 text-slate-400">
+          <p
+            className={cn(
+              "font-semibold text-base",
+              isDark ? "text-white" : "text-slate-800",
+            )}
+          >
+            No records found
+          </p>
+          <p
+            className={cn(
+              "text-xs mt-1",
+              isDark ? "text-slate-400" : "text-slate-500",
+            )}
+          >
             Get started by adding your first record above.
           </p>
         </div>
@@ -186,7 +198,7 @@ function Table({
                   "sticky top-0 z-10 border-b",
                   isDark
                     ? "bg-slate-900/90 text-slate-400 border-white/8"
-                    : "bg-slate-50 text-slate-500 border-slate-100",
+                    : "bg-slate-50 text-slate-600 border-slate-200",
                 )}
               >
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -203,7 +215,10 @@ function Table({
                       ) : (
                         <th
                           key={header.id}
-                          className="py-3.5 px-6 text-right text-xs font-semibold uppercase tracking-wider text-slate-400"
+                          className={cn(
+                            "py-3.5 px-6 text-right text-xs font-semibold uppercase tracking-wider",
+                            isDark ? "text-slate-400" : "text-slate-600",
+                          )}
                         >
                           Actions
                         </th>

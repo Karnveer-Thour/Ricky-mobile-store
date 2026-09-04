@@ -9,17 +9,17 @@ function page() {
   const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
   return (
     <div
-      className={`w-full px-4 sm:px-10 py-8 space-y-8 overflow-hidden ${isDark ? "bg-gray-900" : "bg-white"}`}
+      className={`w-full sm:px-8 space-y-8 overflow-hidden ${isDark ? "bg-transparent text-white" : "bg-transparent text-slate-900"}`}
     >
-      <div className=" w-[93%] overflow-hidden sm:ms-10 me-9 mt-8 max-sm:ms-4 h-auto flex max-sm:flex-col max-sm:justify-center items-center gap-4">
-        <p
-          className={`text-3xl font-semibold ${isDark ? "text-white" : "text-gray-700"}`}
+      <div className={`flex items-center gap-4 border-b pb-4 ${isDark ? "border-slate-800" : "border-slate-200"}`}>
+        <h1
+          className={`text-2xl sm:text-3xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}
         >
-          Secuirity and authentication
-        </p>
+          Security & Authentication
+        </h1>
         <hr
-          className={`border-t-3 ${isDark ? "text-gray-100" : "text-gray-700"} mt-1 flex-1`}
-        ></hr>
+          className={`flex-1 border-t ${isDark ? "border-slate-800" : "border-slate-200"}`}
+        />
       </div>
       <Changepassword isDark={isDark} validator={changePasswordValidator} />
     </div>

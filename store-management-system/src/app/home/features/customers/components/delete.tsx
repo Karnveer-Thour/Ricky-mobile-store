@@ -28,26 +28,32 @@ function Delete({ handleDelete, Id, Name, isDark = false }: DeleteProps) {
   };
 
   return (
-    <BlurredPopupLayout width={"30%"} height={"auto"} isDark={isDark}>
-      <h2 className="text-xl font-bold mb-4 text-center">Delete Customer</h2>
-      {error && (
-        <p className="text-sm text-red-500 text-center mb-2">{error}</p>
-      )}
-      <p className="text-sm font-semibold mb-6 text-center text-red-500">
-        Are you sure you want to delete {Name}?
-      </p>
-      <div className="flex gap-4 justify-center">
-        <Button
-          name={"Cancel"}
-          handler={() => handleDelete()}
-          className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
-        />
-        <Button
-          name={isDeleting ? "Deleting..." : "Delete"}
-          handler={onConfirm}
-          disabled={isDeleting}
-          className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-        />
+    <BlurredPopupLayout width={"400px"} height={"auto"} isDark={isDark}>
+      <div className="p-2 text-center space-y-4">
+        <h2 className={`text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>Delete Customer</h2>
+        {error && (
+          <p className="text-xs text-rose-500 font-semibold">{error}</p>
+        )}
+        <p className="text-sm font-medium text-rose-500">
+          Are you sure you want to delete <span className="font-bold">{Name}</span>?
+        </p>
+        <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+          This will permanently remove the customer record and disassociate their store history.
+        </p>
+        <div className="flex gap-3 justify-center pt-2">
+          <Button
+            name={"Cancel"}
+            isDark={isDark}
+            variant="secondary"
+            handler={() => handleDelete()}
+          />
+          <Button
+            name={isDeleting ? "Deleting..." : "Delete Customer"}
+            variant="danger"
+            handler={onConfirm}
+            disabled={isDeleting}
+          />
+        </div>
       </div>
     </BlurredPopupLayout>
   );

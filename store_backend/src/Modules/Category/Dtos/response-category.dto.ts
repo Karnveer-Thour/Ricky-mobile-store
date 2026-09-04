@@ -8,4 +8,10 @@ export class TransformCategoryDto {
 
   @Expose()
   description: string;
+
+  @Expose()
+  hasColors: boolean;
+
+  @Expose()
+  hasVariants: boolean;
 }

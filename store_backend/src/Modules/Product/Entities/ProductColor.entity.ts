@@ -23,5 +23,5 @@ export class ProductColor extends BaseEntity<ProductColor> {
     type: 'numeric',
     nullable: false,
   })
-  quantity: Number;
+  quantity: number;
 }

@@ -71,13 +71,13 @@ export default function UploadSale() {
         setGroups(Array.isArray(grpRes) ? grpRes : []);
 
         if (Array.isArray(custRes) && custRes.length > 0) {
-          setSelectedCustomerId(custRes[0]._id || custRes[0].id || "");
+          setSelectedCustomerId((custRes[0] as any)._id || custRes[0].id || "");
         }
         if (Array.isArray(prodRes) && prodRes.length > 0) {
-          setSelectedProductIds([prodRes[0]._id || prodRes[0].id || ""]);
+          setSelectedProductIds([(prodRes[0] as any)._id || prodRes[0].id || ""]);
         }
         if (Array.isArray(grpRes) && grpRes.length > 0) {
-          setSelectedGroupId(grpRes[0]._id || grpRes[0].id || "");
+          setSelectedGroupId((grpRes[0] as any)._id || grpRes[0].id || "");
         }
       } finally {
         setLoadingData(false);

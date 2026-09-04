@@ -16,6 +16,12 @@ export class Category extends BaseEntity<Category> {
   })
   description: string;
 
+  @Column({ name: 'hasColors', type: 'boolean', default: true })
+  hasColors: boolean;
+
+  @Column({ name: 'hasVariants', type: 'boolean', default: false })
+  hasVariants: boolean;
+
   @OneToMany(() => Product, (Product) => Product.category)
   products: Product[];
 }

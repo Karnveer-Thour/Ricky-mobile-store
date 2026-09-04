@@ -1,6 +1,8 @@
 import React from "react";
 import { AlertCircle } from "lucide-react";
 import cn from "classnames";
+import { useSelector } from "react-redux";
+import { storeType } from "@/types/store.index";
 
 interface InputContainerProps {
   type?: string;
@@ -19,7 +21,11 @@ function Inputcontainer({
   error,
   required = false,
   className = "",
+  isDark: isDarkProp,
 }: InputContainerProps) {
+  const reduxDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
+  const isDark = isDarkProp !== undefined ? isDarkProp : reduxDark ?? false;
+
   const displayLabel =
     label || (type ? type[0].toUpperCase() + type.slice(1) : "");
 
@@ -28,15 +34,22 @@ function Inputcontainer({
       {displayLabel && (
         <label
           htmlFor={type}
-          className="flex items-center gap-1 text-xs font-semibold text-slate-300 tracking-wide mb-1.5"
+          className={cn(
+            "flex items-center gap-1 text-xs font-semibold tracking-wide mb-1.5",
+            isDark ? "text-slate-300" : "text-slate-700",
+          )}
         >
           <span>{displayLabel}</span>
-          {required && <span className="text-cyan-400 font-bold">*</span>}
+          {required && (
+            <span className={isDark ? "text-cyan-400 font-bold" : "text-cyan-600 font-bold"}>
+              *
+            </span>
+          )}
         </label>
       )}
       {children}
       {error && (
-        <p className="flex items-center gap-1 mt-1.5 text-xs text-rose-400 font-medium">
+        <p className="flex items-center gap-1 mt-1.5 text-xs text-rose-500 font-medium">
           <AlertCircle size={12} className="shrink-0" />
           <span>
             {typeof error === "string"

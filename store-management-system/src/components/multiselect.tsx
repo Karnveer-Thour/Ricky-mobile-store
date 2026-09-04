@@ -1,6 +1,8 @@
-"use client";
-import { ArrowBigDown, ArrowBigUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useSelector } from "react-redux";
+import { storeType } from "@/types/store.index";
+import cn from "classnames";
 
 interface MultiselectProps {
   Heading: React.ReactNode;
@@ -8,7 +10,10 @@ interface MultiselectProps {
   isDark?: boolean;
 }
 
-function Multiselect({ Heading, children, isDark = false }: MultiselectProps) {
+function Multiselect({ Heading, children, isDark: isDarkProp }: MultiselectProps) {
+  const reduxDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
+  const isDark = isDarkProp !== undefined ? isDarkProp : reduxDark ?? false;
+
   const [selectorOpened, setSelectorOpened] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -37,30 +42,30 @@ function Multiselect({ Heading, children, isDark = false }: MultiselectProps) {
       {/* Button */}
       <button
         ref={buttonRef}
-        className={
-          `w-full h-full p-3 border  rounded-md shadow-sm text-sm  flex justify-between items-center cursor-pointer hover:ring-blue-500 hover:ring-2 hover:font-bold hover:text-blue-500` +
-          (isDark
-            ? " bg-gray-500 text-white border-white hover:ring-blue-400"
-            : "border-gray-300 bg-white")
-        }
+        type="button"
+        className={cn(
+          "w-full px-4 py-2.5 border rounded-xl text-sm font-medium flex justify-between items-center cursor-pointer transition-all duration-150 focus:outline-none focus:ring-1 focus:ring-[#00cfff]/30",
+          isDark
+            ? "bg-slate-900 border-slate-700/60 text-white hover:border-[#00cfff]/60"
+            : "bg-white border-slate-200 text-slate-800 hover:border-slate-300 shadow-xs",
+        )}
         onClick={() => setSelectorOpened((prev) => !prev)}
-        role="button"
         aria-expanded={selectorOpened}
       >
-        <span className="text-md font-medium">{Heading}</span>
-        {!selectorOpened ? <ArrowBigUp /> : <ArrowBigDown />}
+        <span className="text-sm font-medium">{Heading}</span>
+        {selectorOpened ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
       </button>
 
       {/* Dropdown Menu */}
       {selectorOpened && (
         <div
           ref={menuRef}
-          className={
-            "absolute w-full h-auto p-4 border mt-1 rounded-lg shadow-lg z-50" +
-            (isDark
-              ? " bg-gray-500 text-white border-white hover:ring-blue-400"
-              : "border-gray-300 bg-white")
-          }
+          className={cn(
+            "absolute w-full h-auto p-4 border mt-1.5 rounded-2xl shadow-xl z-50 transition-all duration-150 backdrop-blur-xl",
+            isDark
+              ? "bg-slate-900/95 border-slate-700 text-white shadow-black/60"
+              : "bg-white border-slate-200 text-slate-800 shadow-slate-300/50",
+          )}
         >
           {children}
         </div>

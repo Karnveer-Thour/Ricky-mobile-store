@@ -1,4 +1,5 @@
 import { IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 import { BaseDto } from 'Common/Dto/base.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -8,6 +9,7 @@ export class CreateProductColorDto extends BaseDto {
   name: string;
 
   @ApiProperty({ name: 'quantity', description: 'eg. 80', nullable: false })
+  @Type(() => Number)
   @IsNumber()
   quantity: number;
 }

@@ -157,7 +157,12 @@ const ProductTable = ({
       id: "Price",
       accessorKey: "price",
       cell: ({ row }: { row: any }) => (
-        <span className="font-semibold text-sm text-cyan-400">
+        <span
+          className={cn(
+            "font-semibold text-sm",
+            isDark ? "text-cyan-400" : "text-cyan-700 font-bold",
+          )}
+        >
           ₹{Number(row.original.price || 0).toLocaleString("en-IN")}
         </span>
       ),
@@ -168,6 +173,7 @@ const ProductTable = ({
       accessorKey: "quantity",
       cell: ({ row }: { row: any }) => {
         const item = row.original;
+        const variants = item.variants && Array.isArray(item.variants) ? item.variants : [];
         const colors = item.colors || item.productColors || [];
 
         return (
@@ -180,7 +186,32 @@ const ProductTable = ({
             >
               {item.quantity} in stock
             </span>
-            {colors.length > 0 && (
+            {variants.length > 0 ? (
+              <div className="flex flex-wrap gap-1 max-w-[220px]">
+                {variants.map((v: any, i: number) => {
+                  const vQty = Number(v.quantity) || 0;
+                  const label = [v.ram, v.storage].filter(Boolean).join("/") || v.color || "Variant";
+                  return (
+                    <span
+                      key={i}
+                      className={cn(
+                        "text-[10px] px-1.5 py-0.5 rounded font-mono border flex items-center gap-1",
+                        vQty === 0
+                          ? "bg-rose-500/10 text-rose-400 border-rose-500/20 line-through opacity-60"
+                          : isDark
+                            ? "bg-slate-800 text-slate-300 border-slate-700/60"
+                            : "bg-slate-100 text-slate-700 border-slate-200",
+                      )}
+                    >
+                      <span>{label}</span>
+                      <span className={isDark ? "text-cyan-400" : "text-cyan-700 font-bold"}>
+                        ({vQty})
+                      </span>
+                    </span>
+                  );
+                })}
+              </div>
+            ) : colors.length > 0 ? (
               <div className="flex flex-wrap gap-1 max-w-[200px]">
                 {colors.map((c: any, i: number) => (
                   <span
@@ -198,7 +229,7 @@ const ProductTable = ({
                   </span>
                 ))}
               </div>
-            )}
+            ) : null}
           </div>
         );
       },
@@ -210,21 +241,36 @@ const ProductTable = ({
         <div className="flex items-center justify-end gap-1.5">
           <button
             onClick={() => setViewingProduct(row.original)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors cursor-pointer"
+            className={cn(
+              "p-1.5 rounded-lg transition-colors cursor-pointer",
+              isDark
+                ? "text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10"
+                : "text-slate-400 hover:text-cyan-600 hover:bg-cyan-50",
+            )}
             title="View Product Details"
           >
             <Eye size={16} />
           </button>
           <button
             onClick={() => handleUpdate(row.original)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-[#00cfff] hover:bg-[#00cfff]/10 transition-colors cursor-pointer"
+            className={cn(
+              "p-1.5 rounded-lg transition-colors cursor-pointer",
+              isDark
+                ? "text-slate-400 hover:text-[#00cfff] hover:bg-[#00cfff]/10"
+                : "text-slate-400 hover:text-blue-600 hover:bg-blue-50",
+            )}
             title="Edit Product"
           >
             <Edit size={16} />
           </button>
           <button
             onClick={() => handleDelete(row.original)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+            className={cn(
+              "p-1.5 rounded-lg transition-colors cursor-pointer",
+              isDark
+                ? "text-slate-400 hover:text-red-400 hover:bg-red-500/10"
+                : "text-slate-400 hover:text-rose-600 hover:bg-rose-50",
+            )}
             title="Delete Product"
           >
             <TrashIcon size={16} />

@@ -83,6 +83,7 @@ function CsvDownload({ cancelDownload, isDark = false }: CsvDownloadProps) {
       icon={<FileSpreadsheet size={20} />}
       isDark={isDark}
       maxWidth="max-w-xl"
+      onClose={cancelDownload}
     >
       <div className="space-y-4">
         <div className="p-4 rounded-2xl bg-slate-950/40 border border-slate-800 flex items-center justify-between">

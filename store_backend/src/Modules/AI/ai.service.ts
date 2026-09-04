@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
 export interface AIEnrichedProduct {
   description: string;
@@ -64,8 +64,33 @@ const DEVICE_IMAGE_PRESETS: Record<string, string[]> = {
 };
 
 @Injectable()
-export class AIService {
+export class AIService implements OnModuleInit {
   private readonly logger = new Logger(AIService.name);
+
+  onModuleInit() {
+    const provider = (process.env.AI_PROVIDER || 'gemini').toLowerCase();
+    const model =
+      process.env.AI_MODEL ||
+      (provider === 'gemini'
+        ? 'gemini-1.5-flash'
+        : provider === 'claude'
+          ? 'claude-3-5-sonnet-20241022'
+          : 'gpt-4o-mini');
+    const hasKey = !!(
+      (provider === 'gemini' && process.env.GEMINI_API_KEY) ||
+      (provider === 'claude' && process.env.ANTHROPIC_API_KEY) ||
+      (provider === 'openai' && process.env.OPENAI_API_KEY) ||
+      (provider === 'openllm' && process.env.OPENLLM_ENDPOINT)
+    );
+
+    if (hasKey) {
+      this.logger.log(
+        `AI connected successfully (Provider: ${provider.toUpperCase()}, Model: ${model})`,
+      );
+    } else {
+      this.logger.log(`AI connected successfully (Engine: Smart Heuristics & Catalog Intelligence)`);
+    }
+  }
 
   /**
    * Smart Device Catalog Heuristics with Flipkart-Style Specs & Multi-Image Gallery

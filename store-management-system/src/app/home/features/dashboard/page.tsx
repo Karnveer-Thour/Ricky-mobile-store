@@ -374,10 +374,10 @@ function Page() {
                   <div
                     key={prod.id || prod._id || index}
                     className={cn(
-                      "grid grid-cols-3 text-sm items-center py-2.5 border-b transition-colors rounded px-1",
+                      "grid grid-cols-3 text-sm items-center py-2.5 border-b transition-colors rounded px-1.5",
                       isDark
                         ? "text-slate-300 border-white/5 hover:bg-white/4"
-                        : "text-slate-700 border-slate-50 hover:bg-slate-50",
+                        : "text-slate-700 border-slate-100 hover:bg-slate-50/80",
                     )}
                   >
                     <span
@@ -388,10 +388,15 @@ function Page() {
                     >
                       {prod.name || prod.productName || `Product #${index + 1}`}
                     </span>
-                    <span className="font-semibold text-xs text-cyan-400">
+                    <span
+                      className={cn(
+                        "text-xs font-bold",
+                        isDark ? "text-cyan-400" : "text-cyan-700",
+                      )}
+                    >
                       ₹{Number(prod.price || 0).toLocaleString("en-IN")}
                     </span>
-                    <span className="inline-flex items-center gap-1">
+                    <span className="inline-flex items-center gap-1.5">
                       <span
                         className={cn(
                           "w-1.5 h-1.5 rounded-full",
@@ -404,8 +409,12 @@ function Page() {
                         className={cn(
                           "font-medium text-xs",
                           (prod.quantity ?? prod.quantiy ?? 10) > 0
-                            ? "text-emerald-500"
-                            : "text-red-500",
+                            ? isDark
+                              ? "text-emerald-400"
+                              : "text-emerald-700"
+                            : isDark
+                              ? "text-red-400"
+                              : "text-red-600",
                         )}
                       >
                         {(prod.quantity ?? prod.quantiy ?? 10) > 0

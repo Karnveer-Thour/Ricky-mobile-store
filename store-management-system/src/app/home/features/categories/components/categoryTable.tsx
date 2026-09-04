@@ -1,12 +1,13 @@
 "use client";
 import Table from "@/components/table/table";
-import { Edit, TrashIcon } from "lucide-react";
+import { Edit, TrashIcon, Palette, Sliders } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { categoryService } from "@/services/category.service";
 import { useDispatch } from "react-redux";
 import { openGlobalConfirm } from "@/store/slices/confirm.slice";
 import { SUCCESSALERT, ERRORALERT } from "@/store/slices/alert.slice";
+import cn from "classnames";
 
 const CategoryTable = ({ isDark = false }: { isDark?: boolean }) => {
   const [categories, setCategories] = useState<any[]>([]);
@@ -73,6 +74,47 @@ const CategoryTable = ({ isDark = false }: { isDark?: boolean }) => {
       accessorKey: "description",
     },
     {
+      header: "Capabilities",
+      id: "Capabilities",
+      cell: ({ row }: { row: any }) => {
+        const hasColors = row.original?.hasColors !== false;
+        const hasVariants = row.original?.hasVariants === true;
+        return (
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span
+              className={cn(
+                "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-semibold border",
+                hasColors
+                  ? isDark
+                    ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/20"
+                    : "bg-cyan-50 text-cyan-700 border-cyan-200"
+                  : isDark
+                    ? "bg-slate-800/60 text-slate-400 border-slate-700"
+                    : "bg-slate-100 text-slate-500 border-slate-200",
+              )}
+            >
+              <Palette size={12} />
+              {hasColors ? "Colors" : "No Colors"}
+            </span>
+
+            {hasVariants && (
+              <span
+                className={cn(
+                  "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-semibold border",
+                  isDark
+                    ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
+                    : "bg-blue-50 text-blue-700 border-blue-200",
+                )}
+              >
+                <Sliders size={12} />
+                Variants
+              </span>
+            )}
+          </div>
+        );
+      },
+    },
+    {
       header: "Actions",
       id: "Actions",
       cell: ({ row }: { row: any }) => (
@@ -96,12 +138,13 @@ const CategoryTable = ({ isDark = false }: { isDark?: boolean }) => {
     },
   ];
 
-  type ColumnKey = "Name" | "Description" | "Actions";
+  type ColumnKey = "Name" | "Description" | "Capabilities" | "Actions";
   const [columnVisibility, setColumnVisibility] = useState<
     Record<ColumnKey, boolean>
   >({
     Name: true,
     Description: true,
+    Capabilities: true,
     Actions: true,
   });
 

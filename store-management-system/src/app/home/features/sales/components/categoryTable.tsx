@@ -43,10 +43,16 @@ const CityTable = ({ isDark = false }) => {
         const status = (row.original?.status || "pending").toLowerCase();
         const colors =
           status === "accepted" || status === "completed"
-            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+            ? isDark
+              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+              : "bg-emerald-50 text-emerald-700 border-emerald-200"
             : status === "rejected" || status === "cancelled"
-              ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
-              : "bg-amber-500/10 text-amber-400 border-amber-500/20";
+              ? isDark
+                ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                : "bg-rose-50 text-rose-700 border-rose-200"
+              : isDark
+                ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                : "bg-amber-50 text-amber-700 border-amber-200";
 
         return (
           <span
@@ -61,6 +67,11 @@ const CityTable = ({ isDark = false }) => {
       header: "Amount",
       id: "Amount",
       accessorKey: "amount",
+      cell: ({ row }: { row: any }) => (
+        <span className={`font-semibold ${isDark ? "text-cyan-400" : "text-cyan-700"}`}>
+          {row.original?.amount || "—"}
+        </span>
+      ),
     },
   ];
 
@@ -75,7 +86,7 @@ const CityTable = ({ isDark = false }) => {
   });
 
   return (
-    <div className="w-[95%] mr-10 sm:ms-7">
+    <div className="w-full">
       <Table
         columns={columns}
         data={sales}

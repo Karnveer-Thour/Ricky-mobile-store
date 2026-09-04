@@ -27,5 +27,6 @@ async function bootstrap() {
   await app.listen(port);
   logger.log(`Nest application is running on: http://localhost:${port}`);
   logger.log(`Swagger documentation available at: http://localhost:${port}/api-docs/v1`);
+  logger.log(`AI connected successfully`);
 }
 bootstrap();

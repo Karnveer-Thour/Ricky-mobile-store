@@ -89,13 +89,15 @@
 
   /* Stat badge trend */
   .trend-up {
-    color: #10b981;
+    color: #059669;
     background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.25);
   }
 
   .trend-down {
-    color: #f43f5e;
+    color: #e11d48;
     background: rgba(244, 63, 94, 0.12);
+    border: 1px solid rgba(244, 63, 94, 0.25);
   }
 }
 

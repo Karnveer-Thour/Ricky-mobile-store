@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 
 interface IconbadgeProps {
   children: React.ReactNode;
@@ -13,18 +14,18 @@ function Iconbadge({
 }: IconbadgeProps): React.JSX.Element {
   return (
     <div
-      className={`sm:outline w-15 h-[80%] rounded-xl flex items-center justify-center ${
-        isDark ? "bg-gray-500" : "bg-gray-100"
-      } cursor-pointer hover:bg-gray-300`}
+      className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-150 ${
+        isDark
+          ? "bg-slate-800/80 border border-white/10 hover:border-cyan-500/50 hover:bg-slate-700/80 text-slate-300"
+          : "bg-slate-100/90 border border-slate-200/90 hover:border-cyan-400 hover:bg-slate-200/70 text-slate-700 shadow-xs"
+      } cursor-pointer`}
     >
-      <div className="relative">
-        {/* Message Icon */}
+      <div className="relative flex items-center justify-center">
         {children}
-        {/* Notification Badge */}
-        {unreadcount && (
-          <div className="absolute -top-1 -right-2 bg-blue-700 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-            {unreadcount}
-          </div>
+        {unreadcount !== undefined && unreadcount > 0 && (
+          <span className="absolute -top-2.5 -right-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-extrabold text-[10px] min-w-5 h-5 px-1 rounded-full flex items-center justify-center shadow-md shadow-cyan-500/30 ring-2 ring-white dark:ring-slate-900">
+            {unreadcount > 99 ? "99+" : unreadcount}
+          </span>
         )}
       </div>
     </div>
@@ -32,3 +33,4 @@ function Iconbadge({
 }
 
 export default Iconbadge;
+

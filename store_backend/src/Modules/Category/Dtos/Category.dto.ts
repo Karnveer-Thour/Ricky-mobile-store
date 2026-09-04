@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { BaseDto } from 'Common/Dto/Base.dto';
 
 export class CategoryDto extends BaseDto {
@@ -26,4 +26,26 @@ export class CategoryDto extends BaseDto {
     message: 'Description must be at most 550 characters long',
   })
   description: string;
+
+  @ApiProperty({
+    description: 'Specify if category supports color variants',
+    example: true,
+    type: 'boolean',
+    required: false,
+    default: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  hasColors?: boolean;
+
+  @ApiProperty({
+    description: 'Specify if category supports specification/storage variants',
+    example: false,
+    type: 'boolean',
+    required: false,
+    default: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  hasVariants?: boolean;
 }

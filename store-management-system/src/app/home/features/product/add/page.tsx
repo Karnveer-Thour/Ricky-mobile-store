@@ -21,6 +21,8 @@ import {
   ShieldCheck,
   Cpu,
   Layers,
+  Package,
+  Sliders,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
@@ -35,6 +37,13 @@ import cn from "classnames";
 
 interface ColorVariant {
   name: string;
+  quantity: number;
+}
+
+interface ProductVariantItem {
+  ram: string;
+  storage: string;
+  color: string;
   quantity: number;
 }
 
@@ -70,11 +79,17 @@ function addProduct() {
     { name: "Default", quantity: 20 },
   ]);
 
+  // Structured Multi-Variant State (RAM + Storage + Color + Qty)
+  const [productVariants, setProductVariants] = useState<ProductVariantItem[]>([
+    { ram: "8 GB", storage: "128 GB", color: "Default", quantity: 15 },
+  ]);
+
   const {
     register,
     handleSubmit,
     setValue,
     getValues,
+    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -159,10 +174,76 @@ function addProduct() {
     );
   };
 
-  const totalCalculatedQuantity = colorVariants.reduce(
-    (acc, curr) => acc + (Number(curr.quantity) || 0),
-    0,
+  const selectedCategoryId = watch("categoryId");
+  const selectedCategory = categories.find(
+    (c) => (c.id || c._id) === selectedCategoryId,
   );
+  const categoryHasColors = selectedCategory
+    ? selectedCategory.hasColors !== false
+    : true;
+  const categoryHasVariants = selectedCategory
+    ? selectedCategory.hasVariants === true
+    : false;
+  const [directQuantity, setDirectQuantity] = useState<number>(25);
+
+  const handleAddVariant = () => {
+    setProductVariants((prev) => [
+      ...prev,
+      {
+        ram: "8 GB",
+        storage: "256 GB",
+        color: categoryHasColors ? "Standard" : "",
+        quantity: 10,
+      },
+    ]);
+  };
+
+  const handleAddPresetVariant = (ram: string, storage: string) => {
+    setProductVariants((prev) => [
+      ...prev,
+      {
+        ram,
+        storage,
+        color: categoryHasColors ? "Standard" : "",
+        quantity: 10,
+      },
+    ]);
+  };
+
+  const handleRemoveVariant = (index: number) => {
+    setProductVariants((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleVariantChange = (
+    index: number,
+    field: keyof ProductVariantItem,
+    value: any,
+  ) => {
+    setProductVariants((prev) =>
+      prev.map((v, i) => {
+        if (i === index) {
+          return {
+            ...v,
+            [field]:
+              field === "quantity" ? Math.max(0, parseInt(value) || 0) : value,
+          };
+        }
+        return v;
+      }),
+    );
+  };
+
+  const totalCalculatedQuantity = categoryHasVariants
+    ? productVariants.reduce(
+        (acc, curr) => acc + (Number(curr.quantity) || 0),
+        0,
+      )
+    : categoryHasColors
+    ? colorVariants.reduce(
+        (acc, curr) => acc + (Number(curr.quantity) || 0),
+        0,
+      )
+    : directQuantity;
 
   const handleAIGenerate = async () => {
     const currentName = getValues("name");
@@ -297,18 +378,48 @@ function addProduct() {
       return;
     }
 
-    const validColors = colorVariants
-      .filter((c) => c.name.trim().length > 0)
-      .map((c) => ({
-        name: c.name.trim(),
-        quantity: Number(c.quantity) || 0,
-      }));
+    let validVariants: any[] = [];
+    let validColors: any[] = [];
 
-    if (validColors.length === 0) {
-      setSubmitError(
-        "Please specify at least one color variant with quantity.",
-      );
-      return;
+    if (categoryHasVariants) {
+      validVariants = productVariants
+        .filter(
+          (v) =>
+            (v.ram?.trim() || v.storage?.trim() || v.color?.trim()) &&
+            Number(v.quantity) >= 0,
+        )
+        .map((v) => ({
+          ram: v.ram?.trim() || undefined,
+          storage: v.storage?.trim() || undefined,
+          color: categoryHasColors ? v.color?.trim() || "Standard" : undefined,
+          quantity: Number(v.quantity) || 0,
+        }));
+
+      if (validVariants.length === 0) {
+        setSubmitError(
+          "Please specify at least one product variant (RAM / Storage / Quantity).",
+        );
+        return;
+      }
+    } else if (categoryHasColors) {
+      validColors = colorVariants
+        .filter((c) => c.name.trim().length > 0)
+        .map((c) => ({
+          name: c.name.trim(),
+          quantity: Number(c.quantity) || 0,
+        }));
+
+      if (validColors.length === 0) {
+        setSubmitError(
+          "Please specify at least one color variant with quantity for this category.",
+        );
+        return;
+      }
+    } else {
+      if (directQuantity < 0) {
+        setSubmitError("Stock quantity cannot be negative.");
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -326,6 +437,7 @@ function addProduct() {
       quantiy: totalCalculatedQuantity,
       imageUrl: imageUrl || data.imageUrl || undefined,
       productColors: validColors,
+      variants: validVariants,
     };
 
     const res = await productService.createProduct(payload);
@@ -347,6 +459,7 @@ function addProduct() {
       icon={<PackagePlus size={20} />}
       isDark={isDark}
       maxWidth="max-w-3xl"
+      onClose={() => router.back()}
     >
       {/* AI Audit Modal Dialog */}
       {isAuditModalOpen && auditResult && (
@@ -493,64 +606,233 @@ function addProduct() {
           </Inputcontainer>
         </div>
 
-        {/* Color Variants & Per-Color Stock Repeater */}
-        <div className="w-full p-4 rounded-2xl bg-slate-950/40 border border-slate-800 space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Palette size={16} className="text-cyan-400" />
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-200">
-                Color Variants & Stock
-              </h3>
-            </div>
-            <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-              Total Stock: {totalCalculatedQuantity} units
-            </span>
-          </div>
-
-          <div className="space-y-2.5 pt-1">
-            {colorVariants.map((variant, idx) => (
-              <div key={idx} className="flex items-center gap-3">
-                <div className="flex-1">
-                  <Input
-                    placeholder="Color name (e.g. Natural Titanium, Black)"
-                    value={variant.name}
-                    onChange={(e) =>
-                      handleColorChange(idx, "name", e.target.value)
-                    }
-                  />
-                </div>
-                <div className="w-28">
-                  <Input
-                    type="number"
-                    placeholder="Qty"
-                    value={variant.quantity}
-                    onChange={(e) =>
-                      handleColorChange(idx, "quantity", e.target.value)
-                    }
-                  />
-                </div>
-                {colorVariants.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveColor(idx)}
-                    className="p-2.5 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition"
-                    title="Remove color variant"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                )}
+        {/* Conditional Inventory Configuration based on Category Capabilities */}
+        {categoryHasVariants ? (
+          /* Combined Multi-Variant Matrix (RAM + Storage + Color + Quantity) */
+          <div className="w-full p-4 rounded-2xl bg-slate-950/40 border border-slate-800 space-y-3.5">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <Sliders size={16} className="text-cyan-400" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-200">
+                  Product Variants {categoryHasColors ? "& Colors" : ""} Matrix
+                </h3>
               </div>
-            ))}
-          </div>
+              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                Total Stock: {totalCalculatedQuantity} units
+              </span>
+            </div>
 
-          <button
-            type="button"
-            onClick={handleAddColor}
-            className="flex items-center gap-1.5 text-xs font-bold text-cyan-400 hover:text-cyan-300 pt-1 transition cursor-pointer"
-          >
-            <Plus size={14} /> Add Another Color Variant
-          </button>
-        </div>
+            {/* Quick Preset Chips */}
+            <div className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 space-y-1.5">
+              <p className="text-[11px] font-bold text-slate-400">
+                Quick-Add RAM / Storage Combinations:
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  { ram: "6 GB", storage: "128 GB" },
+                  { ram: "8 GB", storage: "128 GB" },
+                  { ram: "8 GB", storage: "256 GB" },
+                  { ram: "12 GB", storage: "256 GB" },
+                  { ram: "12 GB", storage: "512 GB" },
+                  { ram: "16 GB", storage: "512 GB" },
+                  { ram: "16 GB", storage: "1 TB" },
+                ].map((tier) => (
+                  <button
+                    key={`${tier.ram}-${tier.storage}`}
+                    type="button"
+                    onClick={() => handleAddPresetVariant(tier.ram, tier.storage)}
+                    className="px-2 py-0.5 rounded-lg text-xs font-mono bg-slate-950/90 border border-slate-700 text-slate-300 hover:text-cyan-400 hover:border-cyan-400 transition cursor-pointer"
+                  >
+                    + {tier.ram} | {tier.storage}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Variant Rows Header */}
+            <div className="grid grid-cols-12 gap-2 text-[11px] font-bold text-slate-400 px-1">
+              <div className="col-span-3">RAM</div>
+              <div className="col-span-3">Storage</div>
+              {categoryHasColors ? (
+                <>
+                  <div className="col-span-3">Color</div>
+                  <div className="col-span-2">Quantity</div>
+                </>
+              ) : (
+                <div className="col-span-5">Quantity</div>
+              )}
+              <div className="col-span-1 text-center">Action</div>
+            </div>
+
+            {/* Variant Rows Repeater */}
+            <div className="space-y-2">
+              {productVariants.map((v, idx) => (
+                <div key={idx} className="grid grid-cols-12 gap-2 items-center">
+                  <div className="col-span-3">
+                    <Input
+                      placeholder="e.g. 8 GB"
+                      value={v.ram}
+                      onChange={(e) =>
+                        handleVariantChange(idx, "ram", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="col-span-3">
+                    <Input
+                      placeholder="e.g. 256 GB"
+                      value={v.storage}
+                      onChange={(e) =>
+                        handleVariantChange(idx, "storage", e.target.value)
+                      }
+                    />
+                  </div>
+                  {categoryHasColors ? (
+                    <>
+                      <div className="col-span-3">
+                        <Input
+                          placeholder="e.g. Black"
+                          value={v.color}
+                          onChange={(e) =>
+                            handleVariantChange(idx, "color", e.target.value)
+                          }
+                        />
+                      </div>
+                      <div className="col-span-2">
+                        <Input
+                          type="number"
+                          placeholder="Qty"
+                          value={v.quantity}
+                          onChange={(e) =>
+                            handleVariantChange(idx, "quantity", e.target.value)
+                          }
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <div className="col-span-5">
+                      <Input
+                        type="number"
+                        placeholder="Qty"
+                        value={v.quantity}
+                        onChange={(e) =>
+                          handleVariantChange(idx, "quantity", e.target.value)
+                        }
+                      />
+                    </div>
+                  )}
+                  <div className="col-span-1 flex justify-center">
+                    {productVariants.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveVariant(idx)}
+                        className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition cursor-pointer"
+                        title="Remove variant"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={handleAddVariant}
+              className="flex items-center gap-1.5 text-xs font-bold text-cyan-400 hover:text-cyan-300 pt-1 transition cursor-pointer"
+            >
+              <Plus size={14} /> Add Custom Variant Row
+            </button>
+          </div>
+        ) : categoryHasColors ? (
+          /* Color Variants & Per-Color Stock Repeater */
+          <div className="w-full p-4 rounded-2xl bg-slate-950/40 border border-slate-800 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Palette size={16} className="text-cyan-400" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-200">
+                  Color Variants & Stock
+                </h3>
+              </div>
+              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                Total Stock: {totalCalculatedQuantity} units
+              </span>
+            </div>
+
+            <div className="space-y-2.5 pt-1">
+              {colorVariants.map((variant, idx) => (
+                <div key={idx} className="flex items-center gap-3">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="Color name (e.g. Natural Titanium, Black)"
+                      value={variant.name}
+                      onChange={(e) =>
+                        handleColorChange(idx, "name", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="w-28">
+                    <Input
+                      type="number"
+                      placeholder="Qty"
+                      value={variant.quantity}
+                      onChange={(e) =>
+                        handleColorChange(idx, "quantity", e.target.value)
+                      }
+                    />
+                  </div>
+                  {colorVariants.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveColor(idx)}
+                      className="p-2.5 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition cursor-pointer"
+                      title="Remove color variant"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={handleAddColor}
+              className="flex items-center gap-1.5 text-xs font-bold text-cyan-400 hover:text-cyan-300 pt-1 transition cursor-pointer"
+            >
+              <Plus size={14} /> Add Another Color Variant
+            </button>
+          </div>
+        ) : (
+          /* Direct Inventory Stock (For categories without color variants) */
+          <div className="w-full p-4 rounded-2xl bg-slate-950/40 border border-slate-800 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Package size={16} className="text-cyan-400" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-200">
+                  Total Inventory Stock Units
+                </h3>
+              </div>
+              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                Single Stock Mode (No Colors)
+              </span>
+            </div>
+            <p className="text-xs text-slate-400">
+              Products in <span className="font-semibold text-cyan-400">{selectedCategory?.name || "this category"}</span> do not require color variants. Specify the total quantity available in inventory:
+            </p>
+            <div className="max-w-xs pt-1">
+              <Input
+                type="number"
+                min={0}
+                placeholder="e.g. 50"
+                value={directQuantity}
+                onChange={(e) =>
+                  setDirectQuantity(Math.max(0, parseInt(e.target.value) || 0))
+                }
+              />
+            </div>
+          </div>
+        )}
 
         {/* Official Warranty Dropdown */}
         <Inputcontainer label="Official Warranty" isDark={isDark}>

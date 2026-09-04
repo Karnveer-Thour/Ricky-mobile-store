@@ -5,6 +5,9 @@ import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import cn from "classnames";
 
+import { useSelector } from "react-redux";
+import { storeType } from "@/types/store.index";
+
 interface BlurredPopupLayoutProps {
   isDark?: boolean;
   children?: React.ReactNode;
@@ -18,7 +21,7 @@ interface BlurredPopupLayoutProps {
 }
 
 function BlurredPopupLayout({
-  isDark = true,
+  isDark: isDarkProp,
   title,
   subtitle,
   icon,
@@ -27,6 +30,8 @@ function BlurredPopupLayout({
   onClose,
 }: BlurredPopupLayoutProps) {
   const router = useRouter();
+  const reduxDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
+  const isDark = isDarkProp !== undefined ? isDarkProp : reduxDark ?? false;
 
   const handleClose = () => {
     if (onClose) {
@@ -51,7 +56,10 @@ function BlurredPopupLayout({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 w-screen h-screen flex justify-center items-center backdrop-blur-xl bg-slate-950/75 z-50 p-4 sm:p-6 overflow-y-auto"
+      className={cn(
+        "fixed inset-0 w-screen h-screen flex justify-center items-center backdrop-blur-xl z-50 p-4 sm:p-6 overflow-y-auto",
+        isDark ? "bg-slate-950/80" : "bg-slate-900/40",
+      )}
       onClick={(e) => {
         if (e.target === e.currentTarget) handleClose();
       }}
@@ -66,32 +74,61 @@ function BlurredPopupLayout({
           maxWidth,
           isDark
             ? "bg-slate-900/95 text-white border-t-2 border-cyan-400 border-x border-b border-slate-700/60 shadow-[0_20px_60px_rgba(0,0,0,0.8),0_0_35px_rgba(0,207,255,0.12)]"
-            : "bg-white text-slate-800 border border-slate-200 shadow-2xl",
+            : "bg-white text-slate-800 border-t-2 border-cyan-500 border-x border-b border-slate-200 shadow-2xl shadow-slate-400/30",
         )}
       >
         {/* Header if title provided */}
         {(title || icon) && (
-          <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-800/80 shrink-0">
+          <div
+            className={cn(
+              "flex items-center justify-between px-6 pt-6 pb-4 border-b shrink-0",
+              isDark ? "border-slate-800/80" : "border-slate-100",
+            )}
+          >
             <div className="flex items-center gap-3">
               {icon && (
-                <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                <div
+                  className={cn(
+                    "w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border",
+                    isDark
+                      ? "bg-cyan-500/10 border-cyan-500/20 text-cyan-400"
+                      : "bg-cyan-50 border-cyan-200 text-cyan-700",
+                  )}
+                >
                   {icon}
                 </div>
               )}
               <div>
                 {title && (
-                  <h2 className="text-xl font-bold tracking-tight text-white">
+                  <h2
+                    className={cn(
+                      "text-xl font-bold tracking-tight",
+                      isDark ? "text-white" : "text-slate-900",
+                    )}
+                  >
                     {title}
                   </h2>
                 )}
                 {subtitle && (
-                  <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>
+                  <p
+                    className={cn(
+                      "text-xs mt-0.5",
+                      isDark ? "text-slate-400" : "text-slate-500",
+                    )}
+                  >
+                    {subtitle}
+                  </p>
                 )}
               </div>
             </div>
             <button
               onClick={handleClose}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+              className={cn(
+                "p-2 rounded-xl transition-colors cursor-pointer",
+                isDark
+                  ? "text-slate-400 hover:text-white hover:bg-slate-800"
+                  : "text-slate-400 hover:text-slate-800 hover:bg-slate-100",
+              )}
               title="Close modal (Esc)"
             >
               <X size={18} />

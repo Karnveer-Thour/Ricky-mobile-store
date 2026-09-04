@@ -19,9 +19,24 @@ export default function HomeLayout({
     return () => clearTimeout(t);
   }, []);
 
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      if (isDark) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    }
+  }, [isDark]);
+
   if (!mounted) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950">
+      <div
+        className={classNames(
+          "flex min-h-screen items-center justify-center transition-colors duration-200",
+          isDark ? "bg-slate-950 text-white" : "bg-slate-50 text-slate-800",
+        )}
+      >
         <div className="flex flex-col items-center gap-4">
           {/* Animated logo mark */}
           <div className="relative w-14 h-14">

@@ -108,6 +108,7 @@ function CsvUpload({
       icon={<UploadCloud size={20} />}
       isDark={isDark}
       maxWidth="max-w-xl"
+      onClose={cancelUpload}
     >
       <div className="space-y-4">
         {/* Styled Excel Template Callout with in-cell Category Dropdowns */}

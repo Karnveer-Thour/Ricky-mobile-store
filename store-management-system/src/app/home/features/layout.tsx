@@ -22,7 +22,9 @@ function layout({
             isDark={isDark}
           />
         </div>
-        <Topactionbar isDark={isDark} />
+        <div className="relative z-30">
+          <Topactionbar isDark={isDark} />
+        </div>
         {/* Main content area */}
         <div
           className={`min-h-[calc(100vh-80px)] flex flex-col transition-all duration-300 ${

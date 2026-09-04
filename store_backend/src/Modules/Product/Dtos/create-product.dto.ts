@@ -1,7 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  ValidateNested,
+} from 'class-validator';
+import { Transform, Type } from 'class-transformer';
 import { BaseDto } from 'Common/Dto/Base.dto';
 import { CreateProductColorDto } from './create-color.dto';
+import { CreateProductVariantDto } from './create-variant.dto';
 
 export class CreateProductDto extends BaseDto {
   @ApiProperty({
@@ -21,8 +31,9 @@ export class CreateProductDto extends BaseDto {
     type: 'string',
     required: true,
   })
-  @IsString()
   @IsNotEmpty()
+  @Transform(({ value }) => (value !== undefined && value !== null ? String(value) : value))
+  @IsString()
   @MaxLength(20, { message: 'Price must be at most 20 characters long' })
   price: string;
 
@@ -42,8 +53,9 @@ export class CreateProductDto extends BaseDto {
     type: 'string',
     required: false,
   })
-  @IsString()
   @IsOptional()
+  @Transform(({ value }) => (value !== undefined && value !== null ? String(value) : value))
+  @IsString()
   @MaxLength(20, { message: 'Discount must be at most 20 characters long' })
   discount: string;
 
@@ -66,6 +78,7 @@ export class CreateProductDto extends BaseDto {
     type: 'number',
     required: false,
   })
+  @Type(() => Number)
   @IsNumber()
   @IsOptional()
   quantity?: number;
@@ -76,6 +89,7 @@ export class CreateProductDto extends BaseDto {
     type: 'number',
     required: false,
   })
+  @Type(() => Number)
   @IsNumber()
   @IsOptional()
   quantiy: number;
@@ -116,14 +130,30 @@ export class CreateProductDto extends BaseDto {
 
   @ApiProperty({
     description: 'Enter Product colors and Quantity',
-    example: 'one year',
-    type: 'string',
+    type: () => [CreateProductColorDto],
     required: false,
   })
-  @IsObject()
+  @IsArray()
   @IsOptional()
-  productColors: CreateProductColorDto[];
+  @ValidateNested({ each: true })
+  @Type(() => CreateProductColorDto)
+  productColors?: CreateProductColorDto[];
 
+  @IsArray()
   @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => CreateProductColorDto)
   colors?: CreateProductColorDto[];
+
+  @ApiProperty({
+    description: 'Enter Product variants (RAM, Storage, Color, Quantity)',
+    type: () => [CreateProductVariantDto],
+    required: false,
+  })
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => CreateProductVariantDto)
+  variants?: CreateProductVariantDto[];
 }
+

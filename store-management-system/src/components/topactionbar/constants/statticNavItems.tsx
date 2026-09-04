@@ -1,0 +1,78 @@
+import { SearchResultItem } from "../globalSearchModal";
+import {
+  Smartphone,
+  Users,
+  FolderTree,
+  MessageCircle,
+  TrendingUp,
+  Truck,
+  CreditCard,
+} from "lucide-react";
+
+export const STATIC_NAV_ITEMS: SearchResultItem[] = [
+  {
+    id: "nav-dash",
+    title: "Dashboard Overview",
+    subtitle: "Real-time metrics, sales graphs and revenue stats",
+    category: "Navigation",
+    href: "/home/features/dashboard",
+    icon: <TrendingUp size={16} className="text-cyan-400" />,
+  },
+  {
+    id: "nav-prod",
+    title: "Product Catalog",
+    subtitle: "Manage mobile phones, accessories and stock listings",
+    category: "Navigation",
+    href: "/home/features/product",
+    icon: <Smartphone size={16} className="text-blue-400" />,
+  },
+  {
+    id: "nav-cust",
+    title: "Customer Directory",
+    subtitle: "View customer profiles, contacts and order history",
+    category: "Navigation",
+    href: "/home/features/customers",
+    icon: <Users size={16} className="text-emerald-400" />,
+  },
+  {
+    id: "nav-cat",
+    title: "Categories & Brands",
+    subtitle: "Smartphones, Tablets, Smartwatches, Audio & Power",
+    category: "Navigation",
+    href: "/home/features/category",
+    icon: <FolderTree size={16} className="text-purple-400" />,
+  },
+  {
+    id: "nav-sales",
+    title: "Sales & Invoicing",
+    subtitle: "Point of Sale (POS), GST invoicing & receipt generation",
+    category: "Navigation",
+    href: "/home/features/sales",
+    icon: <TrendingUp size={16} className="text-yellow-400" />,
+  },
+  {
+    id: "nav-emi",
+    title: "Bajaj Finserv & EMI Hub",
+    subtitle: "Finance scheme calculators and loan verification status",
+    category: "Navigation",
+    href: "/home/features/sales",
+    icon: <CreditCard size={16} className="text-pink-400" />,
+    badge: "0% Interest",
+  },
+  {
+    id: "nav-chat",
+    title: "Customer Live Chat Hub",
+    subtitle: "Multi-channel support and WhatsApp inquiry routing",
+    category: "Navigation",
+    href: "/home/features/chat",
+    icon: <MessageCircle size={16} className="text-teal-400" />,
+  },
+  {
+    id: "nav-dispatch",
+    title: "Rider Dispatch & Logistics",
+    subtitle: "Real-time delivery assignments and status dispatch",
+    category: "Navigation",
+    href: "/home/features/dispatch",
+    icon: <Truck size={16} className="text-indigo-400" />,
+  },
+];

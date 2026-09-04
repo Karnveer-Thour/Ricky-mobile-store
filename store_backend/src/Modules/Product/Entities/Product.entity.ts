@@ -15,6 +15,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { ProductColor } from './ProductColor.entity';
+import { ProductVariant } from './ProductVariant.entity';
 import { IsOptional } from 'class-validator';
 
 @Entity()
@@ -92,6 +93,12 @@ export class Product extends BaseEntity<Product> {
     eager: true,
   })
   colors: ProductColor[];
+
+  @OneToMany(() => ProductVariant, (variants) => variants.product, {
+    cascade: ['soft-remove', 'update', 'insert'],
+    eager: true,
+  })
+  variants: ProductVariant[];
 
   @ManyToMany(() => Wishlist, (wishlist) => wishlist.products)
   wishlists: Wishlist[];

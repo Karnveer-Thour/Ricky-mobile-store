@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, ExternalLink, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -13,36 +14,6 @@ export interface MessagePreviewItem {
   unread: boolean;
   tag?: string;
 }
-
-const INITIAL_MESSAGE_PREVIEWS: MessagePreviewItem[] = [
-  {
-    id: "msg-1",
-    senderName: "Karan Singh",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Karan",
-    lastMessage: "Can you share the Bajaj Finserv 0% EMI payment link?",
-    time: "3m ago",
-    unread: true,
-    tag: "Bajaj EMI",
-  },
-  {
-    id: "msg-2",
-    senderName: "Rohit Verma",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rohit",
-    lastMessage: "Is iPhone 16 Desert Titanium available for immediate pickup?",
-    time: "18m ago",
-    unread: true,
-    tag: "Stock Inquiry",
-  },
-  {
-    id: "msg-3",
-    senderName: "Simran Kaur",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Simran",
-    lastMessage: "Payment done via UPI, please confirm dispatch tracking.",
-    time: "1h ago",
-    unread: false,
-    tag: "Order #9021",
-  },
-];
 
 interface MessagesPopoverProps {
   isOpen: boolean;
@@ -59,10 +30,13 @@ export default function MessagesPopover({
   unreadCount,
   setUnreadCount,
 }: MessagesPopoverProps) {
-  const [messages, setMessages] = useState<MessagePreviewItem[]>(
-    INITIAL_MESSAGE_PREVIEWS,
-  );
+  const [mounted, setMounted] = useState(false);
+  const [messages, setMessages] = useState<MessagePreviewItem[]>([]);
   const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleOpenThread = (item: MessagePreviewItem) => {
     setMessages((prev) =>
@@ -76,13 +50,13 @@ export default function MessagesPopover({
     onClose();
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-start justify-end pr-20 pt-16">
+      <div className="fixed inset-0 z-[9999] flex items-start justify-end pr-20 pt-16">
         {/* Backdrop */}
-        <div className="fixed inset-0" onClick={onClose} />
+        <div className="fixed inset-0 bg-black/20" onClick={onClose} />
 
         {/* Flyout Window */}
         <motion.div
@@ -90,10 +64,10 @@ export default function MessagesPopover({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -10 }}
           transition={{ duration: 0.18, ease: "easeOut" }}
-          className={`relative w-88 rounded-2xl overflow-hidden shadow-2xl border ${
+          className={`relative z-10 w-88 rounded-2xl overflow-hidden shadow-2xl border ${
             isDark
-              ? "bg-slate-900/95 backdrop-blur-xl border-slate-700/80 shadow-cyan-950/40 text-slate-100"
-              : "bg-white border-slate-200 shadow-slate-300/50 text-slate-800"
+              ? "bg-slate-900/98 backdrop-blur-xl border-slate-700/90 shadow-cyan-950/60 text-slate-100"
+              : "bg-white border-slate-200 shadow-slate-400/40 text-slate-800"
           }`}
         >
           {/* Header */}
@@ -170,6 +144,8 @@ export default function MessagesPopover({
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
+

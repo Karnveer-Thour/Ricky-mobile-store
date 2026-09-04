@@ -50,6 +50,7 @@ export default function AiAuditModal({
       icon={<Sparkles size={20} className="text-cyan-400" />}
       isDark={isDark}
       maxWidth="max-w-2xl"
+      onClose={onClose}
     >
       <div className="space-y-4">
         {/* Rationale Notice */}
@@ -66,7 +67,7 @@ export default function AiAuditModal({
         </div>
 
         {/* Side-by-side Field Comparisons */}
-        <div className="space-y-3 max-h-[360px] overflow-y-auto pr-1">
+        <div className="space-y-3">
           {/* 1. Warranty Audit */}
           {suggestions.warranty && (
             <div className="p-3.5 rounded-2xl bg-slate-950/50 border border-slate-800 space-y-2">

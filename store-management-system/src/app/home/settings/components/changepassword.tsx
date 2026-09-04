@@ -49,55 +49,53 @@ function Changepassword({
 
   return (
     <div
-      className={`p-6 rounded-lg shadow-md mb-6 transition-colors duration-300`}
+      className={`p-6 rounded-2xl border transition-colors duration-200 max-w-xl ${
+        isDark
+          ? "bg-slate-900/40 border-white/10 text-white"
+          : "bg-white border-slate-200 text-slate-900 shadow-sm"
+      }`}
     >
-      <h2 className="text-xl font-semibold mb-4">Change Password</h2>
+      <h2 className="text-lg font-bold mb-4">Change Password</h2>
 
-      <form onSubmit={() => {}}>
+      <form onSubmit={() => {}} className="space-y-4">
         <Inputcontainer type="Current Password" error={errors.password}>
           <Input
             id="Current Password"
-            placeholder="Enter your Current Password"
+            type="password"
+            placeholder="Enter your current password"
             {...register("password")}
-            className={
-              isDark
-                ? "bg-gray-700 text-white placeholder-gray-400"
-                : "" + "border-2"
-            }
+            isDark={isDark}
           />
         </Inputcontainer>
 
-        <Inputcontainer type="New password" error={errors.newPassword}>
+        <Inputcontainer type="New Password" error={errors.newPassword}>
           <Input
-            id="New password"
-            placeholder="Enter your New password"
+            id="New Password"
+            type="password"
+            placeholder="Enter your new password"
             {...register("newPassword")}
-            className={
-              isDark
-                ? "bg-gray-700 text-white placeholder-gray-400"
-                : "" + "border-2"
-            }
+            isDark={isDark}
           />
         </Inputcontainer>
 
-        <Inputcontainer type="Confirm password" error={errors.confirm_password}>
+        <Inputcontainer type="Confirm Password" error={errors.confirm_password}>
           <Input
-            id="Confirm password"
-            placeholder="Confirm your New password"
+            id="Confirm Password"
+            type="password"
+            placeholder="Confirm your new password"
             {...register("confirm_password")}
-            className={
-              isDark
-                ? "bg-gray-700 text-white placeholder-gray-400"
-                : "" + "border-2"
-            }
+            isDark={isDark}
           />
         </Inputcontainer>
 
-        <Button
-          name={"Change Password"}
-          type="submit"
-          disabled={!formUpdatable}
-        />
+        <div className="pt-2">
+          <Button
+            name={"Update Password"}
+            type="submit"
+            isDark={isDark}
+            disabled={!formUpdatable}
+          />
+        </div>
       </form>
     </div>
   );

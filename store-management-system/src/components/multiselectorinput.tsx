@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { Ban } from "lucide-react";
+import { X } from "lucide-react";
+import { useSelector } from "react-redux";
+import { storeType } from "@/types/store.index";
+import cn from "classnames";
 
 const SelectedItems = ({
   name,
@@ -17,14 +20,20 @@ const SelectedItems = ({
   return (
     <span
       key={i}
-      className={`${isDark ? "text-gray-700 bg-gray-100" : "text-gray-700 bg-gray-300"} mr-2 mb-1 flex items-center gap-2 font-bold border-2  rounded-md px-2 py-1`}
+      className={cn(
+        "mr-2 mb-1.5 inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-lg border transition-colors",
+        isDark
+          ? "bg-cyan-500/15 text-cyan-300 border-cyan-500/30"
+          : "bg-cyan-50 text-cyan-800 border-cyan-200 shadow-2xs",
+      )}
     >
       <span>{name}</span>
       <button
-        className="hover:cursor-pointer focus:text-red-500"
+        type="button"
+        className="hover:cursor-pointer hover:opacity-75 focus:outline-none"
         onClick={() => handler(name)}
       >
-        <Ban size={16} />
+        <X size={13} />
       </button>
     </span>
   );
@@ -32,11 +41,14 @@ const SelectedItems = ({
 
 const MultiSelectorInput = ({
   values,
-  isDark = false,
+  isDark: isDarkProp,
 }: {
   values: Array<{ name: string }>;
   isDark?: boolean;
 }) => {
+  const reduxDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
+  const isDark = isDarkProp !== undefined ? isDarkProp : reduxDark ?? false;
+
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState<Array<{ name: string }>>([]);
   const [selected, setSelected] = useState<Array<{ name: string }>>([]);
@@ -65,9 +77,13 @@ const MultiSelectorInput = ({
 
   return (
     <div
-      className={`w-full px-3 py-2 rounded-md mt-1.5 border-2 ${isDark ? "text-white" : "text-gray-500"} transition border-2 flex flex-wrap ${
-        isFocused ? "ring-2 ring-inset ring-blue-500" : ""
-      }`}
+      className={cn(
+        "relative w-full px-3 py-2 rounded-xl border transition-all duration-150 flex flex-wrap items-center",
+        isDark
+          ? "bg-slate-900 border-slate-700/60 text-white"
+          : "bg-white border-slate-200 text-slate-900 shadow-xs",
+        isFocused && (isDark ? "border-[#00cfff] ring-1 ring-[#00cfff]/30" : "border-[#00cfff] ring-1 ring-[#00cfff]/30"),
+      )}
     >
       {selected.map((item, i) => (
         <SelectedItems
@@ -80,24 +96,35 @@ const MultiSelectorInput = ({
       ))}
       <input
         type="text"
-        className={`outline-none w-full ${isDark ? "text-white" : "text-gray-500"} font-bold bg-transparent`}
+        className={cn(
+          "outline-none flex-1 min-w-[120px] text-sm font-medium bg-transparent py-1",
+          isDark ? "text-white placeholder:text-slate-500" : "text-slate-900 placeholder:text-slate-400",
+        )}
         value={input}
         onChange={(e) => {
           setInput(e.target.value);
           handleSuggestions(e.target.value);
         }}
         onFocus={() => setIsFocused(true)}
-        onBlur={() => setTimeout(() => setIsFocused(false), 200)} // Let click event trigger first
-        placeholder="Search Product here"
+        onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+        placeholder="Search and select..."
       />
       {input && suggestions.length > 0 && (
         <ul
-          className={`${isDark ? "bg-white text-black" : "bg-gray-800 text-gray-100 "} ps-3 rounded-md ms-[-0.6%] mt-10 absolute z-50 w-[57%] max-h-60 overflow-y-auto`}
+          className={cn(
+            "absolute left-0 top-full mt-1.5 z-50 w-full max-h-60 overflow-y-auto rounded-xl border shadow-xl p-1.5 transition-all duration-150 backdrop-blur-xl",
+            isDark
+              ? "bg-slate-900/95 border-slate-700 text-white shadow-black/60"
+              : "bg-white border-slate-200 text-slate-800 shadow-slate-300/60",
+          )}
         >
           {suggestions.map((item, i) => (
             <li
               key={i}
-              className={`cursor-pointer ${isDark ? "hover:bg-gray-200" : "hover:bg-gray-700"} px-2 py-1`}
+              className={cn(
+                "cursor-pointer px-3 py-2 text-xs font-medium rounded-lg transition-colors",
+                isDark ? "hover:bg-slate-800 text-slate-200" : "hover:bg-slate-100 text-slate-800",
+              )}
               onClick={() => handleSelected(item.name)}
             >
               {item.name}

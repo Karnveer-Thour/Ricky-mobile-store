@@ -41,10 +41,10 @@ function Topactionbar({
         initial={{ opacity: 0, y: -15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className={`w-[95%] rounded-2xl h-16 flex items-center justify-between max-sm:mt-5 max-md:mt-10 ms-7 max-sm:ms-4 ${
+        className={`relative z-30 w-[95%] rounded-2xl h-16 flex items-center justify-between max-sm:mt-5 max-md:mt-10 ms-7 max-sm:ms-4 ${
           isDark
             ? "bg-slate-900/60 backdrop-blur-xl border border-white/10 shadow-[0_0_20px_rgba(0,207,255,0.08)]"
-            : "bg-white/80 backdrop-blur-xl border border-gray-200 shadow-md"
+            : "bg-white/95 backdrop-blur-xl border-2 border-slate-200 shadow-sm"
         } transition-all p-2`}
       >
         {/* Left Section: Search bar and date */}
@@ -55,7 +55,7 @@ function Topactionbar({
             className={`h-[90%] w-130 max-sm:w-[100%] rounded-full cursor-pointer ${
               isDark
                 ? "bg-slate-800/80 border border-white/10 hover:border-[#00cfff]/60 hover:shadow-[0_0_15px_rgba(0,207,255,0.2)]"
-                : "bg-gray-100 hover:border-blue-400 hover:ring-2 hover:ring-blue-100"
+                : "bg-slate-50 border-2 border-slate-300 hover:border-cyan-500 hover:bg-white hover:shadow-sm"
             } flex items-center justify-between px-4 transition-all duration-200 group`}
           >
             <div className="flex items-center gap-3">
@@ -64,27 +64,35 @@ function Topactionbar({
                 className={`transition-colors ${
                   isDark
                     ? "text-gray-400 group-hover:text-[#00cfff]"
-                    : "text-gray-400 group-hover:text-blue-600"
+                    : "text-slate-600 group-hover:text-cyan-600"
                 }`}
               />
               <span
-                className={`text-sm font-medium ${
-                  isDark ? "text-gray-400" : "text-gray-500"
+                className={`text-sm font-semibold ${
+                  isDark ? "text-gray-400" : "text-slate-700"
                 }`}
               >
                 Search products, orders, customers...
               </span>
             </div>
 
-            <div className="flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-800/60 text-slate-400 border border-slate-700/60">
-              <Command size={10} /> K
+            <div
+              className={`flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-lg border transition-colors ${
+                isDark
+                  ? "bg-slate-800/60 text-slate-400 border-slate-700/60"
+                  : "bg-white text-slate-700 border-slate-300 shadow-xs"
+              }`}
+            >
+              <Command size={11} /> K
             </div>
           </div>
 
           {/* Date */}
           <div className="w-50 ms-4 h-full px-3 flex items-center justify-center max-lg:hidden overflow-hidden">
             <h3
-              className={`font-semibold text-xs tracking-wide uppercase ${isDark ? "text-gray-400" : "text-gray-500"}`}
+              className={`font-semibold text-xs tracking-wide uppercase ${
+                isDark ? "text-gray-400" : "text-slate-500"
+              }`}
             >
               {formattedDate}
             </h3>

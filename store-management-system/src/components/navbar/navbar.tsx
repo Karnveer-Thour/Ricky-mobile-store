@@ -27,11 +27,12 @@ import {
   PanelLeftClose,
 } from "lucide-react";
 import cn from "classnames";
-import Navitem from "./navItem";
-import { useRouter, usePathname } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SUCCESSALERT } from "@/store/slices/alert.slice";
 import { openGlobalConfirm } from "@/store/slices/confirm.slice";
+import { storeType } from "@/types/store.index";
+import Navitem from "./navItem";
+import { useRouter, usePathname } from "next/navigation";
 
 interface NavbarProps {
   isOpen: boolean;
@@ -39,7 +40,15 @@ interface NavbarProps {
 }
 
 /** Section divider label — only shown when sidebar is open */
-function SectionLabel({ label, isOpen }: { label: string; isOpen: boolean }) {
+function SectionLabel({
+  label,
+  isOpen,
+  isDark = true,
+}: {
+  label: string;
+  isOpen: boolean;
+  isDark?: boolean;
+}) {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -50,7 +59,12 @@ function SectionLabel({ label, isOpen }: { label: string; isOpen: boolean }) {
           transition={{ duration: 0.15 }}
           className="px-3 pt-3 pb-1"
         >
-          <span className="text-[10px] font-semibold tracking-widest uppercase text-slate-500 select-none">
+          <span
+            className={cn(
+              "text-[10px] font-bold tracking-widest uppercase select-none",
+              isDark ? "text-slate-500" : "text-slate-400",
+            )}
+          >
             {label}
           </span>
         </motion.div>
@@ -60,6 +74,7 @@ function SectionLabel({ label, isOpen }: { label: string; isOpen: boolean }) {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
+  const isDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
   const [menuVisible, setMenuVisible] = useState(false);
   const [adminName, setAdminName] = useState<string>("Ricky Thour");
   const [adminEmail, setAdminEmail] = useState<string>("ricky@rickymobile.com");
@@ -100,30 +115,20 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  // Proactively prefetch all routes for instant 0ms navigation
+  // Update profile details dynamically on navigation
   useEffect(() => {
-    const routes = [
-      "/home/features/dashboard",
-      "/home/features/customers",
-      "/home/features/product",
-      "/home/features/categories",
-      "/home/features/cities",
-      "/home/features/inventory",
-      "/home/features/dispatch",
-      "/home/features/sales",
-      "/home/features/chat",
-      "/home/features/whatsapp",
-      "/home/profile",
-      "/home/settings",
-    ];
-    routes.forEach((r) => {
-      try {
-        router.prefetch(r);
-      } catch {}
-    });
-  }, [router]);
+    loadAdminProfile();
+  }, [pathname]);
 
-  // Close dropup when clicking outside
+  // Handle global profile update events
+  useEffect(() => {
+    const handleProfileUpdate = () => loadAdminProfile();
+    window.addEventListener("admin_profile_updated", handleProfileUpdate);
+    return () =>
+      window.removeEventListener("admin_profile_updated", handleProfileUpdate);
+  }, []);
+
+  // Close profile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -172,13 +177,20 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
         animate={{ width: isOpen ? 256 : 72 }}
         transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
-          "h-screen flex flex-col will-change-[width]",
-          "bg-slate-900 border-r border-white/5 shadow-2xl relative",
+          "h-screen flex flex-col will-change-[width] transition-colors duration-200 shadow-2xl relative",
+          isDark
+            ? "bg-slate-900 border-r border-white/5 text-slate-100"
+            : "bg-white/95 backdrop-blur-xl border-r border-slate-200/90 shadow-slate-200/50 text-slate-800",
           !isOpen && "max-md:bg-transparent",
         )}
       >
         {/* ── Executive Brand Header with Integrated Collapse ────────────── */}
-        <div className="flex items-center justify-between px-3.5 py-4 border-b border-white/5 shrink-0 h-18">
+        <div
+          className={cn(
+            "flex items-center justify-between px-3.5 py-4 border-b shrink-0 h-18 transition-colors",
+            isDark ? "border-white/5" : "border-slate-100",
+          )}
+        >
           <div
             onClick={!isOpen ? toggleSidebar : undefined}
             className={cn(
@@ -199,10 +211,15 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
                   transition={{ duration: 0.15 }}
                   className="overflow-hidden min-w-0"
                 >
-                  <p className="text-white font-extrabold text-sm leading-none whitespace-nowrap">
+                  <p
+                    className={cn(
+                      "font-extrabold text-sm leading-none whitespace-nowrap",
+                      isDark ? "text-white" : "text-slate-900",
+                    )}
+                  >
                     Ricky Store
                   </p>
-                  <p className="text-cyan-400 text-[10px] font-bold tracking-wide whitespace-nowrap mt-1">
+                  <p className="text-cyan-500 text-[10px] font-bold tracking-wide whitespace-nowrap mt-1">
                     Management Hub
                   </p>
                 </motion.div>
@@ -219,7 +236,12 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
                 exit={{ opacity: 0, scale: 0.8 }}
                 transition={{ duration: 0.15 }}
                 onClick={toggleSidebar}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-400 hover:bg-white/5 transition-colors cursor-pointer"
+                className={cn(
+                  "p-1.5 rounded-lg transition-colors cursor-pointer",
+                  isDark
+                    ? "text-slate-400 hover:text-white hover:bg-white/5"
+                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-100",
+                )}
                 title="Collapse Sidebar"
                 aria-label="Collapse Sidebar"
               >
@@ -237,74 +259,84 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
           )}
         >
           {/* MAIN */}
-          <SectionLabel label="Main" isOpen={isOpen} />
+          <SectionLabel label="Main" isOpen={isOpen} isDark={isDark} />
           <Navitem
             icon={<Dashboard size={18} />}
             label="Dashboard"
             isOpen={isOpen}
+            isDark={isDark}
             linkTo="/home/features/dashboard"
           />
 
           {/* MANAGEMENT */}
-          <SectionLabel label="Management" isOpen={isOpen} />
+          <SectionLabel label="Management" isOpen={isOpen} isDark={isDark} />
           <Navitem
             icon={<Customers size={18} />}
             label="Customers"
             isOpen={isOpen}
+            isDark={isDark}
             linkTo="/home/features/customers"
           />
           <Navitem
             icon={<Products size={18} />}
             label="Products"
             isOpen={isOpen}
+            isDark={isDark}
             linkTo="/home/features/product"
           />
           <Navitem
             icon={<Categories size={18} />}
             label="Categories"
             isOpen={isOpen}
+            isDark={isDark}
             linkTo="/home/features/categories"
           />
           <Navitem
             icon={<Cities size={18} />}
             label="Cities"
             isOpen={isOpen}
+            isDark={isDark}
             linkTo="/home/features/cities"
           />
 
           {/* OPERATIONS */}
-          <SectionLabel label="Operations" isOpen={isOpen} />
+          <SectionLabel label="Operations" isOpen={isOpen} isDark={isDark} />
           <Navitem
             icon={<InventoryIcon size={18} />}
             label="Inventory"
             isOpen={isOpen}
+            isDark={isDark}
             linkTo="/home/features/inventory"
           />
           <Navitem
             icon={<DispatchIcon size={18} />}
             label="Dispatch"
             isOpen={isOpen}
+            isDark={isDark}
             linkTo="/home/features/dispatch"
           />
           <Navitem
             icon={<Sales size={18} />}
             label="Sales"
             isOpen={isOpen}
+            isDark={isDark}
             linkTo="/home/features/sales"
           />
 
           {/* COMMUNICATION */}
-          <SectionLabel label="Communication" isOpen={isOpen} />
+          <SectionLabel label="Communication" isOpen={isOpen} isDark={isDark} />
           <Navitem
             icon={<ChatIcon size={18} />}
             label="Support Chat"
             isOpen={isOpen}
+            isDark={isDark}
             linkTo="/home/features/chat"
           />
           <Navitem
             icon={<Whatsapp size={18} />}
             label="WhatsApp"
             isOpen={isOpen}
+            isDark={isDark}
             linkTo="/home/features/whatsapp"
           />
         </div>
@@ -313,7 +345,8 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
         <div
           ref={profileMenuRef}
           className={cn(
-            "border-t border-white/5 px-3 pt-3 pb-4 flex flex-col gap-1 shrink-0 relative",
+            "px-3 pt-3 pb-4 flex flex-col gap-1 shrink-0 relative border-t transition-colors",
+            isDark ? "border-white/5" : "border-slate-100",
             !isOpen && "max-md:hidden",
           )}
         >
@@ -336,14 +369,22 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
                 }}
                 transition={{ duration: 0.18, ease: "easeOut" }}
                 className={cn(
-                  "rounded-2xl overflow-hidden shadow-2xl border bg-slate-900/98 backdrop-blur-2xl border-slate-700/80 shadow-cyan-950/50 p-2 flex flex-col gap-1 z-50",
+                  "rounded-2xl overflow-hidden shadow-2xl border p-2 flex flex-col gap-1 z-50 transition-colors",
+                  isDark
+                    ? "bg-slate-900/98 backdrop-blur-2xl border-slate-700/80 shadow-cyan-950/50 text-slate-100"
+                    : "bg-white/98 backdrop-blur-2xl border-slate-200 shadow-slate-300/60 text-slate-800",
                   isOpen
                     ? "absolute bottom-full left-3 right-3 mb-2"
-                    : "absolute left-full bottom-2 ml-3 w-64 shadow-2xl shadow-black/90",
+                    : "absolute left-full bottom-2 ml-3 w-64 shadow-2xl shadow-black/30",
                 )}
               >
                 {/* User Summary Header */}
-                <div className="px-3 py-2.5 border-b border-white/10 flex items-center gap-2.5">
+                <div
+                  className={cn(
+                    "px-3 py-2.5 border-b flex items-center gap-2.5",
+                    isDark ? "border-white/10" : "border-slate-100",
+                  )}
+                >
                   {adminAvatar ? (
                     <img
                       src={adminAvatar}
@@ -356,10 +397,20 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
-                    <p className="text-white text-xs font-extrabold truncate">
+                    <p
+                      className={cn(
+                        "text-xs font-extrabold truncate",
+                        isDark ? "text-white" : "text-slate-800",
+                      )}
+                    >
                       {adminName}
                     </p>
-                    <p className="text-slate-400 text-[10px] truncate">
+                    <p
+                      className={cn(
+                        "text-[10px] truncate",
+                        isDark ? "text-slate-400" : "text-slate-500",
+                      )}
+                    >
                       {adminEmail}
                     </p>
                   </div>
@@ -371,9 +422,14 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
                     setMenuVisible(false);
                     router.push("/home/profile");
                   }}
-                  className="w-full px-3 py-2 rounded-xl text-left text-xs font-semibold text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-400 flex items-center gap-2.5 transition-colors cursor-pointer"
+                  className={cn(
+                    "w-full px-3 py-2 rounded-xl text-left text-xs font-semibold flex items-center gap-2.5 transition-colors cursor-pointer",
+                    isDark
+                      ? "text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-400"
+                      : "text-slate-700 hover:bg-slate-100 hover:text-slate-900",
+                  )}
                 >
-                  <Profile size={15} className="text-cyan-400 shrink-0" />
+                  <Profile size={15} className="text-cyan-500 shrink-0" />
                   <span>My Profile</span>
                 </button>
 
@@ -383,20 +439,38 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
                     setMenuVisible(false);
                     router.push("/home/settings");
                   }}
-                  className="w-full px-3 py-2 rounded-xl text-left text-xs font-semibold text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-400 flex items-center gap-2.5 transition-colors cursor-pointer"
+                  className={cn(
+                    "w-full px-3 py-2 rounded-xl text-left text-xs font-semibold flex items-center gap-2.5 transition-colors cursor-pointer",
+                    isDark
+                      ? "text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-400"
+                      : "text-slate-700 hover:bg-slate-100 hover:text-slate-900",
+                  )}
                 >
-                  <Settings size={15} className="text-blue-400 shrink-0" />
+                  <Settings size={15} className="text-blue-500 shrink-0" />
                   <span>Account Settings</span>
                 </button>
 
-                <div className="border-t border-white/10 my-0.5" />
+                <div
+                  className={cn(
+                    "border-t my-0.5",
+                    isDark ? "border-white/10" : "border-slate-100",
+                  )}
+                />
 
                 {/* Option 3: Logout */}
                 <button
                   onClick={handleLogout}
-                  className="w-full px-3 py-2 rounded-xl text-left text-xs font-bold text-rose-400 hover:bg-rose-500/15 hover:text-rose-300 flex items-center gap-2.5 transition-colors cursor-pointer"
+                  className={cn(
+                    "w-full px-3 py-2 rounded-xl text-left text-xs font-bold flex items-center gap-2.5 transition-colors cursor-pointer",
+                    isDark
+                      ? "text-rose-400 hover:bg-rose-500/15 hover:text-rose-300"
+                      : "text-rose-600 hover:bg-rose-50 hover:text-rose-700",
+                  )}
                 >
-                  <LogOut size={15} className="text-rose-400 shrink-0" />
+                  <LogOut
+                    size={15}
+                    className={isDark ? "text-rose-400 shrink-0" : "text-rose-600 shrink-0"}
+                  />
                   <span>Sign Out / Logout</span>
                 </button>
               </motion.div>
@@ -410,8 +484,12 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
               "flex items-center gap-3 rounded-xl p-2 cursor-pointer transition-all duration-150 group select-none",
               !isOpen && "justify-center",
               menuVisible || pathname === "/home/profile"
-                ? "bg-cyan-500/15 border border-cyan-500/30"
-                : "hover:bg-white/5",
+                ? isDark
+                  ? "bg-cyan-500/15 border border-cyan-500/30"
+                  : "bg-cyan-50 border border-cyan-200"
+                : isDark
+                  ? "hover:bg-white/5"
+                  : "hover:bg-slate-100",
             )}
             title="Click for Profile & Logout options"
           >
@@ -437,11 +515,23 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
                   exit={{ opacity: 0 }}
                   className="flex-1 overflow-hidden"
                 >
-                  <p className="text-white text-xs font-bold truncate whitespace-nowrap group-hover:text-cyan-400 transition-colors">
+                  <p
+                    className={cn(
+                      "text-xs font-bold truncate whitespace-nowrap transition-colors",
+                      isDark
+                        ? "text-white group-hover:text-cyan-400"
+                        : "text-slate-800 group-hover:text-cyan-700",
+                    )}
+                  >
                     {adminName}
                   </p>
-                  <p className="text-slate-400 text-[10px] truncate whitespace-nowrap flex items-center gap-1">
-                    <ShieldCheck size={10} className="text-cyan-400" />
+                  <p
+                    className={cn(
+                      "text-[10px] truncate whitespace-nowrap flex items-center gap-1",
+                      isDark ? "text-slate-400" : "text-slate-500",
+                    )}
+                  >
+                    <ShieldCheck size={10} className="text-cyan-500" />
                     {adminRole}
                   </p>
                 </motion.div>
@@ -449,7 +539,14 @@ const Navbar: React.FC<NavbarProps> = ({ isOpen, setIsOpen }) => {
             </AnimatePresence>
 
             {isOpen && (
-              <div className="text-slate-500 group-hover:text-cyan-400 transition-colors shrink-0">
+              <div
+                className={cn(
+                  "transition-colors shrink-0",
+                  isDark
+                    ? "text-slate-500 group-hover:text-cyan-400"
+                    : "text-slate-400 group-hover:text-slate-700",
+                )}
+              >
                 {menuVisible ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
               </div>
             )}
