@@ -23,8 +23,10 @@ function Inputcontainer({
   className = "",
   isDark: isDarkProp,
 }: InputContainerProps) {
-  const reduxDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
-  const isDark = isDarkProp !== undefined ? isDarkProp : reduxDark ?? false;
+  const reduxDark = useSelector(
+    (state: storeType) => state.DarkMode?.isDarkMode,
+  );
+  const isDark = isDarkProp !== undefined ? isDarkProp : (reduxDark ?? false);
 
   const displayLabel =
     label || (type ? type[0].toUpperCase() + type.slice(1) : "");
@@ -41,7 +43,11 @@ function Inputcontainer({
         >
           <span>{displayLabel}</span>
           {required && (
-            <span className={isDark ? "text-cyan-400 font-bold" : "text-cyan-600 font-bold"}>
+            <span
+              className={
+                isDark ? "text-cyan-400 font-bold" : "text-cyan-600 font-bold"
+              }
+            >
               *
             </span>
           )}

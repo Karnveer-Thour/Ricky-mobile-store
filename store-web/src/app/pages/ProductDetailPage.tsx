@@ -2,15 +2,32 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useApp } from "../AppContext";
 import { fmt } from "../data";
-import { ArrowLeft, Heart, Minus, Plus, Shield, CreditCard, Star, Cpu, Layers } from "lucide-react";
+import {
+  ArrowLeft,
+  Heart,
+  Minus,
+  Plus,
+  Shield,
+  CreditCard,
+  Star,
+  Cpu,
+  Layers,
+} from "lucide-react";
 import AffordabilityWidget from "../components/AffordabilityWidget";
 import ChatbotOverlay from "../components/ChatbotOverlay";
+import DeliveryChecker from "../components/DeliveryChecker";
 
 function StarRow({ rating, size = 13 }: { rating: number; size?: number }) {
   return (
     <div className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map((s) => (
-        <Star key={s} size={size} className={s <= rating ? "text-yellow-400 fill-yellow-400" : "text-gray-700"} />
+        <Star
+          key={s}
+          size={size}
+          className={
+            s <= rating ? "text-yellow-400 fill-yellow-400" : "text-gray-700"
+          }
+        />
       ))}
     </div>
   );
@@ -19,7 +36,8 @@ function StarRow({ rating, size = 13 }: { rating: number; size?: number }) {
 export default function ProductDetailPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const { products, loadingProducts, wishlist, toggleWishlist, addToCart } = useApp();
+  const { products, loadingProducts, wishlist, toggleWishlist, addToCart } =
+    useApp();
   const [fetchedProduct, setFetchedProduct] = useState<any | null>(null);
   const [isFetching, setIsFetching] = useState(false);
 
@@ -28,7 +46,7 @@ export default function ProductDetailPage() {
     (p) =>
       p.name.toLowerCase().replace(/ /g, "-") === slug ||
       String(p.id) === slug ||
-      p.name.toLowerCase() === slug?.toLowerCase()
+      p.name.toLowerCase() === slug?.toLowerCase(),
   );
 
   const sp = cachedProduct || fetchedProduct;
@@ -46,13 +64,22 @@ export default function ProductDetailPage() {
               discount: Number(res.discount) || 0,
               description: res.description || "",
               quantity: Number(res.quantity || res.stockCount) || 10,
-              warranty: res.warranty || "1 Year Official Brand Warranty for Device and 6 Months for In-Box Accessories",
+              warranty:
+                res.warranty ||
+                "1 Year Official Brand Warranty for Device and 6 Months for In-Box Accessories",
               specifications: res.specifications || res.brand || "",
               categoryId: res.categoryId || 1,
               colors:
                 res.colors && res.colors.length > 0
                   ? res.colors
-                  : [{ id: 1, colorName: "Default", quantity: 10, hex: "#000000" }],
+                  : [
+                      {
+                        id: 1,
+                        colorName: "Default",
+                        quantity: 10,
+                        hex: "#000000",
+                      },
+                    ],
               reviews: res.reviews || [],
               image:
                 res.imageUrl ||
@@ -75,7 +102,9 @@ export default function ProductDetailPage() {
 
   // Chatbot state
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
-  const [chatbotLender, setChatbotLender] = useState<"bajaj" | "homecredit">("bajaj");
+  const [chatbotLender, setChatbotLender] = useState<"bajaj" | "homecredit">(
+    "bajaj",
+  );
 
   useEffect(() => {
     if (sp) {
@@ -100,8 +129,12 @@ export default function ProductDetailPage() {
   if (!sp) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-28 text-center text-gray-400">
-        <p className="text-lg font-semibold text-white mb-2">Product Not Found</p>
-        <p className="text-sm text-gray-500 mb-6">The item you're looking for does not exist or has been removed.</p>
+        <p className="text-lg font-semibold text-white mb-2">
+          Product Not Found
+        </p>
+        <p className="text-sm text-gray-500 mb-6">
+          The item you're looking for does not exist or has been removed.
+        </p>
         <button
           onClick={() => navigate("/")}
           className="px-6 py-2.5 bg-[#00cfff] text-[#07070f] font-bold rounded-xl text-sm hover:bg-[#00cfff]/90 transition-all cursor-pointer"
@@ -112,13 +145,12 @@ export default function ProductDetailPage() {
     );
   }
 
-  const selColor =
-    (sp.colors || []).find((c: any) => c.id === selColorId) ||
-    (sp.colors || [])[0] ||
-    { id: 1, colorName: "Default", quantity: 10 };
+  const selColor = (sp.colors || []).find((c: any) => c.id === selColorId) ||
+    (sp.colors || [])[0] || { id: 1, colorName: "Default", quantity: 10 };
 
   const currentDisplayImage = activeImage || sp.image;
-  const imageList: string[] = sp.images && sp.images.length > 0 ? sp.images : [sp.image];
+  const imageList: string[] =
+    sp.images && sp.images.length > 0 ? sp.images : [sp.image];
 
   // Parse specifications into structured Flipkart key-value rows
   const rawSpecs = sp.specifications || "";
@@ -130,7 +162,10 @@ export default function ProductDetailPage() {
       if (!clean) return;
       const ci = clean.indexOf(":");
       if (ci !== -1) {
-        specItems.push({ key: clean.slice(0, ci).trim(), val: clean.slice(ci + 1).trim() });
+        specItems.push({
+          key: clean.slice(0, ci).trim(),
+          val: clean.slice(ci + 1).trim(),
+        });
       } else {
         specItems.push({ key: "Feature", val: clean });
       }
@@ -141,7 +176,10 @@ export default function ProductDetailPage() {
       if (!clean) return;
       const ci = clean.indexOf(":");
       if (ci !== -1) {
-        specItems.push({ key: clean.slice(0, ci).trim(), val: clean.slice(ci + 1).trim() });
+        specItems.push({
+          key: clean.slice(0, ci).trim(),
+          val: clean.slice(ci + 1).trim(),
+        });
       } else {
         specItems.push({ key: "Feature", val: clean });
       }
@@ -197,7 +235,11 @@ export default function ProductDetailPage() {
                       : "border-white/10 opacity-70 hover:opacity-100 hover:border-white/30"
                   }`}
                 >
-                  <img src={imgUrl} alt={`Angle ${idx + 1}`} className="w-full h-full object-cover" />
+                  <img
+                    src={imgUrl}
+                    alt={`Angle ${idx + 1}`}
+                    className="w-full h-full object-cover"
+                  />
                 </button>
               ))}
             </div>
@@ -224,13 +266,15 @@ export default function ProductDetailPage() {
             <div className="flex items-center gap-3 mb-4">
               <StarRow
                 rating={Math.round(
-                  sp.reviews.reduce((s: number, r: any) => s + r.rating, 0) / sp.reviews.length
+                  sp.reviews.reduce((s: number, r: any) => s + r.rating, 0) /
+                    sp.reviews.length,
                 )}
                 size={14}
               />
               <span className="text-sm text-gray-500">
                 {(
-                  sp.reviews.reduce((s: number, r: any) => s + r.rating, 0) / sp.reviews.length
+                  sp.reviews.reduce((s: number, r: any) => s + r.rating, 0) /
+                  sp.reviews.length
                 ).toFixed(1)}{" "}
                 ({sp.reviews.length} reviews)
               </span>
@@ -263,10 +307,14 @@ export default function ProductDetailPage() {
           {/* Official Warranty Badge */}
           <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-white/3 border border-white/8 text-xs text-gray-300 mb-6">
             <Shield size={16} className="text-[#00cfff] shrink-0" />
-            <span className="font-medium">{sp.warranty || "1 Year Official Brand Warranty"}</span>
+            <span className="font-medium">
+              {sp.warranty || "1 Year Official Brand Warranty"}
+            </span>
           </div>
 
-          <p className="text-gray-300 text-sm leading-relaxed mb-6">{sp.description}</p>
+          <p className="text-gray-300 text-sm leading-relaxed mb-6">
+            {sp.description}
+          </p>
 
           {/* Color Selection */}
           <div className="mb-6">
@@ -274,7 +322,10 @@ export default function ProductDetailPage() {
               className="text-xs text-gray-400 uppercase tracking-widest mb-3"
               style={{ fontFamily: "'DM Mono', monospace" }}
             >
-              Color: <span className="text-white font-semibold">{selColor.colorName || selColor.name}</span>
+              Color:{" "}
+              <span className="text-white font-semibold">
+                {selColor.colorName || selColor.name}
+              </span>
             </p>
             <div className="flex flex-wrap gap-2.5">
               {(sp.colors || []).map((c: any) => {
@@ -290,8 +341,8 @@ export default function ProductDetailPage() {
                       isOutOfStock
                         ? "border-red-500/20 bg-red-500/5 text-gray-600 opacity-60 line-through"
                         : isSelected
-                        ? "border-[#00cfff] bg-[#00cfff]/10 text-white shadow-md shadow-[#00cfff]/10"
-                        : "border-white/10 bg-white/5 text-gray-300 hover:border-white/20 hover:text-white"
+                          ? "border-[#00cfff] bg-[#00cfff]/10 text-white shadow-md shadow-[#00cfff]/10"
+                          : "border-white/10 bg-white/5 text-gray-300 hover:border-white/20 hover:text-white"
                     }`}
                   >
                     {c.hex && (
@@ -301,7 +352,9 @@ export default function ProductDetailPage() {
                       />
                     )}
                     <span>{colorTitle}</span>
-                    <span className="text-[10px] text-gray-400 font-mono">({c.quantity})</span>
+                    <span className="text-[10px] text-gray-400 font-mono">
+                      ({c.quantity})
+                    </span>
                   </button>
                 );
               })}
@@ -342,7 +395,14 @@ export default function ProductDetailPage() {
 
           <div className="flex gap-3 mb-8">
             <button
-              onClick={() => addToCart(sp.id, selColor.id, selColor.colorName || selColor.name || "Default", qty)}
+              onClick={() =>
+                addToCart(
+                  sp.id,
+                  selColor.id,
+                  selColor.colorName || selColor.name || "Default",
+                  qty,
+                )
+              }
               disabled={selColor.quantity === 0}
               className={`flex-1 py-3.5 font-extrabold rounded-2xl transition-all text-sm tracking-widest ${
                 selColor.quantity === 0
@@ -367,6 +427,9 @@ export default function ProductDetailPage() {
               />
             </button>
           </div>
+
+          {/* Delivery & Pincode Checker */}
+          <DeliveryChecker className="mb-8" />
 
           {/* Tabs */}
           <div className="border-b border-white/6 mb-5">
@@ -393,7 +456,10 @@ export default function ProductDetailPage() {
             <div className="space-y-2">
               {specItems.length > 0 ? (
                 specItems.map((spec, i) => (
-                  <div key={i} className="flex flex-col sm:flex-row sm:gap-6 py-3 border-b border-white/5">
+                  <div
+                    key={i}
+                    className="flex flex-col sm:flex-row sm:gap-6 py-3 border-b border-white/5"
+                  >
                     <span
                       className="text-xs text-[#00cfff]/90 uppercase font-bold sm:w-36 shrink-0 tracking-wide"
                       style={{ fontFamily: "'DM Mono', monospace" }}

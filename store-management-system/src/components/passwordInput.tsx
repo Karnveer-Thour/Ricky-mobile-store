@@ -14,8 +14,10 @@ const PasswordInput = ({
   isDark?: boolean;
 }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const reduxDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
-  const isDark = isDarkProp !== undefined ? isDarkProp : reduxDark ?? false;
+  const reduxDark = useSelector(
+    (state: storeType) => state.DarkMode?.isDarkMode,
+  );
+  const isDark = isDarkProp !== undefined ? isDarkProp : (reduxDark ?? false);
 
   return (
     <div className="relative w-full">
@@ -35,7 +37,9 @@ const PasswordInput = ({
           aria-label={passwordVisible ? "Hide password" : "Show password"}
           className={cn(
             "p-3 transition-colors cursor-pointer",
-            isDark ? "text-slate-400 hover:text-white" : "text-slate-400 hover:text-slate-800",
+            isDark
+              ? "text-slate-400 hover:text-white"
+              : "text-slate-400 hover:text-slate-800",
           )}
         >
           {passwordVisible ? <EyeOff size={18} /> : <Eye size={18} />}

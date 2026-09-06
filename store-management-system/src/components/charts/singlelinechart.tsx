@@ -59,7 +59,9 @@ function SingleLineChart({ data, isDark = true }: SinglelineChartProps) {
           <Tooltip
             contentStyle={{
               backgroundColor: isDark ? "#0f172a" : "#ffffff",
-              borderColor: isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.1)",
+              borderColor: isDark
+                ? "rgba(255,255,255,0.12)"
+                : "rgba(0,0,0,0.1)",
               borderRadius: "12px",
               boxShadow: isDark
                 ? "0 10px 25px -5px rgba(0,0,0,0.5)"
@@ -68,7 +70,10 @@ function SingleLineChart({ data, isDark = true }: SinglelineChartProps) {
               fontSize: "12px",
               fontWeight: "600",
             }}
-            formatter={(value: any) => [`₹${Number(value).toLocaleString("en-IN")}`, "Valuation"]}
+            formatter={(value: any) => [
+              `₹${Number(value).toLocaleString("en-IN")}`,
+              "Valuation",
+            ]}
           />
           <Line
             type="monotone"
@@ -86,4 +91,3 @@ function SingleLineChart({ data, isDark = true }: SinglelineChartProps) {
 }
 
 export default SingleLineChart;
-

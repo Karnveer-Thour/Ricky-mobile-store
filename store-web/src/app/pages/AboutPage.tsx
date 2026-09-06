@@ -1,5 +1,13 @@
 import { useNavigate } from "react-router";
-import { ArrowLeft, Users, Shield, Award, Globe, Heart, Zap } from "lucide-react";
+import {
+  ArrowLeft,
+  Users,
+  Shield,
+  Award,
+  Globe,
+  Heart,
+  Zap,
+} from "lucide-react";
 import { useApp } from "../AppContext";
 import { pct } from "../data";
 
@@ -61,33 +69,41 @@ export default function AboutPage() {
           </h2>
           <div className="space-y-4 text-sm text-gray-500 leading-relaxed">
             <p>
-              Ricky Mobile Store was born in a small shop on MG Road, Bengaluru in 2018. Founder Ricky Sharma noticed
-              that customers were being sold overpriced, grey-market phones without proper warranty — and decided to do
-              something about it.
+              Ricky Mobile Store was born in a small shop on MG Road, Bengaluru
+              in 2018. Founder Ricky Sharma noticed that customers were being
+              sold overpriced, grey-market phones without proper warranty — and
+              decided to do something about it.
             </p>
             <p>
-              We started with a simple promise: sell only genuine, brand-authorised phones at fair prices, with full
-              warranty and honest after-sales support. That promise still drives everything we do.
+              We started with a simple promise: sell only genuine,
+              brand-authorised phones at fair prices, with full warranty and
+              honest after-sales support. That promise still drives everything
+              we do.
             </p>
             <p>
-              Today we serve over 50,000 customers across Karnataka, with same-day delivery in Bengaluru and nationwide
-              shipping. Every phone we sell is authenticated, every warranty honoured, every customer respected.
+              Today we serve over 50,000 customers across Karnataka, with
+              same-day delivery in Bengaluru and nationwide shipping. Every
+              phone we sell is authenticated, every warranty honoured, every
+              customer respected.
             </p>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
           {[
-            { value: "50K+",  label: "Happy Customers",  Icon: Users },
-            { value: "100%",  label: "Genuine Products",  Icon: Shield },
-            { value: "₹0",    label: "Hidden Charges",    Icon: Award },
-            { value: "6+",    label: "Years in Business", Icon: Globe },
+            { value: "50K+", label: "Happy Customers", Icon: Users },
+            { value: "100%", label: "Genuine Products", Icon: Shield },
+            { value: "₹0", label: "Hidden Charges", Icon: Award },
+            { value: "6+", label: "Years in Business", Icon: Globe },
           ].map(({ value, label, Icon }) => (
             <div
               key={label}
               className="p-5 bg-[#0e0e1c] border border-white/5 rounded-2xl text-center hover:border-[#00cfff]/15 transition-all"
             >
               <Icon size={20} className="text-[#00cfff] mx-auto mb-3" />
-              <p style={{ fontFamily: "'Barlow Condensed', sans-serif" }} className="text-3xl font-extrabold text-white">
+              <p
+                style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                className="text-3xl font-extrabold text-white"
+              >
                 {value}
               </p>
               <p className="text-xs text-gray-600 mt-1">{label}</p>
@@ -196,7 +212,8 @@ export default function AboutPage() {
           READY TO SHOP?
         </h2>
         <p className="text-gray-500 text-sm mb-6 max-w-md mx-auto">
-          Join 50,000+ customers who trust Ricky Mobile Store for genuine phones, fair prices, and real support.
+          Join 50,000+ customers who trust Ricky Mobile Store for genuine
+          phones, fair prices, and real support.
         </p>
         <div className="flex flex-wrap gap-3 justify-center">
           <button

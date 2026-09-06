@@ -1,5 +1,6 @@
 import { Upload, X } from "lucide-react";
 import React, { useRef, useState } from "react";
+import Image from "next/image";
 import ImageCropper from "../imagecroppers/multiimagecropper";
 
 interface uploaderInputProps {
@@ -104,9 +105,11 @@ const UploaderInput = ({ isDark, features }: uploaderInputProps) => {
           key={index}
           className="relative w-32 h-32 border-2 border-gray-300 rounded-xl overflow-hidden"
         >
-          <img
+          <Image
             src={pic}
             alt={`Uploaded ${index}`}
+            width={128}
+            height={128}
             className="w-full h-full object-cover"
           />
           <button

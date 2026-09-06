@@ -2,6 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AIService } from './ai.service';
 import { EnrichProductDto } from './dto/enrich-product.dto';
 import { AuditProductDto } from './dto/audit-product.dto';
+import { EnrichCategoryDto } from './dto/enrich-category.dto';
 
 @Controller('ai')
 export class AIController {
@@ -17,6 +18,16 @@ export class AIController {
     return {
       status: true,
       message: 'Product details enriched successfully by AI',
+      data: enriched,
+    };
+  }
+
+  @Post('enrich-category')
+  async enrichCategory(@Body() body: EnrichCategoryDto) {
+    const enriched = await this.aiService.enrichCategoryDetails(body.name);
+    return {
+      status: true,
+      message: 'Category details generated successfully by AI',
       data: enriched,
     };
   }

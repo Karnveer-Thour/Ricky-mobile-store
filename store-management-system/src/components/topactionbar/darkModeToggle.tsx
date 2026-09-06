@@ -24,7 +24,11 @@ function DarkModeToggle() {
           isDark ? "text-cyan-400" : "text-amber-500"
         }`}
       >
-        {isDark ? <Moon size={14} className="fill-cyan-400/20" /> : <Sun size={14} className="fill-amber-400/30" />}
+        {isDark ? (
+          <Moon size={14} className="fill-cyan-400/20" />
+        ) : (
+          <Sun size={14} className="fill-amber-400/30" />
+        )}
       </div>
       <span className="text-xs font-semibold select-none">
         {isDark ? "Dark Mode" : "Light Mode"}
@@ -34,4 +38,3 @@ function DarkModeToggle() {
 }
 
 export default DarkModeToggle;
-

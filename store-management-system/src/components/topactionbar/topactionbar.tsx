@@ -11,8 +11,8 @@ function Topactionbar({
 }: {
   isDark?: boolean;
 }): React.JSX.Element {
-  const [unreadMessages, setUnreadmessages] = useState(3);
-  const [unreadNotifications, setUnreadnotifications] = useState(4);
+  const unreadMessages = 3;
+  const unreadNotifications = 4;
   const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   const today = new Date();

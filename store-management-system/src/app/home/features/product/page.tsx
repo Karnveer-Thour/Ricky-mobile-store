@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import Button from "@/components/Button";
 import ProductTable from "./components/productTable";
 import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
@@ -12,7 +11,7 @@ import { motion } from "framer-motion";
 import { Plus, Download, Upload } from "lucide-react";
 import cn from "classnames";
 
-function page() {
+function ProductPage() {
   const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
   const [isDownloadingCsv, setIsDownloadingCsv] = React.useState(false);
   const [isUploadingCsv, setIsUploadingCsv] = React.useState(false);
@@ -118,4 +117,4 @@ function page() {
   );
 }
 
-export default page;
+export default ProductPage;

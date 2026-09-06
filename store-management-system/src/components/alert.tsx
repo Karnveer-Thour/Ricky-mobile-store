@@ -19,27 +19,28 @@ const Alert = () => {
     error: "bg-rose-950/90 border-rose-500/50 text-rose-300 shadow-rose-500/20",
   };
 
-  const closeAlertLogic = (closeTime?: number, reVisibleTime?: number) => {
-    if (type) {
-      const timer = setTimeout(() => {
-        setVisible(false);
-        setTimeout(() => {
-          dispatchAlert(CLOSEALERT());
-          setVisible(true);
-        }, reVisibleTime || 1000);
-      }, closeTime || 3500);
-
-      return () => clearTimeout(timer);
-    }
-  };
-
   const handleClose = () => {
-    closeAlertLogic(100, 300);
+    setTimeout(() => {
+      setVisible(false);
+      setTimeout(() => {
+        dispatchAlert(CLOSEALERT());
+        setVisible(true);
+      }, 300);
+    }, 100);
   };
 
   useEffect(() => {
-    return closeAlertLogic(3500, 800);
-  }, [id]);
+    if (!type) return;
+    const timer = setTimeout(() => {
+      setVisible(false);
+      const resetTimer = setTimeout(() => {
+        dispatchAlert(CLOSEALERT());
+        setVisible(true);
+      }, 800);
+      return () => clearTimeout(resetTimer);
+    }, 3500);
+    return () => clearTimeout(timer);
+  }, [id, type, dispatchAlert]);
 
   return (
     <AnimatePresence>

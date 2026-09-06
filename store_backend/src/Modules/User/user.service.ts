@@ -202,7 +202,7 @@ export class UserService {
         throw new NotFoundException('User not found');
       }
 
-      for (let key in userData) {
+      for (const key in userData) {
         user[key] = userData[key] ?? user[key];
       }
 

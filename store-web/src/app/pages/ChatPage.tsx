@@ -31,22 +31,31 @@ export default function ChatPage() {
 
       <div className="flex-1 bg-[#0e0e1c] border border-white/5 rounded-3xl p-6 flex flex-col min-h-0">
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto space-y-4 pr-2" style={{ scrollbarWidth: "none" }}>
+        <div
+          className="flex-1 overflow-y-auto space-y-4 pr-2"
+          style={{ scrollbarWidth: "none" }}
+        >
           {chatMsgs.map((m) => (
-            <div key={m.id} className={`flex ${m.sender === "user" ? "justify-end" : "justify-start"}`}>
+            <div
+              key={m.id}
+              className={`flex ${m.sender === "user" ? "justify-end" : "justify-start"}`}
+            >
               <div
                 className={`max-w-[75%] rounded-[var(--radius-ricky-md)] px-4 py-2.5 text-sm ${
                   m.sender === "user"
                     ? "bg-[var(--color-ricky-accent-blue)] text-white"
                     : m.sender === "system"
-                    ? "bg-green-500/10 border border-green-500/20 text-green-400"
-                    : "bg-[var(--color-ricky-primary-700)] text-white"
+                      ? "bg-green-500/10 border border-green-500/20 text-green-400"
+                      : "bg-[var(--color-ricky-primary-700)] text-white"
                 }`}
               >
                 {m.message}
                 {m.type === "PAYMENT_REQUEST" && m.amount && (
                   <div className="mt-3 p-3 bg-black/20 rounded-xl flex items-center justify-between gap-4">
-                    <span className="font-semibold" style={{ fontFamily: "'DM Mono', monospace" }}>
+                    <span
+                      className="font-semibold"
+                      style={{ fontFamily: "'DM Mono', monospace" }}
+                    >
                       ₹{m.amount.toLocaleString("en-IN")}
                     </span>
                     <button
@@ -57,7 +66,9 @@ export default function ChatPage() {
                     </button>
                   </div>
                 )}
-                <span className="block text-[9px] text-gray-600 mt-1 text-right">{m.time}</span>
+                <span className="block text-[9px] text-gray-600 mt-1 text-right">
+                  {m.time}
+                </span>
               </div>
             </div>
           ))}

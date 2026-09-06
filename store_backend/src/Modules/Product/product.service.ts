@@ -14,15 +14,10 @@ import { CreateProductDto } from './Dtos/create-product.dto';
 import { baseResponseDto } from 'Common/Dto/BaseResponse.dto';
 import { UpdateProductDto } from './Dtos/update-product.dto';
 import { Response } from 'express';
-import { Parser } from 'json2csv';
-import { dateToUTC, deleteFile } from 'Common/Utils/Utils';
-import { createReadStream } from 'fs';
-import { Product } from './Entities/Product.entity';
-import { parse } from 'fast-csv';
+import { dateToUTC } from 'Common/Utils/Utils';
 import { CategoryRepository } from 'Modules/Category/Repositories/Category.repo';
-import { ProductColor } from './Entities/ProductColor.entity';
-import { ProductVariant } from './Entities/ProductVariant.entity';
-import { AIService } from 'Modules/AI/ai.service';
+import { ProductCsvService } from './Services/product-csv.service';
+import { ProductEnrichmentService } from './Services/product-enrichment.service';
 
 @Injectable()
 export class ProductService {
@@ -31,7 +26,8 @@ export class ProductService {
     private readonly productColorRepository: ProductColorRepository,
     private readonly productVariantRepository: ProductVariantRepository,
     private readonly categoryRepository: CategoryRepository,
-    private readonly aiService: AIService,
+    private readonly productCsvService: ProductCsvService,
+    private readonly productEnrichmentService: ProductEnrichmentService,
   ) {}
 
   async create(productData: CreateProductDto): Promise<baseResponseDto> {
@@ -54,7 +50,12 @@ export class ProductService {
       }
 
       if (!category) {
-        throw new NotFoundException('Category does not exist');
+        category = await this.categoryRepository.save({
+          name: 'General',
+          description: 'General mobile and electronic items',
+          hasColors: true,
+          hasVariants: false,
+        });
       }
 
       const existingProduct = await this.productRepository.findOne({
@@ -63,13 +64,11 @@ export class ProductService {
       });
 
       let quantity = 0;
-      let incomingColors = productData?.productColors || productData?.colors || [];
-      let incomingVariants = productData?.variants || [];
+      const incomingColors = productData?.productColors || productData?.colors || [];
+      const incomingVariants = productData?.variants || [];
 
       if (incomingVariants.length) {
-        incomingVariants.forEach(
-          (v: any) => (quantity += Number(v.quantity) || 0),
-        );
+        incomingVariants.forEach((v: any) => (quantity += Number(v.quantity) || 0));
       } else if (incomingColors.length) {
         incomingColors.forEach(
           (productColor: any) => (quantity += Number(productColor.quantity) || 0),
@@ -80,87 +79,32 @@ export class ProductService {
         quantity = Number(productData.quantiy) || 0;
       }
 
-      // ✨ Server-Side AI Auto-Enrichment if fields are missing or default
-      let finalDescription = productData.description;
-      let finalSpecifications = productData.specifications;
-      let finalWarranty = productData.warranty;
-      let finalImageUrl = productData.imageUrl;
-      let finalColors = incomingColors;
+      const enrichment = await this.productEnrichmentService.autoEnrichProductDetails(
+        productData,
+        category,
+        incomingColors,
+      );
 
-      if (
-        !finalImageUrl ||
-        !finalDescription ||
-        finalDescription === `${productData.name} details` ||
-        !finalWarranty ||
-        !finalSpecifications
-      ) {
-        try {
-          const aiEnriched = await this.aiService.enrichProductDetails(
-            productData.name,
-            category.name,
-            productData.price,
-          );
-          if (!finalImageUrl && aiEnriched.imageUrl) {
-            finalImageUrl = aiEnriched.imageUrl;
-          }
-          if (
-            (!finalDescription || finalDescription === `${productData.name} details`) &&
-            aiEnriched.description
-          ) {
-            finalDescription = aiEnriched.description;
-          }
-          if (!finalSpecifications && aiEnriched.specifications) {
-            finalSpecifications = aiEnriched.specifications;
-          }
-          if (!finalWarranty && aiEnriched.warranty) {
-            finalWarranty = aiEnriched.warranty;
-          }
-          if (category.hasColors !== false && !finalColors.length && aiEnriched.colors?.length) {
-            finalColors = aiEnriched.colors as any;
-            quantity = finalColors.reduce(
-              (acc: number, curr: any) => acc + (Number(curr.quantity) || 0),
-              0,
-            );
-          }
-        } catch (e) {
-          console.warn('Backend AI auto-enrichment warning:', e);
-        }
+      if (enrichment.calculatedQuantity > 0 && quantity === 0) {
+        quantity = enrichment.calculatedQuantity;
       }
 
-      const mappedColors = finalColors.length
-        ? finalColors.map((c: any) =>
-            this.productColorRepository.create({
-              name: c.name,
-              quantity: Number(c.quantity) || 0,
-            }),
-          )
-        : [];
-
-      const mappedVariants = incomingVariants.length
-        ? incomingVariants.map((v: any) =>
-            this.productVariantRepository.create({
-              ram: v.ram || null,
-              storage: v.storage || null,
-              color: v.color || null,
-              quantity: Number(v.quantity) || 0,
-            }),
-          )
-        : [];
+      const mappedColors = this.productEnrichmentService.mapColors(enrichment.finalColors);
+      const mappedVariants = this.productEnrichmentService.mapVariants(incomingVariants);
 
       if (existingProduct) {
         if (existingProduct.deletedAt) {
-          // Restore soft-deleted product
           existingProduct.deletedAt = null;
         }
         existingProduct.category = category;
-        existingProduct.description = finalDescription;
+        existingProduct.description = enrichment.finalDescription;
         existingProduct.price = parseFloat(productData.price);
         existingProduct.discount = productData.discount ? parseFloat(productData.discount) : 0;
         existingProduct.quantity = quantity;
-        existingProduct.specifications = finalSpecifications;
-        existingProduct.warranty = finalWarranty;
-        if (finalImageUrl !== undefined) {
-          existingProduct.imageUrl = finalImageUrl;
+        existingProduct.specifications = enrichment.finalSpecifications;
+        existingProduct.warranty = enrichment.finalWarranty;
+        if (enrichment.finalImageUrl !== undefined) {
+          existingProduct.imageUrl = enrichment.finalImageUrl;
         }
         if (mappedColors.length) {
           existingProduct.colors = mappedColors;
@@ -181,13 +125,13 @@ export class ProductService {
 
       const productDetails: ProductDto = {
         name: productData.name,
-        description: finalDescription,
+        description: enrichment.finalDescription,
         quantity: quantity,
         price: parseFloat(productData.price),
         category: category,
-        specifications: finalSpecifications,
-        warranty: finalWarranty,
-        imageUrl: finalImageUrl || null,
+        specifications: enrichment.finalSpecifications,
+        warranty: enrichment.finalWarranty,
+        imageUrl: enrichment.finalImageUrl || null,
         discount: productData.discount ? parseFloat(productData.discount) : 0,
         colors: mappedColors,
         variants: mappedVariants,
@@ -219,7 +163,7 @@ export class ProductService {
         throw new NotFoundException('Product not found!');
       }
       if (productData?.categoryId) {
-        let category = await this.categoryRepository.findOne({
+        const category = await this.categoryRepository.findOne({
           where: { id: productData.categoryId },
         });
 
@@ -281,11 +225,21 @@ export class ProductService {
             existingProduct.quantity = colorQty;
           }
         } else {
-          await this.productColorRepository.delete({ product: { id: existingProduct.id } });
+          await this.productColorRepository.delete({
+            product: { id: existingProduct.id },
+          });
           existingProduct.colors = [];
-          if ((!incomingVariants || !incomingVariants.length) && (productData.quantity !== undefined && productData.quantity !== null)) {
+          if (
+            (!incomingVariants || !incomingVariants.length) &&
+            productData.quantity !== undefined &&
+            productData.quantity !== null
+          ) {
             existingProduct.quantity = Number(productData.quantity);
-          } else if ((!incomingVariants || !incomingVariants.length) && (productData.quantiy !== undefined && productData.quantiy !== null)) {
+          } else if (
+            (!incomingVariants || !incomingVariants.length) &&
+            productData.quantiy !== undefined &&
+            productData.quantiy !== null
+          ) {
             existingProduct.quantity = Number(productData.quantiy);
           }
         }
@@ -338,11 +292,11 @@ export class ProductService {
       if (searchText) {
         queryBuilder.andWhere(
           `(
-                      product.name LIKE :searchText OR 
-                      category.name LIKE :searchText OR
-                      CAST(product.price AS TEXT) LIKE :searchText OR 
-                      CAST(product.quantity AS TEXT) LIKE :searchText
-                    )`,
+            product.name LIKE :searchText OR 
+            category.name LIKE :searchText OR
+            CAST(product.price AS TEXT) LIKE :searchText OR 
+            CAST(product.quantity AS TEXT) LIKE :searchText
+          )`,
           { searchText: `%${searchText}%` },
         );
       }
@@ -416,144 +370,22 @@ export class ProductService {
   async downloadCSV(res: Response): Promise<void> {
     try {
       const products = await this.productRepository.find({
+        where: { deletedAt: null as any },
         relations: ['category', 'colors', 'variants'],
       });
 
-      if (!products.length) {
-        // res.status(200).send('No Product found');
-        return;
-      }
-
-      const formattedProducts = products.map((product) => ({
-        id: product.id,
-        name: product.name,
-        category: product.category?.name || '',
-        price: product.price,
-        discount: product.discount,
-        quantity: product.quantity,
-        warranty: product.warranty,
-        description: product.description,
-        specifications: product.specifications,
-        colors: product.variants?.length
-          ? product.variants.map((v) => `${v.ram || ''} ${v.storage || ''} ${v.color || ''} (${v.quantity})`.trim()).join(', ')
-          : product.colors?.map((c) => `${c.name} (${c.quantity})`).join(', ') || '',
-      }));
-
-      const parser = new Parser();
-      const csv = parser.parse(formattedProducts);
-
-      res.header('Content-Type', 'text/csv');
-      res.header('Content-Disposition', 'attachment; filename=products.csv');
-      res.status(200).send(csv); // ✅ CSV is sent here
+      return this.productCsvService.downloadCSV(products, res);
     } catch (error) {
-      console.error(error);
-      throw new InternalServerErrorException('Unable to download CSV');
+      console.error('Backend downloadCSV error:', error);
+      if (!res.headersSent) {
+        res.status(500).json({ status: false, message: 'Unable to download CSV' });
+      }
     }
   }
 
   async uploadCSV(filePath: string): Promise<baseResponseDto> {
-    const products: Partial<Product>[] = [];
-
-    return new Promise((resolve, reject) => {
-      const stream = createReadStream(filePath)
-        .pipe(parse({ headers: true }))
-        .on('error', (err) => {
-          console.error(err);
-          deleteFile(filePath); // Ensure file is deleted on error
-          reject(new InternalServerErrorException('CSV parsing failed'));
-        })
-        .on('data', async (row) => {
-          stream.pause(); // Pause stream while handling row
-
-          try {
-            const requiredKeys = [
-              'name',
-              'category',
-              'price',
-              'discount',
-              'quantity',
-              'warranty',
-              'description',
-              'specifications',
-              'colors',
-            ];
-
-            for (const key of requiredKeys) {
-              if (!row[key]) {
-                deleteFile(filePath);
-                reject(new BadRequestException(`Missing required field: ${key}`));
-                return;
-              }
-            }
-
-            const {
-              name,
-              category,
-              price,
-              discount,
-              quantity,
-              warranty,
-              description,
-              specifications,
-              colors,
-            } = row;
-
-            const cat = await this.categoryRepository.findOne({
-              where: { name: category },
-            });
-
-            if (!cat) {
-              deleteFile(filePath);
-              reject(new NotFoundException(`Category "${category}" not found`));
-              return;
-            }
-
-            const product = this.productRepository.create({
-              name,
-              price,
-              discount,
-              quantity: Number(quantity),
-              warranty,
-              description,
-              specifications,
-              category: cat,
-            });
-
-            const savedProduct = await this.productRepository.save(product);
-
-            if (colors) {
-              const colorList = colors.split(',').map((c: string) => {
-                const match = c.trim().match(/^(.+?)\s*\((\d+)\)$/);
-                return match
-                  ? {
-                      colorName: match[1],
-                      quantity: Number(match[2]),
-                      product: savedProduct,
-                    }
-                  : null;
-              });
-
-              const validColors = colorList.filter(Boolean) as Partial<ProductColor>[];
-              await this.productColorRepository.save(validColors);
-            }
-
-            products.push(product);
-          } catch (err) {
-            console.error(err);
-            deleteFile(filePath);
-            reject(new InternalServerErrorException('Error processing row'));
-          } finally {
-            stream.resume();
-          }
-        })
-        .on('end', () => {
-          deleteFile(filePath); // ✅ Delete file after processing is done
-          resolve({
-            status: true,
-            code: 200,
-            data: { message: `${products.length} products imported.` },
-          });
-        });
-    });
+    return this.productCsvService.uploadCSV(filePath, this.categoryRepository, (dto) =>
+      this.create(dto),
+    );
   }
 }

@@ -100,11 +100,8 @@ function Page() {
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [cities, setCities] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     async function loadDashboardData() {
-      setIsLoading(true);
       try {
         const [cList, pList, catList, cityList] = await Promise.all([
           customerService.fetchCustomers(1, 100).catch(() => []),
@@ -118,8 +115,6 @@ function Page() {
         setCities(Array.isArray(cityList) ? cityList : []);
       } catch (err) {
         console.error("Failed to load dashboard metrics:", err);
-      } finally {
-        setIsLoading(false);
       }
     }
     loadDashboardData();

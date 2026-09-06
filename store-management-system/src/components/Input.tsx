@@ -13,11 +13,20 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
-    { id, placeholder, className = "", customMargin, isDark: isDarkProp, ...props },
+    {
+      id,
+      placeholder,
+      className = "",
+      customMargin,
+      isDark: isDarkProp,
+      ...props
+    },
     ref,
   ) => {
-    const reduxDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
-    const isDark = isDarkProp !== undefined ? isDarkProp : reduxDark ?? false;
+    const reduxDark = useSelector(
+      (state: storeType) => state.DarkMode?.isDarkMode,
+    );
+    const isDark = isDarkProp !== undefined ? isDarkProp : (reduxDark ?? false);
 
     return (
       <input

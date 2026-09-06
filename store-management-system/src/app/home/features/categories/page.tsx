@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import cn from "classnames";
 
-function page() {
+function CategoriesPage() {
   const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
   const pathName = usePathname();
   const router = useRouter();
@@ -67,4 +67,4 @@ function page() {
   );
 }
 
-export default page;
+export default CategoriesPage;

@@ -1,5 +1,4 @@
 import Papa from "papaparse";
-import { productService, categoryService } from "@/services";
 
 /**
  * Triggers browser download of a CSV file given data rows and a desired filename.
@@ -29,13 +28,23 @@ export const exportProductsToCsv = (products: any[]) => {
       (typeof p.category === "string" ? p.category : "") ||
       "Uncategorized";
 
+    const variants = p.variants || [];
     const colors = p.colors || p.productColors || [];
-    const colorsString =
-      colors.length > 0
-        ? colors
-            .map((c: any) => `${c.name || c.colorName}:${c.quantity}`)
-            .join("; ")
-        : `Default:${p.quantity || p.stockCount || 0}`;
+    let colorsString = "";
+    if (variants.length > 0) {
+      colorsString = variants
+        .map(
+          (v: any) =>
+            `${v.ram ? v.ram + " " : ""}${v.storage ? v.storage + " " : ""}${v.color || "Standard"}: ${v.quantity}`,
+        )
+        .join("; ");
+    } else if (colors.length > 0) {
+      colorsString = colors
+        .map((c: any) => `${c.name || c.colorName}:${c.quantity}`)
+        .join("; ");
+    } else {
+      colorsString = `Default:${p.quantity || p.stockCount || 0}`;
+    }
 
     return {
       "Product ID": p.id || p._id || "",
@@ -73,13 +82,23 @@ export const exportInventoryToCsv = (products: any[]) => {
       stock === 0 ? "Out of Stock" : stock <= 3 ? "Low Stock" : "In Stock";
     const sku = `RMS-${(p.name || "PROD").slice(0, 3).toUpperCase()}-${String(index + 1).padStart(3, "0")}`;
 
+    const variants = p.variants || [];
     const colors = p.colors || p.productColors || [];
-    const colorsString =
-      colors.length > 0
-        ? colors
-            .map((c: any) => `${c.name || c.colorName}: ${c.quantity}`)
-            .join("; ")
-        : `Standard: ${stock}`;
+    let colorsString = "";
+    if (variants.length > 0) {
+      colorsString = variants
+        .map(
+          (v: any) =>
+            `${v.ram ? v.ram + " " : ""}${v.storage ? v.storage + " " : ""}${v.color || "Standard"}: ${v.quantity}`,
+        )
+        .join("; ");
+    } else if (colors.length > 0) {
+      colorsString = colors
+        .map((c: any) => `${c.name || c.colorName}: ${c.quantity}`)
+        .join("; ");
+    } else {
+      colorsString = `Standard: ${stock}`;
+    }
 
     return {
       SKU: sku,
@@ -128,7 +147,7 @@ export const downloadSampleProductCsv = () => {
       "Image URL":
         "https://res.cloudinary.com/dszgssbnh/image/upload/v1786969670/products/file.png",
       Warranty: "1 Year Samsung Warranty",
-      Description: "Galaxy AI is here with titanium exterior and 200MP camera",
+      Description: "", // Left blank intentionally to auto-generate via AI on import
     },
     {
       "Product Name": "Sony WH-1000XM5 Wireless Headphones",
@@ -142,10 +161,24 @@ export const downloadSampleProductCsv = () => {
       Warranty: "1 Year Sony Warranty",
       Description: "Industry-leading noise canceling with Auto NC Optimizer",
     },
+    {
+      "Product Name": "Google Pixel 8 Pro",
+      Category: "Smartphones",
+      Price: 89999,
+      Discount: 3000,
+      "Total Quantity": 20,
+      "Color Variants": "Bay Blue:10; Obsidian Black:10",
+      "Image URL":
+        "https://res.cloudinary.com/dszgssbnh/image/upload/v1786969670/products/file.png",
+      Warranty: "1 Year Google Warranty",
+      Description: "", // Left blank intentionally to auto-generate via AI on import
+    },
   ];
 
   downloadCsvFile(sampleRows, "sample_products_import_template.csv");
 };
+
+import { parseAndImportExcelOrCsv } from "./excelFunctions";
 
 /**
  * Parses and imports products from a CSV file into the database.
@@ -159,182 +192,5 @@ export const parseAndImportProductCsv = async (
   errorCount: number;
   errors: string[];
 }> => {
-  return new Promise((resolve) => {
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: async (results) => {
-        const rows = results.data as any[];
-        if (!rows || rows.length === 0) {
-          resolve({
-            totalRows: 0,
-            successCount: 0,
-            errorCount: 0,
-            errors: ["The uploaded CSV file is empty or could not be parsed."],
-          });
-          return;
-        }
-
-        // Fetch categories to resolve category names to IDs
-        let existingCategories: any[] = [];
-        try {
-          existingCategories =
-            (await categoryService.fetchCategories(1, 100)) || [];
-        } catch (e) {
-          console.warn("Could not fetch categories during CSV import", e);
-        }
-
-        let successCount = 0;
-        let errorCount = 0;
-        const errors: string[] = [];
-
-        for (let i = 0; i < rows.length; i++) {
-          const row = rows[i];
-          const rowNum = i + 2; // +2 for 1-based index and header row
-
-          const name = (
-            row["Product Name"] ||
-            row["name"] ||
-            row["Name"] ||
-            ""
-          ).trim();
-          const rawPrice =
-            row["Price (INR)"] || row["Price"] || row["price"] || "";
-          const rawCategory = (
-            row["Category"] ||
-            row["category"] ||
-            row["Category Name"] ||
-            ""
-          ).trim();
-          const rawDiscount =
-            row["Discount (INR)"] || row["Discount"] || row["discount"] || "0";
-          const rawTotalQty =
-            row["Total Stock"] ||
-            row["Total Quantity"] ||
-            row["quantity"] ||
-            "10";
-          const rawColors =
-            row["Color Variants & Stock"] ||
-            row["Color Variants"] ||
-            row["colors"] ||
-            "";
-          const imageUrl =
-            row["Image URL"] || row["imageUrl"] || row["image"] || undefined;
-          const warranty =
-            row["Warranty"] || row["warranty"] || "1 Year Official Warranty";
-          const description =
-            row["Description"] || row["description"] || `${name} details`;
-
-          if (!name) {
-            errorCount++;
-            errors.push(`Row ${rowNum}: Product Name is missing.`);
-            continue;
-          }
-
-          const price = parseFloat(rawPrice);
-          if (isNaN(price) || price <= 0) {
-            errorCount++;
-            errors.push(
-              `Row ${rowNum} (${name}): Invalid Price value "${rawPrice}".`,
-            );
-            continue;
-          }
-
-          // Match category or use first available
-          let categoryId = "";
-          if (rawCategory) {
-            const matched = existingCategories.find(
-              (c) =>
-                c.name?.toLowerCase() === rawCategory.toLowerCase() ||
-                c.id === rawCategory ||
-                c._id === rawCategory,
-            );
-            if (matched) {
-              categoryId = matched.id || matched._id;
-            }
-          }
-
-          if (!categoryId && existingCategories.length > 0) {
-            categoryId = existingCategories[0].id || existingCategories[0]._id;
-          }
-
-          // Parse color variants e.g. "Natural Titanium:20; Titanium Black:20" or "Black:15, Silver:25"
-          let parsedColors: Array<{ name: string; quantity: number }> = [];
-          if (rawColors) {
-            const colorTokens = rawColors.split(/[;,|]/);
-            for (const token of colorTokens) {
-              const parts = token.split(":");
-              if (parts.length >= 2) {
-                const cName = parts[0].trim();
-                const cQty = parseInt(parts[1].trim()) || 0;
-                if (cName) {
-                  parsedColors.push({ name: cName, quantity: cQty });
-                }
-              } else if (parts[0]?.trim()) {
-                parsedColors.push({ name: parts[0].trim(), quantity: 10 });
-              }
-            }
-          }
-
-          const totalQuantity =
-            parsedColors.length > 0
-              ? parsedColors.reduce((acc, curr) => acc + curr.quantity, 0)
-              : parseInt(rawTotalQty) || 10;
-
-          if (parsedColors.length === 0) {
-            parsedColors = [{ name: "Standard", quantity: totalQuantity }];
-          }
-
-          const payload = {
-            name,
-            price: String(price),
-            categoryId: categoryId || undefined,
-            discount: String(rawDiscount || "0"),
-            quantity: totalQuantity,
-            quantiy: totalQuantity,
-            description,
-            warranty,
-            imageUrl,
-            productColors: parsedColors,
-          };
-
-          try {
-            const res = await productService.createProduct(payload);
-            if (res.ok) {
-              successCount++;
-            } else {
-              errorCount++;
-              errors.push(
-                `Row ${rowNum} (${name}): ${res.message || "Failed to create product."}`,
-              );
-            }
-          } catch (err: any) {
-            errorCount++;
-            errors.push(
-              `Row ${rowNum} (${name}): ${err?.message || "Server communication error."}`,
-            );
-          }
-
-          if (onProgress) {
-            onProgress(Math.round(((i + 1) / rows.length) * 100));
-          }
-        }
-
-        resolve({
-          totalRows: rows.length,
-          successCount,
-          errorCount,
-          errors,
-        });
-      },
-      error: (error) => {
-        resolve({
-          totalRows: 0,
-          successCount: 0,
-          errorCount: 1,
-          errors: [`Failed to parse CSV file: ${error.message}`],
-        });
-      },
-    });
-  });
+  return parseAndImportExcelOrCsv(file, onProgress);
 };

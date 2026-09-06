@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   HttpException,
   Injectable,
   InternalServerErrorException,
@@ -136,9 +135,9 @@ export class DeliveryAddressService {
       if (deliveryAddressData.isDefault) {
         await this.convertExistingAddressAsNotDefault(existingDeliveryAddress);
       }
-      for (let key in existingDeliveryAddress) {
+      for (const key in existingDeliveryAddress) {
         if (key === 'address') {
-          for (let key in existingDeliveryAddress.address) {
+          for (const key in existingDeliveryAddress.address) {
             existingDeliveryAddress.address[key] =
               deliveryAddressData[key] ?? existingDeliveryAddress[key];
           }

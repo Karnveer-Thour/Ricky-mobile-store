@@ -117,4 +117,3 @@ const Navitem: React.FC<NavitemProps> = ({
 };
 
 export default Navitem;
-

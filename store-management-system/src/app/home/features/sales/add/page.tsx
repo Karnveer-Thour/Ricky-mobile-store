@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { storeType } from "@/types/store.index";
 import ToggleButton from "@/components/togglebutton";
 
-function addSale() {
+function AddSale() {
   const router = useRouter();
   const isDark = useSelector((store: storeType) => store.DarkMode.isDarkMode);
 
@@ -27,13 +27,21 @@ function addSale() {
   return (
     <BlurredPopupLayout width={"520px"} height={"auto"} isDark={isDark}>
       <div className="p-4 space-y-4">
-        <h2 className={`text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>Add Delivery City / Zone</h2>
+        <h2
+          className={`text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}
+        >
+          Add Delivery City / Zone
+        </h2>
         <form
           id="add-sale-form"
           onSubmit={handleSubmit(onSubmit)}
           className="w-full space-y-3"
         >
-          <Inputcontainer type={"City Name"} error={errors?.name} isDark={isDark}>
+          <Inputcontainer
+            type={"City Name"}
+            error={errors?.name}
+            isDark={isDark}
+          >
             <Input
               id="City Name"
               placeholder="Enter city name"
@@ -100,4 +108,4 @@ function addSale() {
   );
 }
 
-export default addSale;
+export default AddSale;

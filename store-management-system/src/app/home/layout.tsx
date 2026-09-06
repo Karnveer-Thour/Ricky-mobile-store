@@ -46,7 +46,9 @@ export default function HomeLayout({
             </div>
           </div>
           <div className="text-center space-y-1">
-            <p className="text-sm font-semibold text-white">Ricky Mobile Store</p>
+            <p className="text-sm font-semibold text-white">
+              Ricky Mobile Store
+            </p>
             <p className="text-xs text-slate-500">Loading your workspace...</p>
           </div>
           {/* Slim progress bar */}

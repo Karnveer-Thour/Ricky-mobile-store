@@ -69,7 +69,7 @@ export class ProductReviewService {
       if (!existingProductReview) {
         throw new NotFoundException('Product Review does not found!');
       }
-      for (let key in productReviewData) {
+      for (const key in productReviewData) {
         if (productReviewData[key] !== undefined) {
           existingProductReview[key] = productReviewData[key];
         }

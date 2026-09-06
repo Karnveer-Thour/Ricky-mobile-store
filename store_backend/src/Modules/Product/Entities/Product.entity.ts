@@ -1,15 +1,12 @@
 import { BaseEntity } from 'Common/Entities/Base.entity';
-import { Cart } from 'Modules/Cart/Entities/Cart.entity';
 import { Category } from 'Modules/Category/Entities/Category.entity';
 import { ProductReview } from 'Modules/Product_review/Entitities/ProductReview.entity';
-import { Sale } from 'Modules/Sale/Entities/Sale.entity';
 import { Wishlist } from 'Modules/Wishlist/Entities/Wishlist.entity';
 import {
   Column,
   Entity,
   Index,
   JoinColumn,
-  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,

@@ -18,9 +18,12 @@ interface AffordabilityWidgetProps {
 
 // ─── EMI Config ──────────────────────────────────────────────────────────────
 
-const LENDER_CONFIG: Record<Lender, { label: string; downPctg: number; feePctg: number }> = {
-  bajaj:      { label: "Bajaj Finserv", downPctg: 0,    feePctg: 0.02 },
-  homecredit: { label: "Home Credit",   downPctg: 0.10, feePctg: 0.015 },
+const LENDER_CONFIG: Record<
+  Lender,
+  { label: string; downPctg: number; feePctg: number }
+> = {
+  bajaj: { label: "Bajaj Finserv", downPctg: 0, feePctg: 0.02 },
+  homecredit: { label: "Home Credit", downPctg: 0.1, feePctg: 0.015 },
 };
 
 const TENURES: Tenure[] = [3, 6, 9, 12];
@@ -28,7 +31,7 @@ const TENURES: Tenure[] = [3, 6, 9, 12];
 function calcEMI(price: number, lender: Lender, tenure: Tenure) {
   const { downPctg, feePctg } = LENDER_CONFIG[lender];
   const down = Math.round(price * downPctg);
-  const fee  = Math.round(price * feePctg);
+  const fee = Math.round(price * feePctg);
   const monthly = Math.round((price - down + fee) / tenure);
   return { down, fee, monthly };
 }
@@ -87,13 +90,20 @@ export default function AffordabilityWidget({
       aria-label="EMI Affordability Calculator"
     >
       {/* ── Lender tabs ── */}
-      <div className="flex gap-2 mb-4" role="tablist" aria-label="Select lender">
+      <div
+        className="flex gap-2 mb-4"
+        role="tablist"
+        aria-label="Select lender"
+      >
         {(Object.keys(LENDER_CONFIG) as Lender[]).map((l) => (
           <button
             key={l}
             role="tab"
             aria-selected={lender === l}
-            onClick={() => { setLender(l); setTimedOut(false); }}
+            onClick={() => {
+              setLender(l);
+              setTimedOut(false);
+            }}
             className={[
               "flex-1 py-2 px-3 rounded-[var(--radius-ricky-sm)] text-sm font-semibold transition-all",
               "duration-[var(--ease-ricky-fast)]",
@@ -108,13 +118,20 @@ export default function AffordabilityWidget({
       </div>
 
       {/* ── Tenure chips ── */}
-      <div className="flex gap-2 mb-5" role="radiogroup" aria-label="Select tenure">
+      <div
+        className="flex gap-2 mb-5"
+        role="radiogroup"
+        aria-label="Select tenure"
+      >
         {TENURES.map((t) => (
           <button
             key={t}
             role="radio"
             aria-checked={tenure === t}
-            onClick={() => { setTenure(t); setTimedOut(false); }}
+            onClick={() => {
+              setTenure(t);
+              setTimedOut(false);
+            }}
             className={[
               "flex-1 py-1.5 rounded-[var(--radius-ricky-sm)] text-sm font-semibold transition-all",
               "duration-[var(--ease-ricky-fast)]",
@@ -136,16 +153,23 @@ export default function AffordabilityWidget({
       >
         <div className="flex justify-between text-sm text-[var(--color-ricky-text-muted)]">
           <span>Down payment</span>
-          <span className="font-semibold text-white">{down === 0 ? "₹0 (Zero)" : fmt(down)}</span>
+          <span className="font-semibold text-white">
+            {down === 0 ? "₹0 (Zero)" : fmt(down)}
+          </span>
         </div>
         <div className="flex justify-between text-sm text-[var(--color-ricky-text-muted)]">
           <span>Processing fee</span>
           <span className="font-semibold text-white">{fmt(fee)}</span>
         </div>
         <div className="flex justify-between border-t border-white/10 pt-2">
-          <span className="text-[var(--color-ricky-text-muted)] text-sm">Monthly installment</span>
+          <span className="text-[var(--color-ricky-text-muted)] text-sm">
+            Monthly installment
+          </span>
           <span className="text-2xl font-extrabold text-white">
-            {fmt(monthly)}<span className="text-sm font-normal text-[var(--color-ricky-text-muted)]">/mo</span>
+            {fmt(monthly)}
+            <span className="text-sm font-normal text-[var(--color-ricky-text-muted)]">
+              /mo
+            </span>
           </span>
         </div>
       </div>
@@ -157,7 +181,8 @@ export default function AffordabilityWidget({
             Gateway is taking too long
           </p>
           <p className="text-[var(--color-ricky-text-muted)] mb-2">
-            The EMI check is delayed. Chat with Ricky directly and we'll sort it out.
+            The EMI check is delayed. Chat with Ricky directly and we'll sort it
+            out.
           </p>
           <button
             onClick={onSupportChat}
@@ -183,9 +208,24 @@ export default function AffordabilityWidget({
       >
         {loading ? (
           <span className="flex items-center justify-center gap-2">
-            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+            <svg
+              className="animate-spin h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v8z"
+              />
             </svg>
             Checking eligibility…
           </span>

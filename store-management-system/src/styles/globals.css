@@ -61,8 +61,23 @@
 
   /* Page container */
   .page-container {
-    padding: 1.5rem 2rem;
+    padding: 1rem 1rem;
     max-width: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 640px) {
+    .page-container {
+      padding: 1.5rem 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .page-container {
+      padding: 1.75rem 2rem;
+    }
   }
 
   /* Section card */
@@ -119,7 +134,16 @@
 
 /* ── Splash screen loader animation ──────────────────── */
 @keyframes loading {
-  0%   { width: 0%;   margin-left: 0; }
-  50%  { width: 60%;  margin-left: 20%; }
-  100% { width: 0%;   margin-left: 100%; }
+  0% {
+    width: 0%;
+    margin-left: 0;
+  }
+  50% {
+    width: 60%;
+    margin-left: 20%;
+  }
+  100% {
+    width: 0%;
+    margin-left: 100%;
+  }
 }

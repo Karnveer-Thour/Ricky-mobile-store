@@ -41,11 +41,11 @@ export class CreateProductDto extends BaseDto {
     description: 'Enter product category id',
     example: '7fjha7843jhgjh833949',
     type: 'string',
-    required: true,
+    required: false,
   })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  categoryId: string;
+  categoryId?: string;
 
   @ApiProperty({
     description: 'Enter discount applied on product',
@@ -156,4 +156,3 @@ export class CreateProductDto extends BaseDto {
   @Type(() => CreateProductVariantDto)
   variants?: CreateProductVariantDto[];
 }
-

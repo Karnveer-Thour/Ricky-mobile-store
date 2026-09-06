@@ -70,10 +70,7 @@ export const { OPEN_CONFIRM, SET_CONFIRM_LOADING, CLOSE_CONFIRM } =
   ConfirmSlice.actions;
 
 /** Helper to dispatch confirm with callback */
-export const openGlobalConfirm = (
-  dispatch: any,
-  options: ConfirmOptions,
-) => {
+export const openGlobalConfirm = (dispatch: any, options: ConfirmOptions) => {
   pendingOnConfirm = options.onConfirm || null;
   pendingOnCancel = options.onCancel || null;
   dispatch(

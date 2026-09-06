@@ -62,7 +62,8 @@ export default function InventoryPage() {
             Inventory Data Grid
           </h1>
           <p className="text-xs text-slate-500 mt-0.5">
-            Real-time stock management with sorting, inline updates &amp; CSV reports
+            Real-time stock management with sorting, inline updates &amp; CSV
+            reports
           </p>
         </div>
 

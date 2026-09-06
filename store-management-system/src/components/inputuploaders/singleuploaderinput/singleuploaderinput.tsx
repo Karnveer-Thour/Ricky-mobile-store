@@ -1,5 +1,6 @@
 import { Upload, X } from "lucide-react";
 import React, { useRef, useState } from "react";
+import Image from "next/image";
 import ImageCropper from "../imagecroppers/singleimagecropper";
 
 interface singleInputProps {
@@ -32,7 +33,11 @@ const SingleUploaderInput = ({
       if (croppedPicture) URL.revokeObjectURL(croppedPicture);
 
       const imageURL = URL.createObjectURL(files[0]);
-      features?.crop ? setPicture(imageURL) : setCroppedPicture(imageURL);
+      if (features?.crop) {
+        setPicture(imageURL);
+      } else {
+        setCroppedPicture(imageURL);
+      }
     }
     e.target.value = "";
   };
@@ -70,9 +75,11 @@ const SingleUploaderInput = ({
         <div
           className={`relative w-32 h-32 border-2 ${isDark ? "border-white" : "border-gray-500"} rounded-xl overflow-hidden`}
         >
-          <img
+          <Image
             src={croppedPicture}
             alt={`Uploaded`}
+            width={128}
+            height={128}
             className="w-full h-full object-cover"
           />
           <button

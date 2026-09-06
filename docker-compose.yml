@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ricky-mobile-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: ricky_mobile_store
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ricky_mobile_store"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./store_backend
+      dockerfile: Dockerfile
+    container_name: ricky-mobile-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgrespassword
+      DB_DATABASE: ricky_mobile_store
+      DB_SYNCHRONIZE: "true"
+      DB_LOGGING: "false"
+      JWT_SECRET: "ricky_mobile_store_production_jwt_secret_2026"
+      PASSWORD_PEPPER: "ricky_mobile_pepper_string"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  admin:
+    build:
+      context: ./store-management-system
+      dockerfile: Dockerfile
+    container_name: ricky-mobile-admin
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      NEXT_PUBLIC_API_URL: "http://localhost:3000"
+      NEXT_PUBLIC_APP_TITLE: "Ricky Mobile Store Admin"
+    depends_on:
+      - backend
+
+  storefront:
+    build:
+      context: ./store-web
+      dockerfile: Dockerfile
+    container_name: ricky-mobile-storefront
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+    driver: local

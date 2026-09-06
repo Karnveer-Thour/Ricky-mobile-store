@@ -66,12 +66,12 @@ function Table({
 
   return (
     <div className="h-full w-full">
-      {/* ── Desktop Table ───────────────────────────── */}
+      {/* ── Desktop & Responsive Table ───────────────────────────── */}
       {isLoading ? (
         /* Shimmer skeleton while loading */
         <div
           className={cn(
-            "hidden md:flex flex-col rounded-2xl border overflow-hidden shadow-sm",
+            "flex flex-col rounded-2xl border overflow-hidden shadow-sm w-full",
             isDark
               ? "bg-slate-900/80 border-white/8"
               : "bg-white border-slate-200",
@@ -80,7 +80,7 @@ function Table({
           {/* Toolbar skeleton */}
           <div
             className={cn(
-              "flex justify-between items-center px-6 py-4 border-b",
+              "flex justify-between items-center px-4 sm:px-6 py-4 border-b",
               isDark ? "border-white/8" : "border-slate-100",
             )}
           >
@@ -90,7 +90,7 @@ function Table({
           {/* Header skeleton */}
           <div
             className={cn(
-              "flex gap-6 px-6 py-3.5 border-b",
+              "hidden md:flex gap-6 px-6 py-3.5 border-b",
               isDark
                 ? "border-white/8 bg-slate-900/60"
                 : "border-slate-100 bg-slate-50",
@@ -105,19 +105,19 @@ function Table({
             ))}
           </div>
           {/* Row skeletons */}
-          {Array.from({ length: 7 }).map((_, i) => (
+          {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
               className={cn(
-                "flex gap-6 items-center px-6 py-4 border-b",
+                "flex gap-6 items-center px-4 sm:px-6 py-4 border-b",
                 isDark ? "border-white/5" : "border-slate-50",
               )}
-              style={{ opacity: 1 - i * 0.1 }}
+              style={{ opacity: 1 - i * 0.15 }}
             >
               <div className="h-8 w-8 animate-pulse rounded-lg bg-slate-700/40 shrink-0" />
               <div className="h-3 w-36 animate-pulse rounded bg-slate-700/30" />
-              <div className="h-3 w-48 animate-pulse rounded bg-slate-700/30" />
-              <div className="h-3 w-24 animate-pulse rounded bg-slate-700/30" />
+              <div className="h-3 w-48 animate-pulse rounded bg-slate-700/30 hidden sm:block" />
+              <div className="h-3 w-24 animate-pulse rounded bg-slate-700/30 hidden md:block" />
               <div className="ml-auto flex gap-2">
                 <div className="h-7 w-7 animate-pulse rounded-lg bg-slate-700/30" />
                 <div className="h-7 w-7 animate-pulse rounded-lg bg-slate-700/30" />
@@ -129,7 +129,7 @@ function Table({
         /* Empty dataset state */
         <div
           className={cn(
-            "hidden md:flex flex-col items-center justify-center py-20 rounded-2xl border",
+            "flex flex-col items-center justify-center py-16 sm:py-20 rounded-2xl border w-full",
             isDark
               ? "bg-slate-900/60 border-white/8 text-slate-400"
               : "bg-white border-slate-200 text-slate-500 shadow-sm",
@@ -165,7 +165,7 @@ function Table({
       ) : (
         <div
           className={cn(
-            "hidden md:flex flex-col rounded-2xl border overflow-hidden shadow-sm transition-colors",
+            "flex flex-col rounded-2xl border overflow-hidden shadow-sm transition-colors w-full",
             isDark
               ? "bg-slate-900/80 border-white/8 backdrop-blur-sm"
               : "bg-white border-slate-200",
@@ -174,7 +174,7 @@ function Table({
           {/* Filter + Column toolbar */}
           <div
             className={cn(
-              "flex justify-between items-center px-6 py-4 border-b",
+              "flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 px-4 sm:px-6 py-4 border-b",
               isDark
                 ? "border-white/8 bg-slate-900/40"
                 : "border-slate-100 bg-slate-50/40",
@@ -189,9 +189,9 @@ function Table({
             />
           </div>
 
-          {/* Table */}
-          <div className="overflow-x-auto w-full">
-            <table className="w-full text-sm border-collapse">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto w-full">
+            <table className="w-full text-sm border-collapse table-auto">
               {/* Header */}
               <thead
                 className={cn(
@@ -275,13 +275,13 @@ function Table({
             </table>
           </div>
 
+          {/* Mobile Card View */}
+          <MobileCards table={table} isDark={isDark} />
+
           {/* Pagination */}
           <Pagination table={table} isDark={isDark} />
         </div>
       )}
-
-      {/* ── Mobile Cards ────────────────────────────── */}
-      <MobileCards data={data} />
     </div>
   );
 }

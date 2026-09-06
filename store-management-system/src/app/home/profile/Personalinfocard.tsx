@@ -1,12 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  Addressinfovalidation,
-  Personalinfovalidation,
-} from "./utils/Personalinfovalidation";
 
 type PersonalInfoCardProps = {
   formData: { [key: string]: any };
@@ -19,7 +13,6 @@ const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({
   Cardname,
   isDark = false,
 }) => {
-  const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
 
   const {
@@ -59,7 +52,7 @@ const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({
       </div>
 
       <form
-        onSubmit={handleSubmit((data) => {
+        onSubmit={handleSubmit(() => {
           setIsEditing(false);
         })}
       >

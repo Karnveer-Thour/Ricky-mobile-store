@@ -2,7 +2,6 @@ import { BaseDto } from 'Common/Dto/Base.dto';
 import {
   IsBoolean,
   IsEnum,
-  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,

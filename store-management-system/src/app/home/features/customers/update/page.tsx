@@ -11,7 +11,7 @@ import { storeType } from "@/types/store.index";
 import { customerService } from "@/services/customer.service";
 import { UserCheck, Check, X } from "lucide-react";
 
-function updateCustomer() {
+function UpdateCustomer() {
   const router = useRouter();
   const isDark = useSelector((store: storeType) => store.DarkMode.isDarkMode);
   const [customerId, setCustomerId] = useState<string>("");
@@ -189,4 +189,4 @@ function updateCustomer() {
   );
 }
 
-export default updateCustomer;
+export default UpdateCustomer;

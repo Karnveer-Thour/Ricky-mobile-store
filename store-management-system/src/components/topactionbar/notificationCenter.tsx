@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Bell,
   CheckCircle,
-  AlertTriangle,
   CreditCard,
   Truck,
   Package,
@@ -13,7 +12,6 @@ import {
   Trash2,
   Volume2,
   VolumeX,
-  ExternalLink,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -182,7 +180,9 @@ export default function NotificationCenter({
                 <VolumeX size={14} className="text-amber-400" />
               )}
               <span className="text-xs font-semibold text-slate-300">
-                {pushEnabled ? "Push Alerts Active" : "Enable Push Notifications"}
+                {pushEnabled
+                  ? "Push Alerts Active"
+                  : "Enable Push Notifications"}
               </span>
             </div>
             {!pushEnabled && (
@@ -270,4 +270,3 @@ export default function NotificationCenter({
     document.body,
   );
 }
-

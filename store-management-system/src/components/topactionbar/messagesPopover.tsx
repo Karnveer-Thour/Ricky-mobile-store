@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, ExternalLink, ArrowRight } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 export interface MessagePreviewItem {
@@ -19,16 +20,14 @@ interface MessagesPopoverProps {
   isOpen: boolean;
   onClose: () => void;
   isDark?: boolean;
-  unreadCount: number;
-  setUnreadCount: (count: number) => void;
+  _unreadCount?: number;
+  _setUnreadCount?: (count: number) => void;
 }
 
 export default function MessagesPopover({
   isOpen,
   onClose,
   isDark = true,
-  unreadCount,
-  setUnreadCount,
 }: MessagesPopoverProps) {
   const [mounted, setMounted] = useState(false);
   const [messages, setMessages] = useState<MessagePreviewItem[]>([]);
@@ -101,9 +100,11 @@ export default function MessagesPopover({
                     : "hover:bg-white/5 opacity-80 hover:opacity-100"
                 }`}
               >
-                <img
+                <Image
                   src={item.avatar}
                   alt={item.senderName}
+                  width={36}
+                  height={36}
                   className="w-9 h-9 rounded-full object-cover bg-slate-800 shrink-0 mt-0.5"
                 />
                 <div className="flex-1 min-w-0">
@@ -148,4 +149,3 @@ export default function MessagesPopover({
     document.body,
   );
 }
-

@@ -17,8 +17,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     { isDark: isDarkProp, children, className = "", customMargin, ...props },
     ref,
   ) => {
-    const reduxDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
-    const isDark = isDarkProp !== undefined ? isDarkProp : reduxDark ?? false;
+    const reduxDark = useSelector(
+      (state: storeType) => state.DarkMode?.isDarkMode,
+    );
+    const isDark = isDarkProp !== undefined ? isDarkProp : (reduxDark ?? false);
 
     return (
       <div className="relative w-full">

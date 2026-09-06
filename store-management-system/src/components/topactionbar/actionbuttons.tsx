@@ -19,9 +19,8 @@ function Actionbuttons({
   const [messagesOpen, setMessagesOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(initialMessages);
-  const [unreadNotifications, setUnreadNotifications] = useState(
-    initialNotifications,
-  );
+  const [unreadNotifications, setUnreadNotifications] =
+    useState(initialNotifications);
 
   return (
     <>

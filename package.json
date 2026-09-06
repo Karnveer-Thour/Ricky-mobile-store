@@ -1,0 +1,52 @@
+{
+  "name": "ricky-mobile-store",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ricky Mobile Store - Monorepo for Backend API, Admin Management System, and Customer Storefront",
+  "scripts": {
+    "install:all": "npm install && npm --prefix store_backend install && npm --prefix store-management-system install && npm --prefix store-web install",
+    "install:backend": "npm --prefix store_backend install",
+    "install:admin": "npm --prefix store-management-system install",
+    "install:storefront": "npm --prefix store-web install",
+    "build:all": "npm --prefix store_backend run build && npm --prefix store-management-system run build && npm --prefix store-web run build",
+    "build:backend": "npm --prefix store_backend run build",
+    "build:admin": "npm --prefix store-management-system run build",
+    "build:storefront": "npm --prefix store-web run build",
+    "dev:all": "concurrently -k -n \"BACKEND,ADMIN,STOREFRONT\" -c \"blue.bold,green.bold,magenta.bold\" \"npm run dev:backend\" \"npm run dev:admin\" \"npm run dev:storefront\"",
+    "run:all": "npm run dev:all",
+    "start:all": "npm run dev:all",
+    "dev:backend": "npm --prefix store_backend run start:dev",
+    "dev:admin": "npm --prefix store-management-system run dev",
+    "dev:storefront": "npm --prefix store-web run dev",
+    "test:all": "npm --prefix store_backend test && npm --prefix store-management-system test && npm --prefix store-web test",
+    "test:backend": "npm --prefix store_backend test",
+    "test:admin": "npm --prefix store-management-system test",
+    "test:storefront": "npm --prefix store-web test",
+    "typecheck:all": "npm --prefix store_backend run typecheck && npm --prefix store-management-system run typecheck && npm --prefix store-web run typecheck",
+    "typecheck:backend": "npm --prefix store_backend run typecheck",
+    "typecheck:admin": "npm --prefix store-management-system run typecheck",
+    "typecheck:storefront": "npm --prefix store-web run typecheck",
+    "format:all": "npm --prefix store_backend run format && npm --prefix store-management-system run format && npm --prefix store-web run format",
+    "format:backend": "npm --prefix store_backend run format",
+    "format:admin": "npm --prefix store-management-system run format",
+    "format:storefront": "npm --prefix store-web run format",
+    "lint:all:fix": "npm --prefix store_backend run lint && npm --prefix store-management-system run lint:fix",
+    "lint:backend:fix": "npm --prefix store_backend run lint",
+    "lint:admin:fix": "npm --prefix store-management-system run lint:fix",
+    "setup:all": "npm run install:all && npm run build:all",
+    "audit:file-length": "node scripts/audit-file-length.js"
+  },
+  "keywords": [
+    "ricky-mobile-store",
+    "ecommerce",
+    "nestjs",
+    "nextjs",
+    "vite",
+    "react"
+  ],
+  "author": "Karanveer Thour",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
+}

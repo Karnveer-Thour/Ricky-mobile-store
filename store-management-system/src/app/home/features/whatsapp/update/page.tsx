@@ -80,13 +80,23 @@ export default function UpdateWhatsappGroup() {
 
   return (
     <BlurredPopupLayout width={"60%"} height={"auto"} isDark={isDark}>
-      <div className={`w-full flex items-center gap-3 border-b pb-4 mb-4 ${isDark ? "border-white/10" : "border-slate-200"}`}>
+      <div
+        className={`w-full flex items-center gap-3 border-b pb-4 mb-4 ${isDark ? "border-white/10" : "border-slate-200"}`}
+      >
         <div className="p-2.5 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-slate-950 font-bold">
           <Edit3 size={22} />
         </div>
         <div>
-          <h2 className={`text-xl font-extrabold ${isDark ? "text-white" : "text-slate-900"}`}>Update WhatsApp Group</h2>
-          <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>Modify group link and active broadcasting status</p>
+          <h2
+            className={`text-xl font-extrabold ${isDark ? "text-white" : "text-slate-900"}`}
+          >
+            Update WhatsApp Group
+          </h2>
+          <p
+            className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}
+          >
+            Modify group link and active broadcasting status
+          </p>
         </div>
       </div>
 
@@ -123,10 +133,18 @@ export default function UpdateWhatsappGroup() {
           />
         </Inputcontainer>
 
-        <div className={`flex items-center justify-between p-3 rounded-xl border ${
-          isDark ? "bg-slate-900/60 border-white/5" : "bg-slate-50 border-slate-200"
-        }`}>
-          <span className={`text-xs font-bold ${isDark ? "text-slate-300" : "text-slate-700"}`}>Broadcasting Status:</span>
+        <div
+          className={`flex items-center justify-between p-3 rounded-xl border ${
+            isDark
+              ? "bg-slate-900/60 border-white/5"
+              : "bg-slate-50 border-slate-200"
+          }`}
+        >
+          <span
+            className={`text-xs font-bold ${isDark ? "text-slate-300" : "text-slate-700"}`}
+          >
+            Broadcasting Status:
+          </span>
           <ToggleButton
             isDark={isDark}
             activeLabel="Active"

@@ -1,7 +1,12 @@
 import { useNavigate } from "react-router";
 import { useApp } from "../AppContext";
 import { FAQS } from "../data";
-import { ArrowLeft, HelpCircle, ChevronDown, MessageCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  HelpCircle,
+  ChevronDown,
+  MessageCircle,
+} from "lucide-react";
 
 export default function FaqPage() {
   const navigate = useNavigate();
@@ -25,8 +30,15 @@ export default function FaqPage() {
       </div>
 
       <p className="text-gray-500 text-sm leading-relaxed mb-8">
-        Common questions about orders, delivery, returns, and payments. Can't find your answer?{" "}
-        <button onClick={() => navigate("/chat")} className="text-[#00cfff] underline hover:no-underline">Chat with us</button>.
+        Common questions about orders, delivery, returns, and payments. Can't
+        find your answer?{" "}
+        <button
+          onClick={() => navigate("/chat")}
+          className="text-[#00cfff] underline hover:no-underline"
+        >
+          Chat with us
+        </button>
+        .
       </p>
 
       <div className="space-y-3">
@@ -42,8 +54,13 @@ export default function FaqPage() {
               className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-white/2 transition-all"
             >
               <div className="flex items-start gap-3">
-                <HelpCircle size={15} className="text-[#00cfff] shrink-0 mt-0.5" />
-                <span className="text-sm font-semibold text-white">{faq.q}</span>
+                <HelpCircle
+                  size={15}
+                  className="text-[#00cfff] shrink-0 mt-0.5"
+                />
+                <span className="text-sm font-semibold text-white">
+                  {faq.q}
+                </span>
               </div>
               <ChevronDown
                 size={15}
@@ -52,7 +69,9 @@ export default function FaqPage() {
             </button>
             {openFaq === i && (
               <div className="px-5 pb-5 pt-1 border-t border-white/5">
-                <p className="text-sm text-gray-400 leading-relaxed pl-6">{faq.a}</p>
+                <p className="text-sm text-gray-400 leading-relaxed pl-6">
+                  {faq.a}
+                </p>
               </div>
             )}
           </div>
@@ -66,7 +85,10 @@ export default function FaqPage() {
         </div>
         <div className="flex-1">
           <p className="font-bold text-white mb-1">Still have questions?</p>
-          <p className="text-xs text-gray-600">Our support team is online and ready to help. Average response time is under 5 minutes.</p>
+          <p className="text-xs text-gray-600">
+            Our support team is online and ready to help. Average response time
+            is under 5 minutes.
+          </p>
         </div>
         <button
           onClick={() => navigate("/chat")}

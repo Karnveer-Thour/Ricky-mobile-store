@@ -5,7 +5,7 @@ import { storeType } from "@/types/store.index";
 import React from "react";
 import { useSelector } from "react-redux";
 
-function layout({
+function FeaturesLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -38,4 +38,4 @@ function layout({
   );
 }
 
-export default layout;
+export default FeaturesLayout;

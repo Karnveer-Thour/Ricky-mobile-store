@@ -45,14 +45,32 @@ export default function WishlistPage() {
                 key={p.id}
                 className="bg-[#0e0e1c] border border-white/5 rounded-3xl p-4 flex gap-4 items-center"
               >
-                <img src={p.image} alt={p.name} className="w-20 h-20 rounded-2xl object-cover shrink-0" />
+                <img
+                  src={p.image}
+                  alt={p.name}
+                  className="w-20 h-20 rounded-2xl object-cover shrink-0"
+                />
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-white text-sm truncate">{p.name}</h3>
-                  <p className="text-sm text-[#00cfff] mt-1" style={{ fontFamily: "'DM Mono', monospace" }}>{fmt(ep)}</p>
+                  <h3 className="font-semibold text-white text-sm truncate">
+                    {p.name}
+                  </h3>
+                  <p
+                    className="text-sm text-[#00cfff] mt-1"
+                    style={{ fontFamily: "'DM Mono', monospace" }}
+                  >
+                    {fmt(ep)}
+                  </p>
 
                   <div className="flex gap-2 mt-3">
                     <button
-                      onClick={() => addToCart(p.id, p.colors[0].id, p.colors[0].colorName, 1)}
+                      onClick={() =>
+                        addToCart(
+                          p.id,
+                          p.colors[0].id,
+                          p.colors[0].colorName,
+                          1,
+                        )
+                      }
                       className="px-3 py-1.5 bg-[#00cfff] text-[#07070f] rounded-xl text-xs font-bold hover:bg-[#00cfff]/90 transition-all flex items-center gap-1"
                     >
                       <ShoppingCart size={11} /> Add

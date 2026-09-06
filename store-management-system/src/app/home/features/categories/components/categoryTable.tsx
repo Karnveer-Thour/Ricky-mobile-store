@@ -67,11 +67,31 @@ const CategoryTable = ({ isDark = false }: { isDark?: boolean }) => {
       header: "Name",
       id: "Name",
       accessorKey: "name",
+      cell: ({ row }: { row: any }) => (
+        <div className="font-semibold text-sm max-w-[140px] sm:max-w-[180px] truncate">
+          <span className={isDark ? "text-slate-100" : "text-slate-900"}>
+            {row.original.name}
+          </span>
+        </div>
+      ),
     },
     {
       header: "Description",
       id: "Description",
       accessorKey: "description",
+      cell: ({ row }: { row: any }) => (
+        <div
+          className={cn(
+            "text-xs line-clamp-2 leading-relaxed max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl break-words",
+            isDark ? "text-slate-400" : "text-slate-600",
+          )}
+          title={row.original.description || undefined}
+        >
+          {row.original.description || (
+            <span className="italic opacity-40">No description provided</span>
+          )}
+        </div>
+      ),
     },
     {
       header: "Capabilities",
@@ -80,10 +100,10 @@ const CategoryTable = ({ isDark = false }: { isDark?: boolean }) => {
         const hasColors = row.original?.hasColors !== false;
         const hasVariants = row.original?.hasVariants === true;
         return (
-          <div className="flex items-center gap-1.5 flex-wrap">
+          <div className="flex items-center gap-1.5 flex-wrap whitespace-nowrap">
             <span
               className={cn(
-                "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-semibold border",
+                "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-semibold border shrink-0",
                 hasColors
                   ? isDark
                     ? "bg-cyan-500/10 text-cyan-400 border-cyan-500/20"
@@ -100,7 +120,7 @@ const CategoryTable = ({ isDark = false }: { isDark?: boolean }) => {
             {hasVariants && (
               <span
                 className={cn(
-                  "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-semibold border",
+                  "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-semibold border shrink-0",
                   isDark
                     ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
                     : "bg-blue-50 text-blue-700 border-blue-200",
@@ -118,17 +138,27 @@ const CategoryTable = ({ isDark = false }: { isDark?: boolean }) => {
       header: "Actions",
       id: "Actions",
       cell: ({ row }: { row: any }) => (
-        <div className="flex items-center justify-end gap-1.5">
+        <div className="flex items-center justify-end gap-1.5 whitespace-nowrap">
           <button
             onClick={() => handleUpdate(row.original)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-[#00cfff] hover:bg-[#00cfff]/10 transition-colors cursor-pointer"
+            className={cn(
+              "p-1.5 rounded-lg transition-colors cursor-pointer",
+              isDark
+                ? "text-slate-400 hover:text-cyan-400 hover:bg-cyan-500/10"
+                : "text-slate-400 hover:text-cyan-600 hover:bg-cyan-50",
+            )}
             title="Edit Category"
           >
             <Edit size={16} />
           </button>
           <button
             onClick={() => handleDelete(row.original)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+            className={cn(
+              "p-1.5 rounded-lg transition-colors cursor-pointer",
+              isDark
+                ? "text-slate-400 hover:text-red-400 hover:bg-red-500/10"
+                : "text-slate-400 hover:text-rose-600 hover:bg-rose-50",
+            )}
             title="Delete Category"
           >
             <TrashIcon size={16} />
@@ -148,17 +178,14 @@ const CategoryTable = ({ isDark = false }: { isDark?: boolean }) => {
     Actions: true,
   });
 
+  const colName = columnVisibility.Name;
+  const colDescription = columnVisibility.Description;
+  const colCapabilities = columnVisibility.Capabilities;
+
   useEffect(() => {
-    let isAction = false;
-    for (let key in columnVisibility) {
-      if (key === "Actions") continue;
-      if (columnVisibility[key as ColumnKey] === true) {
-        isAction = true;
-        break;
-      }
-    }
+    const isAction = colName || colDescription || colCapabilities;
     setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-  }, [columnVisibility.Name, columnVisibility.Description]);
+  }, [colName, colDescription, colCapabilities]);
 
   return (
     <div className="w-full">

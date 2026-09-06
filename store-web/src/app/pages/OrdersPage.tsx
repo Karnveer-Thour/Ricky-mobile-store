@@ -42,7 +42,8 @@ export default function OrdersPage() {
           </div>
           <h2 className="text-xl font-bold text-white mb-2">No Orders Yet</h2>
           <p className="text-sm text-gray-500 max-w-sm mb-6">
-            You haven't placed any orders yet. Discover our latest smartphones and exclusive offers!
+            You haven't placed any orders yet. Discover our latest smartphones
+            and exclusive offers!
           </p>
           <button
             onClick={() => navigate("/")}
@@ -63,10 +64,17 @@ export default function OrdersPage() {
               >
                 <div className="flex items-start justify-between mb-4 gap-4">
                   <div>
-                    <p className="text-xs text-gray-700" style={{ fontFamily: "'DM Mono', monospace" }}>{order.id}</p>
+                    <p
+                      className="text-xs text-gray-700"
+                      style={{ fontFamily: "'DM Mono', monospace" }}
+                    >
+                      {order.id}
+                    </p>
                     <p className="text-sm text-gray-600 mt-1">{order.date}</p>
                   </div>
-                  <div className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border ${cfg.bg} ${cfg.color} shrink-0`}>
+                  <div
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border ${cfg.bg} ${cfg.color} shrink-0`}
+                  >
                     <Icon size={12} />
                     <span className="text-xs font-bold">{cfg.label}</span>
                   </div>
@@ -77,9 +85,14 @@ export default function OrdersPage() {
                     <div key={i} className="flex justify-between text-sm gap-4">
                       <span className="text-gray-400 truncate">
                         {item.name}{" "}
-                        <span className="text-gray-700 text-xs">({item.color}) ×{item.qty}</span>
+                        <span className="text-gray-700 text-xs">
+                          ({item.color}) ×{item.qty}
+                        </span>
                       </span>
-                      <span className="text-white shrink-0" style={{ fontFamily: "'DM Mono', monospace" }}>
+                      <span
+                        className="text-white shrink-0"
+                        style={{ fontFamily: "'DM Mono', monospace" }}
+                      >
                         {fmt(item.price)}
                       </span>
                     </div>
@@ -88,7 +101,10 @@ export default function OrdersPage() {
 
                 <div className="flex items-center justify-between pt-4 border-t border-white/5">
                   <p className="text-xs text-gray-700">
-                    via <span className="text-gray-500 font-semibold">{order.payment}</span>
+                    via{" "}
+                    <span className="text-gray-500 font-semibold">
+                      {order.payment}
+                    </span>
                   </p>
                   <div className="flex items-center gap-3">
                     <button
@@ -97,7 +113,10 @@ export default function OrdersPage() {
                     >
                       <Truck size={12} /> Track
                     </button>
-                    <p className="font-bold text-white text-lg" style={{ fontFamily: "'DM Mono', monospace" }}>
+                    <p
+                      className="font-bold text-white text-lg"
+                      style={{ fontFamily: "'DM Mono', monospace" }}
+                    >
                       {fmt(order.total)}
                     </p>
                   </div>

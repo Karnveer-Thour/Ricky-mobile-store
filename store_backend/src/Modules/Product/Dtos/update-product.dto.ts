@@ -1,10 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, MaxLength, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { BaseDto } from 'Common/Dto/Base.dto';
-import { CreateProductColorDto } from './create-color.dto';
 import { ProductColorDto } from './ProductColor.dto';
-import { ProductColor } from '../Entities/ProductColor.entity';
 import { CreateProductVariantDto } from './create-variant.dto';
 
 export class UpdateProductDto extends BaseDto {

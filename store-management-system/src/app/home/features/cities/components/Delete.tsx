@@ -30,14 +30,21 @@ function Delete({ handleDelete, Id, Name, isDark = false }: DeleteProps) {
   return (
     <BlurredPopupLayout width={"400px"} height={"auto"} isDark={isDark}>
       <div className="p-2 text-center space-y-4">
-        <h2 className={`text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>Delete City</h2>
+        <h2
+          className={`text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}
+        >
+          Delete City
+        </h2>
         {error && (
           <p className="text-xs text-rose-500 font-semibold">{error}</p>
         )}
         <p className="text-sm font-medium text-rose-500">
-          Are you sure you want to delete <span className="font-bold">{Name}</span>?
+          Are you sure you want to delete{" "}
+          <span className="font-bold">{Name}</span>?
         </p>
-        <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+        <p
+          className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}
+        >
           This will permanently remove the city from your active delivery zones.
         </p>
         <div className="flex gap-3 justify-center pt-2">

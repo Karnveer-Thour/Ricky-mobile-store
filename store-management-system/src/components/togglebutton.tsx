@@ -24,8 +24,10 @@ function ToggleButton({
   defaultActive,
   activeDefault,
 }: toggleButtonProps) {
-  const reduxDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
-  const isDark = isDarkProp !== undefined ? isDarkProp : reduxDark ?? false;
+  const reduxDark = useSelector(
+    (state: storeType) => state.DarkMode?.isDarkMode,
+  );
+  const isDark = isDarkProp !== undefined ? isDarkProp : (reduxDark ?? false);
 
   const initial = active ?? defaultActive ?? activeDefault ?? false;
   const [isActive, setIsActive] = useState(initial);

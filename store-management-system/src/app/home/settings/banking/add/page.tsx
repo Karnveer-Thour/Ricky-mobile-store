@@ -9,7 +9,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 
-function page() {
+function Page() {
   const router = useRouter();
   const isDark = useSelector((store: storeType) => store.DarkMode.isDarkMode);
 
@@ -89,4 +89,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

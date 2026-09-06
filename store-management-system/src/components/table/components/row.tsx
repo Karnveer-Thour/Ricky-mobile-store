@@ -28,11 +28,25 @@ function Row<TData>({ row, isDark = false }: RowProps<TData>) {
           : "border-slate-100 text-slate-700 hover:text-slate-900",
       )}
     >
-      {row.getVisibleCells().map((cell) => (
-        <td key={cell.id} className="py-3.5 px-6 font-normal whitespace-nowrap">
-          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-        </td>
-      ))}
+      {row.getVisibleCells().map((cell) => {
+        const isDescription =
+          cell.column.id?.toLowerCase() === "description" ||
+          cell.column.id?.toLowerCase() === "address" ||
+          cell.column.id?.toLowerCase() === "notes";
+        return (
+          <td
+            key={cell.id}
+            className={cn(
+              "py-3.5 px-6 font-normal align-middle",
+              isDescription
+                ? "whitespace-normal break-words"
+                : "whitespace-nowrap",
+            )}
+          >
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </td>
+        );
+      })}
     </motion.tr>
   );
 }

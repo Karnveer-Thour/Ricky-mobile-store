@@ -123,7 +123,8 @@ class WhatsappService {
         return res;
       }
     } catch (e) {
-      // fallback to stored
+      console.error(e);
+      throw new Error("Failed to fetch WhatsApp groups.");
     }
     return this.getStoredGroups();
   }
@@ -163,7 +164,7 @@ class WhatsappService {
 
     const current = this.getStoredGroups();
     const updated = current.map((g) =>
-      (g._id === id || g.id === id) ? { ...g, ...data } : g,
+      g._id === id || g.id === id ? { ...g, ...data } : g,
     );
     this.saveStoredGroups(updated);
 

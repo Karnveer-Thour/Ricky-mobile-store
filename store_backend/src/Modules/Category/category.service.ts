@@ -44,7 +44,7 @@ export class CategoryService {
       if (!existingCategory) {
         throw new NotFoundException('Category does not exist');
       }
-      for (let key in updateCategory) {
+      for (const key in updateCategory) {
         existingCategory[key] = updateCategory[key] ?? existingCategory[key];
       }
       await this.categoryRepository.save(existingCategory);

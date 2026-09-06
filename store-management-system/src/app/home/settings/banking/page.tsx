@@ -58,7 +58,9 @@ function Page() {
   return (
     <div className="w-full sm:px-8 space-y-8 overflow-hidden">
       {/* Heading */}
-      <div className={`flex items-center gap-4 border-b pb-4 ${isDark ? "border-slate-800" : "border-slate-200"}`}>
+      <div
+        className={`flex items-center gap-4 border-b pb-4 ${isDark ? "border-slate-800" : "border-slate-200"}`}
+      >
         <h1
           className={`text-2xl sm:text-3xl font-bold ${
             isDark ? "text-white" : "text-slate-900"
@@ -66,13 +68,23 @@ function Page() {
         >
           Banking & Transactions
         </h1>
-        <hr className={`flex-1 border-t ${isDark ? "border-slate-800" : "border-slate-200"}`} />
+        <hr
+          className={`flex-1 border-t ${isDark ? "border-slate-800" : "border-slate-200"}`}
+        />
       </div>
 
       <div className="flex justify-between items-center">
         <div>
-          <h2 className={`text-lg font-bold ${isDark ? "text-white" : "text-slate-900"}`}>Connected Bank Accounts</h2>
-          <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>Manage payout and settlement accounts for store disbursements</p>
+          <h2
+            className={`text-lg font-bold ${isDark ? "text-white" : "text-slate-900"}`}
+          >
+            Connected Bank Accounts
+          </h2>
+          <p
+            className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}
+          >
+            Manage payout and settlement accounts for store disbursements
+          </p>
         </div>
         <Button
           isDark={isDark}
@@ -103,7 +115,9 @@ function Page() {
 
       {/* Transaction Table Section */}
       <div className="space-y-4 pt-4">
-        <div className={`flex items-center gap-4 border-b pb-3 ${isDark ? "border-slate-800" : "border-slate-200"}`}>
+        <div
+          className={`flex items-center gap-4 border-b pb-3 ${isDark ? "border-slate-800" : "border-slate-200"}`}
+        >
           <h2
             className={`text-lg font-bold ${
               isDark ? "text-white" : "text-slate-900"
@@ -111,15 +125,27 @@ function Page() {
           >
             Settlement & Transaction History
           </h2>
-          <hr className={`flex-1 border-t ${isDark ? "border-slate-800" : "border-slate-200"}`} />
+          <hr
+            className={`flex-1 border-t ${isDark ? "border-slate-800" : "border-slate-200"}`}
+          />
         </div>
 
-        <div className={`rounded-2xl border overflow-hidden ${isDark ? "bg-slate-900/40 border-slate-800" : "bg-white border-slate-200 shadow-sm"}`}>
+        <div
+          className={`rounded-2xl border overflow-hidden ${isDark ? "bg-slate-900/40 border-slate-800" : "bg-white border-slate-200 shadow-sm"}`}
+        >
           <div className="overflow-x-auto">
             <table className="min-w-full text-xs">
               <thead>
-                <tr className={isDark ? "bg-slate-800/80 text-slate-300 border-b border-slate-700/80" : "bg-slate-50 text-slate-700 border-b border-slate-200"}>
-                  <th className="py-3 px-4 text-left font-bold">Transaction ID</th>
+                <tr
+                  className={
+                    isDark
+                      ? "bg-slate-800/80 text-slate-300 border-b border-slate-700/80"
+                      : "bg-slate-50 text-slate-700 border-b border-slate-200"
+                  }
+                >
+                  <th className="py-3 px-4 text-left font-bold">
+                    Transaction ID
+                  </th>
                   <th className="py-3 px-4 text-left font-bold">Beneficiary</th>
                   <th className="py-3 px-4 text-left font-bold">Account No.</th>
                   <th className="py-3 px-4 text-left font-bold">Amount</th>
@@ -138,19 +164,27 @@ function Page() {
                     }`}
                     onClick={() => router.push(`${pathName}/transaction`)}
                   >
-                    <td className="py-3 px-4 font-mono font-bold text-cyan-600 dark:text-cyan-400">{txn.id}</td>
+                    <td className="py-3 px-4 font-mono font-bold text-cyan-600 dark:text-cyan-400">
+                      {txn.id}
+                    </td>
                     <td className="py-3 px-4 font-medium">{txn.name}</td>
-                    <td className="py-3 px-4 font-mono text-slate-500">{txn.accountNumber}</td>
-                    <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">{txn.amount}</td>
+                    <td className="py-3 px-4 font-mono text-slate-500">
+                      {txn.accountNumber}
+                    </td>
+                    <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">
+                      {txn.amount}
+                    </td>
                     <td className="py-3 px-4 text-slate-500">{txn.date}</td>
                     <td className="py-3 px-4 text-center">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                        txn.status === "Success"
-                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30"
-                          : txn.status === "Pending"
-                          ? "bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-500/30"
-                          : "bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/30"
-                      }`}>
+                      <span
+                        className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                          txn.status === "Success"
+                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30"
+                            : txn.status === "Pending"
+                              ? "bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-500/30"
+                              : "bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/30"
+                        }`}
+                      >
                         {txn.status}
                       </span>
                     </td>
@@ -161,10 +195,16 @@ function Page() {
           </div>
 
           {/* Pagination Buttons */}
-          <div className={`flex items-center justify-between px-4 py-3 border-t ${
-            isDark ? "border-slate-800 bg-slate-900/30 text-slate-400" : "border-slate-200 bg-slate-50/50 text-slate-600"
-          }`}>
-            <span className="text-xs">Showing page {currentPage} of {totalPages}</span>
+          <div
+            className={`flex items-center justify-between px-4 py-3 border-t ${
+              isDark
+                ? "border-slate-800 bg-slate-900/30 text-slate-400"
+                : "border-slate-200 bg-slate-50/50 text-slate-600"
+            }`}
+          >
+            <span className="text-xs">
+              Showing page {currentPage} of {totalPages}
+            </span>
             <div className="flex gap-2">
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
@@ -173,8 +213,8 @@ function Page() {
                   currentPage === 1
                     ? "opacity-50 cursor-not-allowed text-slate-400"
                     : isDark
-                    ? "bg-slate-800 text-slate-200 hover:bg-slate-700"
-                    : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-300 shadow-xs"
+                      ? "bg-slate-800 text-slate-200 hover:bg-slate-700"
+                      : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-300 shadow-xs"
                 }`}
               >
                 Previous
@@ -188,8 +228,8 @@ function Page() {
                   currentPage === totalPages
                     ? "opacity-50 cursor-not-allowed text-slate-400"
                     : isDark
-                    ? "bg-slate-800 text-slate-200 hover:bg-slate-700"
-                    : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-300 shadow-xs"
+                      ? "bg-slate-800 text-slate-200 hover:bg-slate-700"
+                      : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-300 shadow-xs"
                 }`}
               >
                 Next

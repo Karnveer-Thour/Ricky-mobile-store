@@ -11,8 +11,10 @@ interface CardProps {
 }
 
 function Card({ children, isDark: isDarkProp, className = "" }: CardProps) {
-  const reduxDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
-  const isDark = isDarkProp !== undefined ? isDarkProp : reduxDark ?? false;
+  const reduxDark = useSelector(
+    (state: storeType) => state.DarkMode?.isDarkMode,
+  );
+  const isDark = isDarkProp !== undefined ? isDarkProp : (reduxDark ?? false);
 
   return (
     <div

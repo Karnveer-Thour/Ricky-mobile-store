@@ -1,8 +1,7 @@
 "use client";
-import { useState } from "react";
 import { Camera } from "lucide-react";
-import { useDispatch } from "react-redux";
 import Card from "@/components/Card";
+import Image from "next/image";
 
 interface ProfileCardProps {
   formData: {
@@ -16,10 +15,6 @@ interface ProfileCardProps {
 }
 
 const ProfileCard = ({ formData, isDark = false }: ProfileCardProps) => {
-  const dispatch = useDispatch();
-  const [data, setData] = useState(formData);
-  const [Loading, setLoading] = useState(false);
-
   return (
     <Card isDark={isDark}>
       <div
@@ -27,13 +22,15 @@ const ProfileCard = ({ formData, isDark = false }: ProfileCardProps) => {
           isDark ? "bg-gray-700" : "bg-gray-100"
         }`}
       >
-        <img
+        <Image
           src={
             !Loading
               ? data.imageURL
               : "https://res.cloudinary.com/dszgssbnh/image/upload/v1742290154/Marketplace/gvpccbc1jfzodruyussw.gif"
           }
           alt="Profile"
+          width={200}
+          height={200}
           className={`w-full h-full rounded-full object-cover border-2 shadow-md ${
             isDark ? "border-gray-500" : "border-gray-300"
           }`}

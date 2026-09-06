@@ -14,7 +14,10 @@ describe('CategoryService', () => {
     };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CategoryService, { provide: CategoryRepository, useValue: mockCategoryRepository }],
+      providers: [
+        CategoryService,
+        { provide: CategoryRepository, useValue: mockCategoryRepository },
+      ],
     }).compile();
 
     service = module.get<CategoryService>(CategoryService);
@@ -40,12 +43,14 @@ describe('CategoryService', () => {
 
     expect(result.code).toBe(201);
     expect(result.status).toBe(true);
-    expect(result.data).toEqual(expect.objectContaining({
-      id: 'cat-123',
-      name: 'Charging Accessories',
-      hasColors: false,
-      hasVariants: true,
-    }));
+    expect(result.data).toEqual(
+      expect.objectContaining({
+        id: 'cat-123',
+        name: 'Charging Accessories',
+        hasColors: false,
+        hasVariants: true,
+      }),
+    );
     expect(mockCategoryRepository.save).toHaveBeenCalledWith(categoryDto);
   });
 

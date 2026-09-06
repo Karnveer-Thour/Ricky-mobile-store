@@ -11,7 +11,7 @@ type detailsArray = {
   value: string;
 };
 interface DetailProps {
-  title: String;
+  title: string;
   details: detailsArray[];
 }
 const Detail = ({ title, details }: DetailProps) => {
@@ -20,19 +20,29 @@ const Detail = ({ title, details }: DetailProps) => {
 
   return (
     <div className="flex justify-center w-full overflow-hidden max-sm:h-auto">
-      <div className={`pb-6 w-[95%] border-b ${isDark ? "border-slate-800" : "border-slate-200"}`}>
-        <p className={`ms-2 mt-4 text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}>{title}</p>
+      <div
+        className={`pb-6 w-[95%] border-b ${isDark ? "border-slate-800" : "border-slate-200"}`}
+      >
+        <p
+          className={`ms-2 mt-4 text-xl font-bold ${isDark ? "text-white" : "text-slate-900"}`}
+        >
+          {title}
+        </p>
         {!isEditing ? (
           <div className="w-full flex justify-between items-center mt-3">
             <div className="space-y-1.5">
               {details.map((detail) => (
                 <div key={detail.id} className="ms-2 text-sm">
                   {detail.title && (
-                    <span className={`font-semibold ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                    <span
+                      className={`font-semibold ${isDark ? "text-slate-400" : "text-slate-600"}`}
+                    >
                       {detail.title}:{" "}
                     </span>
                   )}
-                  <span className={`font-medium ${isDark ? "text-slate-200" : "text-slate-900"}`}>
+                  <span
+                    className={`font-medium ${isDark ? "text-slate-200" : "text-slate-900"}`}
+                  >
                     {detail.value}
                   </span>
                 </div>
@@ -54,12 +64,11 @@ const Detail = ({ title, details }: DetailProps) => {
           <div className="w-full flex justify-between items-center mt-3">
             <div className="space-y-2">
               {details.map((detail) => (
-                <div
-                  key={detail.id}
-                  className="ms-2 flex items-center gap-2"
-                >
+                <div key={detail.id} className="ms-2 flex items-center gap-2">
                   {detail.title && (
-                    <span className={`font-semibold text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}>
+                    <span
+                      className={`font-semibold text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}
+                    >
                       {detail.title}:{" "}
                     </span>
                   )}

@@ -5,13 +5,13 @@ import Button from "@/components/Button";
 import {
   Sparkles,
   Check,
-  X,
   Shield,
   FileText,
   Image as ImageIcon,
   Palette,
   AlertCircle,
 } from "lucide-react";
+import NextImage from "next/image";
 import {
   AIAuditResult,
   AIEnrichedProduct,
@@ -23,6 +23,7 @@ interface AiAuditModalProps {
   currentValues: {
     warranty?: string;
     description?: string;
+    specifications?: string;
     imageUrl?: string;
     colors?: Array<{ name: string; quantity: number }>;
   };
@@ -135,9 +136,11 @@ export default function AiAuditModal({
                 <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-3">
                   <div className="w-12 h-12 rounded-lg bg-slate-950 overflow-hidden shrink-0 border border-slate-800">
                     {currentValues.imageUrl ? (
-                      <img
+                      <NextImage
                         src={currentValues.imageUrl}
                         alt="Current"
+                        width={48}
+                        height={48}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -158,9 +161,11 @@ export default function AiAuditModal({
 
                 <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-3">
                   <div className="w-12 h-12 rounded-lg bg-slate-950 overflow-hidden shrink-0 border border-emerald-500/30">
-                    <img
+                    <NextImage
                       src={suggestions.imageUrl}
                       alt="AI Suggested"
+                      width={48}
+                      height={48}
                       className="w-full h-full object-cover"
                     />
                   </div>

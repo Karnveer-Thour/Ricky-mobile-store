@@ -3,16 +3,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { storeType } from "@/types/store.index";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  AlertTriangle,
-  AlertOctagon,
-  Info,
-  X,
-  Loader2,
-  Trash2,
-  LogOut,
-  CheckCircle2,
-} from "lucide-react";
+import { AlertTriangle, AlertOctagon, Info, X, Loader2 } from "lucide-react";
 import {
   executeConfirmAction,
   executeCancelAction,
@@ -21,7 +12,8 @@ import {
 export default function GlobalConfirmModal() {
   const dispatch = useDispatch();
   const confirmState = useSelector((state: storeType) => state.Confirm) || {};
-  const isDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode) ?? false;
+  const isDark =
+    useSelector((state: storeType) => state.DarkMode?.isDarkMode) ?? false;
   const {
     isOpen = false,
     title = "Are you sure?",
@@ -38,24 +30,45 @@ export default function GlobalConfirmModal() {
     switch (variant) {
       case "danger":
         return {
-          icon: <AlertOctagon size={28} className={isDark ? "text-rose-400" : "text-rose-600"} />,
-          badgeBg: isDark ? "bg-rose-500/15 border-rose-500/30" : "bg-rose-50 border-rose-200",
+          icon: (
+            <AlertOctagon
+              size={28}
+              className={isDark ? "text-rose-400" : "text-rose-600"}
+            />
+          ),
+          badgeBg: isDark
+            ? "bg-rose-500/15 border-rose-500/30"
+            : "bg-rose-50 border-rose-200",
           confirmBtn:
             "bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white shadow-rose-950/30",
           accentBorder: isDark ? "border-rose-500/30" : "border-rose-200",
         };
       case "warning":
         return {
-          icon: <AlertTriangle size={28} className={isDark ? "text-amber-400" : "text-amber-600"} />,
-          badgeBg: isDark ? "bg-amber-500/15 border-amber-500/30" : "bg-amber-50 border-amber-200",
+          icon: (
+            <AlertTriangle
+              size={28}
+              className={isDark ? "text-amber-400" : "text-amber-600"}
+            />
+          ),
+          badgeBg: isDark
+            ? "bg-amber-500/15 border-amber-500/30"
+            : "bg-amber-50 border-amber-200",
           confirmBtn:
             "bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 shadow-amber-950/30 font-bold",
           accentBorder: isDark ? "border-amber-500/30" : "border-amber-200",
         };
       default:
         return {
-          icon: <Info size={28} className={isDark ? "text-cyan-400" : "text-cyan-600"} />,
-          badgeBg: isDark ? "bg-cyan-500/15 border-cyan-500/30" : "bg-cyan-50 border-cyan-200",
+          icon: (
+            <Info
+              size={28}
+              className={isDark ? "text-cyan-400" : "text-cyan-600"}
+            />
+          ),
+          badgeBg: isDark
+            ? "bg-cyan-500/15 border-cyan-500/30"
+            : "bg-cyan-50 border-cyan-200",
           confirmBtn:
             "bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-cyan-950/30 font-bold",
           accentBorder: isDark ? "border-cyan-500/30" : "border-cyan-200",

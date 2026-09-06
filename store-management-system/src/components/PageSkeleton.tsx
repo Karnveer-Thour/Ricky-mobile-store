@@ -51,7 +51,10 @@ function DashboardSkeleton() {
       {/* Count Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="rounded-2xl p-5 bg-slate-800/40 space-y-3 border border-white/5">
+          <div
+            key={i}
+            className="rounded-2xl p-5 bg-slate-800/40 space-y-3 border border-white/5"
+          >
             <div className={`${shimmer()} w-10 h-10 rounded-xl`} />
             <Row w="w-16" h="h-6" />
             <Row w="w-24" h="h-3" />
@@ -62,7 +65,10 @@ function DashboardSkeleton() {
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {Array.from({ length: 2 }).map((_, i) => (
-          <div key={i} className="rounded-2xl bg-slate-800/40 border border-white/5 p-5 space-y-3">
+          <div
+            key={i}
+            className="rounded-2xl bg-slate-800/40 border border-white/5 p-5 space-y-3"
+          >
             <Row w="w-36" h="h-5" />
             <div className={`${shimmer()} w-full h-48 rounded-xl`} />
           </div>
@@ -133,8 +139,13 @@ function ChatSkeleton() {
         <Row w="w-48" h="h-5" />
         <div className="flex-1 space-y-4 py-2">
           {Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className={`flex ${i % 2 === 0 ? "justify-start" : "justify-end"}`}>
-              <div className={`${shimmer()} rounded-2xl h-10 ${i % 2 === 0 ? "w-56" : "w-40"}`} />
+            <div
+              key={i}
+              className={`flex ${i % 2 === 0 ? "justify-start" : "justify-end"}`}
+            >
+              <div
+                className={`${shimmer()} rounded-2xl h-10 ${i % 2 === 0 ? "w-56" : "w-40"}`}
+              />
             </div>
           ))}
         </div>
@@ -146,7 +157,11 @@ function ChatSkeleton() {
 
 type SkeletonVariant = "table" | "dashboard" | "form" | "chat";
 
-export default function PageSkeleton({ variant = "table" }: { variant?: SkeletonVariant }) {
+export default function PageSkeleton({
+  variant = "table",
+}: {
+  variant?: SkeletonVariant;
+}) {
   return (
     <div className="w-full flex flex-col space-y-6 animate-in fade-in duration-150">
       {/* Topbar skeleton */}

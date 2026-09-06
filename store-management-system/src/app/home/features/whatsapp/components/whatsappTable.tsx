@@ -4,10 +4,7 @@ import { Edit, TrashIcon, Users, ExternalLink } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import ToggleButton from "@/components/togglebutton";
-import {
-  whatsappService,
-  WhatsappGroup,
-} from "@/services/whatsapp.service";
+import { whatsappService, WhatsappGroup } from "@/services/whatsapp.service";
 import { useDispatch } from "react-redux";
 import { SUCCESSALERT, ERRORALERT } from "@/store/slices/alert.slice";
 import { openGlobalConfirm } from "@/store/slices/confirm.slice";
@@ -69,10 +66,14 @@ const WhatsappTable = ({ isDark = false }: { isDark?: boolean }) => {
     try {
       await whatsappService.updateGroup(id, { status: newStatus });
       setWhatsappGroups((prev) =>
-        prev.map((g) => (g._id === id || g.id === id ? { ...g, status: newStatus } : g)),
+        prev.map((g) =>
+          g._id === id || g.id === id ? { ...g, status: newStatus } : g,
+        ),
       );
       dispatch(
-        SUCCESSALERT(`Group status updated to ${newStatus ? "Active" : "Inactive"}`),
+        SUCCESSALERT(
+          `Group status updated to ${newStatus ? "Active" : "Inactive"}`,
+        ),
       );
     } catch {
       dispatch(ERRORALERT("Failed to update status"));
@@ -90,7 +91,9 @@ const WhatsappTable = ({ isDark = false }: { isDark?: boolean }) => {
             <Users size={16} />
           </div>
           <div>
-            <p className="font-bold text-sm text-slate-100">{row.original.groupName}</p>
+            <p className="font-bold text-sm text-slate-100">
+              {row.original.groupName}
+            </p>
             <a
               href={row.original.url}
               target="_blank"

@@ -1,46 +1,90 @@
 "use client";
 import React from "react";
-
-interface Customer {
-  _id: string;
-  name: string;
-  email: string;
-  rating: number;
-}
+import { flexRender, Table as TableType } from "@tanstack/react-table";
+import cn from "classnames";
 
 interface MobileCardsProps {
-  data: Customer[];
+  table?: TableType<any>;
+  data?: any[];
+  isDark?: boolean;
 }
 
-function MobileCards({ data }: MobileCardsProps) {
+function MobileCards({ table, isDark = false }: MobileCardsProps) {
+  if (!table) return null;
+
+  const rows = table.getRowModel().rows;
+  if (rows.length === 0) {
+    return (
+      <div
+        className={cn(
+          "md:hidden text-center py-10 text-xs",
+          isDark ? "text-slate-500" : "text-slate-400",
+        )}
+      >
+        No records to display
+      </div>
+    );
+  }
+
   return (
-    <>
-      {data?.length === 0 ? (
-        <div className="md:hidden text-center py-12 text-gray-500">
-          No customers found
-        </div>
-      ) : (
-        <div className="md:hidden space-y-4 w-[85vw] mt-3">
-          {data.map((customer) => (
-            <div key={customer._id} className="bg-white p-4 rounded-lg shadow">
-              <div className="grid grid-cols-2 gap-2">
-                <div className="font-medium">ID:</div>
-                <div className="truncate">{customer.name}</div>
+    <div className="md:hidden space-y-3 p-3 w-full">
+      {rows.map((row) => {
+        const visibleCells = row.getVisibleCells();
+        const actionCell = visibleCells.find(
+          (c) => c.column.id?.toLowerCase() === "actions",
+        );
+        const otherCells = visibleCells.filter(
+          (c) => c.column.id?.toLowerCase() !== "actions",
+        );
 
-                <div className="font-medium">Name:</div>
-                <div className="truncate">{customer.name}</div>
+        return (
+          <div
+            key={row.id}
+            className={cn(
+              "p-4 rounded-xl border transition-all",
+              isDark
+                ? "bg-slate-900/90 border-white/8 text-slate-200"
+                : "bg-white border-slate-200 text-slate-800 shadow-sm",
+            )}
+          >
+            <div className="space-y-2.5">
+              {otherCells.map((cell) => (
+                <div
+                  key={cell.id}
+                  className="flex items-start justify-between gap-3 text-xs"
+                >
+                  <span
+                    className={cn(
+                      "font-medium shrink-0 pt-0.5",
+                      isDark ? "text-slate-400" : "text-slate-500",
+                    )}
+                  >
+                    {String(cell.column.columnDef.header || cell.column.id)}:
+                  </span>
+                  <div className="text-right flex-1 break-words">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </div>
+                </div>
+              ))}
 
-                <div className="font-medium">Email:</div>
-                <div className="truncate">{customer.email}</div>
-
-                <div className="font-medium">Rating:</div>
-                <div className="font-semibold">{customer.rating}</div>
-              </div>
+              {actionCell && (
+                <div
+                  className={cn(
+                    "pt-2.5 mt-2 border-t flex justify-end items-center",
+                    isDark ? "border-white/5" : "border-slate-100",
+                  )}
+                >
+                  {flexRender(
+                    actionCell.column.columnDef.cell,
+                    actionCell.getContext(),
+                  )}
+                </div>
+              )}
             </div>
-          ))}
-        </div>
-      )}
-    </>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 

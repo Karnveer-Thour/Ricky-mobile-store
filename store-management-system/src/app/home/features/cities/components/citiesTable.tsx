@@ -145,23 +145,17 @@ const CityTable = ({ isDark = false }: { isDark?: boolean }) => {
     Actions: true,
   });
 
+  const colName = columnVisibility.Name;
+  const colDistrict = columnVisibility.District;
+  const colState = columnVisibility.State;
+  const colPincode = columnVisibility.Pincode;
+  const colActive = columnVisibility.Active;
+
   useEffect(() => {
-    let isAction = false;
-    for (let key in columnVisibility) {
-      if (key === "Actions") continue;
-      if (columnVisibility[key as ColumnKey] === true) {
-        isAction = true;
-        break;
-      }
-    }
+    const isAction =
+      colName || colDistrict || colState || colPincode || colActive;
     setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-  }, [
-    columnVisibility.Name,
-    columnVisibility.District,
-    columnVisibility.State,
-    columnVisibility.Pincode,
-    columnVisibility.Active,
-  ]);
+  }, [colName, colDistrict, colState, colPincode, colActive]);
 
   return (
     <div className="w-full">

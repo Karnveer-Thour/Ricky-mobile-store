@@ -45,7 +45,7 @@ export class AcceptedCitiesService {
       if (!existingCity) {
         throw new NotFoundException('City does not exist');
       }
-      for (let key in cityData) {
+      for (const key in cityData) {
         existingCity[key] = cityData[key] ?? existingCity[key];
       }
       await this.acceptedCitiesRepository.save(existingCity);

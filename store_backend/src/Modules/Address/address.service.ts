@@ -30,7 +30,7 @@ export class AddressService {
       if (!existingAddress) {
         return false;
       }
-      for (let key in addressData) {
+      for (const key in addressData) {
         if (addressData[key] !== undefined) {
           existingAddress[key] = addressData[key];
         }

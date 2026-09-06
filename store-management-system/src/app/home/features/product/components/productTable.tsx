@@ -2,6 +2,7 @@
 import Table from "@/components/table/table";
 import { Edit, TrashIcon, Smartphone, Eye } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import ProductViewModal from "./productViewModal";
 import { usePathname, useRouter } from "next/navigation";
 import { productService } from "@/services/product.service";
@@ -93,9 +94,11 @@ const ProductTable = ({
         return (
           <div className="flex items-center py-0.5">
             {img ? (
-              <img
+              <Image
                 src={img}
                 alt={item.name}
+                width={40}
+                height={40}
                 className="w-10 h-10 rounded-xl object-cover border border-white/8 shadow-sm bg-slate-800 hover:scale-110 transition-transform duration-300"
                 onError={(e) => {
                   (e.target as HTMLElement).style.display = "none";
@@ -173,7 +176,8 @@ const ProductTable = ({
       accessorKey: "quantity",
       cell: ({ row }: { row: any }) => {
         const item = row.original;
-        const variants = item.variants && Array.isArray(item.variants) ? item.variants : [];
+        const variants =
+          item.variants && Array.isArray(item.variants) ? item.variants : [];
         const colors = item.colors || item.productColors || [];
 
         return (
@@ -190,7 +194,10 @@ const ProductTable = ({
               <div className="flex flex-wrap gap-1 max-w-[220px]">
                 {variants.map((v: any, i: number) => {
                   const vQty = Number(v.quantity) || 0;
-                  const label = [v.ram, v.storage].filter(Boolean).join("/") || v.color || "Variant";
+                  const label =
+                    [v.ram, v.storage].filter(Boolean).join("/") ||
+                    v.color ||
+                    "Variant";
                   return (
                     <span
                       key={i}
@@ -204,7 +211,11 @@ const ProductTable = ({
                       )}
                     >
                       <span>{label}</span>
-                      <span className={isDark ? "text-cyan-400" : "text-cyan-700 font-bold"}>
+                      <span
+                        className={
+                          isDark ? "text-cyan-400" : "text-cyan-700 font-bold"
+                        }
+                      >
                         ({vQty})
                       </span>
                     </span>
@@ -298,23 +309,17 @@ const ProductTable = ({
     Actions: true,
   });
 
+  const colImage = columnVisibility.Image;
+  const colName = columnVisibility.Name;
+  const colCategory = columnVisibility.Category;
+  const colPrice = columnVisibility.Price;
+  const colQuantity = columnVisibility.Quantity;
+
   useEffect(() => {
-    let isAction = false;
-    for (let key in columnVisibility) {
-      if (key === "Actions") continue;
-      if (columnVisibility[key as ColumnKey] === true) {
-        isAction = true;
-        break;
-      }
-    }
+    const isAction =
+      colImage || colName || colCategory || colPrice || colQuantity;
     setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-  }, [
-    columnVisibility.Image,
-    columnVisibility.Name,
-    columnVisibility.Category,
-    columnVisibility.Price,
-    columnVisibility.Quantity,
-  ]);
+  }, [colImage, colName, colCategory, colPrice, colQuantity]);
 
   return (
     <div className="w-full">

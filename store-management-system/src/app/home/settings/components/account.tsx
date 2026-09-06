@@ -1,5 +1,4 @@
 import Button from "@/components/Button";
-import Input from "@/components/Input";
 import { Trash } from "lucide-react";
 import React from "react";
 import Delete from "../banking/components/Delete";
@@ -43,8 +42,8 @@ const BankAccount = ({
             ? "bg-slate-900 border-cyan-500/60 shadow-lg shadow-cyan-500/10"
             : "bg-white border-cyan-500 shadow-md ring-1 ring-cyan-500"
           : isDark
-          ? "bg-slate-900/40 border-slate-800 hover:border-slate-700 text-slate-300"
-          : "bg-white border-slate-200 hover:border-slate-300 text-slate-800 shadow-xs"
+            ? "bg-slate-900/40 border-slate-800 hover:border-slate-700 text-slate-300"
+            : "bg-white border-slate-200 hover:border-slate-300 text-slate-800 shadow-xs"
       }`}
     >
       {/* Native radio input */}
@@ -58,10 +57,20 @@ const BankAccount = ({
       />
 
       <div className="flex flex-col flex-grow ms-2">
-        <p className={`text-base font-bold ${isDark ? "text-white" : "text-slate-900"}`}>{bankName}</p>
-        <div className={`text-xs mt-1 space-y-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
-          <p><span className="font-medium">Account Number:</span> {accountNumber}</p>
-          <p><span className="font-medium">IFSC Code:</span> {ifscCode}</p>
+        <p
+          className={`text-base font-bold ${isDark ? "text-white" : "text-slate-900"}`}
+        >
+          {bankName}
+        </p>
+        <div
+          className={`text-xs mt-1 space-y-0.5 ${isDark ? "text-slate-400" : "text-slate-500"}`}
+        >
+          <p>
+            <span className="font-medium">Account Number:</span> {accountNumber}
+          </p>
+          <p>
+            <span className="font-medium">IFSC Code:</span> {ifscCode}
+          </p>
         </div>
       </div>
 

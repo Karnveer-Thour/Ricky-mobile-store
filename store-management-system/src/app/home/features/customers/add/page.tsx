@@ -12,7 +12,7 @@ import PasswordInput from "@/components/passwordInput";
 import { customerService } from "@/services/customer.service";
 import { UserPlus, Check, X } from "lucide-react";
 
-function addCustomer() {
+function AddCustomer() {
   const router = useRouter();
   const isDark = useSelector((store: storeType) => store.DarkMode.isDarkMode);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -178,4 +178,4 @@ function addCustomer() {
   );
 }
 
-export default addCustomer;
+export default AddCustomer;

@@ -1,12 +1,14 @@
 {
-  "name": "@figma/my-make-file",
+  "name": "ricky-mobile-store-web",
   "private": true,
   "version": "0.0.1",
   "type": "module",
   "scripts": {
     "build": "vite build",
     "dev": "vite",
-    "test": "vitest run"
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "format": "npx prettier --write \"src/**/*.{ts,tsx,css,json}\""
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

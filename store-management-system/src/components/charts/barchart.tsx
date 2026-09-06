@@ -73,7 +73,9 @@ function MetricSummaryChart({ data, isDark = true }: MetricBarChartProps) {
           <Tooltip
             contentStyle={{
               backgroundColor: isDark ? "#0f172a" : "#ffffff",
-              borderColor: isDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.1)",
+              borderColor: isDark
+                ? "rgba(255,255,255,0.12)"
+                : "rgba(0,0,0,0.1)",
               borderRadius: "12px",
               boxShadow: isDark
                 ? "0 10px 25px -5px rgba(0,0,0,0.5)"
@@ -95,4 +97,3 @@ function MetricSummaryChart({ data, isDark = true }: MetricBarChartProps) {
 }
 
 export default MetricSummaryChart;
-

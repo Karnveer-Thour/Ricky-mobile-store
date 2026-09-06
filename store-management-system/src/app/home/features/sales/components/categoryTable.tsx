@@ -1,8 +1,6 @@
 "use client";
 import Table from "@/components/table/table";
 import { useState, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import Button from "@/components/Button";
 
 const CityTable = ({ isDark = false }) => {
   const [sales, setSales] = useState<any[]>([]);
@@ -68,7 +66,9 @@ const CityTable = ({ isDark = false }) => {
       id: "Amount",
       accessorKey: "amount",
       cell: ({ row }: { row: any }) => (
-        <span className={`font-semibold ${isDark ? "text-cyan-400" : "text-cyan-700"}`}>
+        <span
+          className={`font-semibold ${isDark ? "text-cyan-400" : "text-cyan-700"}`}
+        >
           {row.original?.amount || "—"}
         </span>
       ),

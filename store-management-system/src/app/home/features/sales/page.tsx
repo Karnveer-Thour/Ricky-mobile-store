@@ -10,7 +10,7 @@ import cn from "classnames";
 import { useState } from "react";
 import CsvDownload from "./components/csvDownload";
 
-function page() {
+function SalesPage() {
   const isDark = useSelector((state: storeType) => state.DarkMode.isDarkMode);
   const pathName = usePathname();
   const router = useRouter();
@@ -96,4 +96,4 @@ function page() {
   );
 }
 
-export default page;
+export default SalesPage;

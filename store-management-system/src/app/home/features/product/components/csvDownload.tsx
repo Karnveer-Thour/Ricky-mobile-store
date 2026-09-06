@@ -11,14 +11,7 @@ import {
   exportProductsToCsv,
   exportInventoryToCsv,
 } from "../utils/fileFunctions";
-import {
-  Download,
-  FileSpreadsheet,
-  Package,
-  Layers,
-  Check,
-  Sparkles,
-} from "lucide-react";
+import { Download, FileSpreadsheet, Package, Layers } from "lucide-react";
 
 type CsvDownloadProps = {
   cancelDownload: () => void;
@@ -28,7 +21,6 @@ type CsvDownloadProps = {
 function CsvDownload({ cancelDownload, isDark = false }: CsvDownloadProps) {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [downloadedType, setDownloadedType] = useState<string | null>(null);
 
   useEffect(() => {
     productService
@@ -46,7 +38,6 @@ function CsvDownload({ cancelDownload, isDark = false }: CsvDownloadProps) {
 
   const handleExportProductsExcel = async () => {
     await exportProductsToExcel(products);
-    setDownloadedType("products-excel");
     setTimeout(() => {
       cancelDownload();
     }, 1200);
@@ -54,7 +45,6 @@ function CsvDownload({ cancelDownload, isDark = false }: CsvDownloadProps) {
 
   const handleExportInventoryExcel = async () => {
     await exportInventoryToExcel(products);
-    setDownloadedType("inventory-excel");
     setTimeout(() => {
       cancelDownload();
     }, 1200);
@@ -62,7 +52,6 @@ function CsvDownload({ cancelDownload, isDark = false }: CsvDownloadProps) {
 
   const handleExportProductsCsv = () => {
     exportProductsToCsv(products);
-    setDownloadedType("products-csv");
     setTimeout(() => {
       cancelDownload();
     }, 1200);
@@ -70,7 +59,6 @@ function CsvDownload({ cancelDownload, isDark = false }: CsvDownloadProps) {
 
   const handleExportInventoryCsv = () => {
     exportInventoryToCsv(products);
-    setDownloadedType("inventory-csv");
     setTimeout(() => {
       cancelDownload();
     }, 1200);

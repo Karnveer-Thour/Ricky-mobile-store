@@ -10,9 +10,15 @@ interface MultiselectProps {
   isDark?: boolean;
 }
 
-function Multiselect({ Heading, children, isDark: isDarkProp }: MultiselectProps) {
-  const reduxDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
-  const isDark = isDarkProp !== undefined ? isDarkProp : reduxDark ?? false;
+function Multiselect({
+  Heading,
+  children,
+  isDark: isDarkProp,
+}: MultiselectProps) {
+  const reduxDark = useSelector(
+    (state: storeType) => state.DarkMode?.isDarkMode,
+  );
+  const isDark = isDarkProp !== undefined ? isDarkProp : (reduxDark ?? false);
 
   const [selectorOpened, setSelectorOpened] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);

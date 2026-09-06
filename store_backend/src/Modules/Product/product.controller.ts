@@ -32,33 +32,6 @@ export class ProductController {
     return this.productService.create(productData);
   }
 
-  @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() productData: UpdateProductDto,
-  ): Promise<baseResponseDto> {
-    return this.productService.update(id, productData);
-  }
-
-  @Get()
-  async getAll(@Query() query: ProductPaginationQueryDto): Promise<baseResponseDto> {
-    const page = parseInt(query.page);
-    const limit = parseInt(query.limit);
-    const pageNumber = isNaN(page) ? 1 : page;
-    const limitNumber = isNaN(limit) ? 10 : limit;
-    return this.productService.getAllWithPagination(pageNumber, limitNumber, query.searchText);
-  }
-
-  @Get(':id')
-  async getById(@Param('id') id: string): Promise<baseResponseDto> {
-    return this.productService.getById(id);
-  }
-
-  @Delete(':id')
-  async softDeleteById(@Param('id') id: string): Promise<baseResponseDto> {
-    return this.productService.softDeleteById(id);
-  }
-
   @Get('download-csv')
   @Header('Content-Type', 'text/csv')
   @Header('Content-Disposition', 'attachment; filename=products.csv')
@@ -102,5 +75,32 @@ export class ProductController {
   })
   async uploadCSV(@UploadedFile() file: Express.Multer.File) {
     return this.productService.uploadCSV(file.path);
+  }
+
+  @Patch(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() productData: UpdateProductDto,
+  ): Promise<baseResponseDto> {
+    return this.productService.update(id, productData);
+  }
+
+  @Get()
+  async getAll(@Query() query: ProductPaginationQueryDto): Promise<baseResponseDto> {
+    const page = parseInt(query.page);
+    const limit = parseInt(query.limit);
+    const pageNumber = isNaN(page) ? 1 : page;
+    const limitNumber = isNaN(limit) ? 10 : limit;
+    return this.productService.getAllWithPagination(pageNumber, limitNumber, query.searchText);
+  }
+
+  @Get(':id')
+  async getById(@Param('id') id: string): Promise<baseResponseDto> {
+    return this.productService.getById(id);
+  }
+
+  @Delete(':id')
+  async softDeleteById(@Param('id') id: string): Promise<baseResponseDto> {
+    return this.productService.softDeleteById(id);
   }
 }

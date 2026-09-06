@@ -46,8 +46,10 @@ const MultiSelectorInput = ({
   values: Array<{ name: string }>;
   isDark?: boolean;
 }) => {
-  const reduxDark = useSelector((state: storeType) => state.DarkMode?.isDarkMode);
-  const isDark = isDarkProp !== undefined ? isDarkProp : reduxDark ?? false;
+  const reduxDark = useSelector(
+    (state: storeType) => state.DarkMode?.isDarkMode,
+  );
+  const isDark = isDarkProp !== undefined ? isDarkProp : (reduxDark ?? false);
 
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState<Array<{ name: string }>>([]);
@@ -82,7 +84,10 @@ const MultiSelectorInput = ({
         isDark
           ? "bg-slate-900 border-slate-700/60 text-white"
           : "bg-white border-slate-200 text-slate-900 shadow-xs",
-        isFocused && (isDark ? "border-[#00cfff] ring-1 ring-[#00cfff]/30" : "border-[#00cfff] ring-1 ring-[#00cfff]/30"),
+        isFocused &&
+          (isDark
+            ? "border-[#00cfff] ring-1 ring-[#00cfff]/30"
+            : "border-[#00cfff] ring-1 ring-[#00cfff]/30"),
       )}
     >
       {selected.map((item, i) => (
@@ -98,7 +103,9 @@ const MultiSelectorInput = ({
         type="text"
         className={cn(
           "outline-none flex-1 min-w-[120px] text-sm font-medium bg-transparent py-1",
-          isDark ? "text-white placeholder:text-slate-500" : "text-slate-900 placeholder:text-slate-400",
+          isDark
+            ? "text-white placeholder:text-slate-500"
+            : "text-slate-900 placeholder:text-slate-400",
         )}
         value={input}
         onChange={(e) => {
@@ -123,7 +130,9 @@ const MultiSelectorInput = ({
               key={i}
               className={cn(
                 "cursor-pointer px-3 py-2 text-xs font-medium rounded-lg transition-colors",
-                isDark ? "hover:bg-slate-800 text-slate-200" : "hover:bg-slate-100 text-slate-800",
+                isDark
+                  ? "hover:bg-slate-800 text-slate-200"
+                  : "hover:bg-slate-100 text-slate-800",
               )}
               onClick={() => handleSelected(item.name)}
             >

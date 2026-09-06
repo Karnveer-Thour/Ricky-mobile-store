@@ -24,7 +24,116 @@ const FALLBACK_IMAGE =
  * Thin client proxy that delegates all AI processing, enrichment,
  * and quality audit checks to the NestJS Backend.
  */
+export interface AIEnrichedCategory {
+  description: string;
+  hasColors?: boolean;
+  hasVariants?: boolean;
+}
+
 export const aiProviderService = {
+  /**
+   * Calls the backend POST /ai/enrich-category endpoint to generate category description & options.
+   */
+  async generateCategoryDetails(
+    categoryName: string,
+  ): Promise<AIEnrichedCategory> {
+    try {
+      const res = await fetch(`${API_URL}/ai/enrich-category`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: categoryName,
+        }),
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        if (json?.data) {
+          return json.data;
+        }
+      }
+    } catch (err) {
+      console.warn(
+        "Backend AI category enrichment failed, using fallback:",
+        err,
+      );
+    }
+
+    const lower = (categoryName || "").toLowerCase();
+    let description = `Explore our curated selection of ${
+      categoryName || "electronic products"
+    } designed to deliver exceptional quality, modern style, and dependable daily performance.`;
+    let hasColors = true;
+    let hasVariants = false;
+
+    if (
+      lower.includes("phone") ||
+      lower.includes("mobile") ||
+      lower.includes("smartphone") ||
+      lower.includes("iphone")
+    ) {
+      description =
+        "The mobile category includes portable handheld devices, flagship smartphones, and 5G handsets designed for wireless communication, computing, and on-the-go entertainment.";
+      hasColors = true;
+      hasVariants = true;
+    } else if (
+      lower.includes("tablet") ||
+      lower.includes("ipad") ||
+      lower.includes("tab")
+    ) {
+      description =
+        "Portable touchscreen computing devices, iPads, and multimedia tablets ideal for digital art, entertainment, productivity, and e-learning.";
+      hasColors = true;
+      hasVariants = true;
+    } else if (
+      lower.includes("audio") ||
+      lower.includes("headphone") ||
+      lower.includes("earbud") ||
+      lower.includes("tws") ||
+      lower.includes("speaker")
+    ) {
+      description =
+        "High-fidelity personal audio gear featuring studio acoustics, active noise cancelation, seamless wireless connectivity, and all-day battery life.";
+      hasColors = true;
+      hasVariants = false;
+    } else if (
+      lower.includes("watch") ||
+      lower.includes("wearable") ||
+      lower.includes("band")
+    ) {
+      description =
+        "Intelligent wearable devices and smartwatches offering comprehensive health telemetry, GPS navigation, fitness monitoring, and instant connectivity.";
+      hasColors = true;
+      hasVariants = false;
+    } else if (
+      lower.includes("charger") ||
+      lower.includes("cable") ||
+      lower.includes("power")
+    ) {
+      description =
+        "High-speed Gallium Nitride (GaN) power adapters, durable braided cables, and portable battery banks for fast and safe device recharging.";
+      hasColors = false;
+      hasVariants = false;
+    } else if (
+      lower.includes("case") ||
+      lower.includes("cover") ||
+      lower.includes("protect")
+    ) {
+      description =
+        "Premium protective cases, tempered glass screen guards, and shockproof armor covers engineered to safeguard your devices with sleek ergonomics.";
+      hasColors = true;
+      hasVariants = false;
+    }
+
+    return {
+      description,
+      hasColors,
+      hasVariants,
+    };
+  },
+
   /**
    * Calls the backend POST /ai/enrich-product endpoint to generate product details.
    */

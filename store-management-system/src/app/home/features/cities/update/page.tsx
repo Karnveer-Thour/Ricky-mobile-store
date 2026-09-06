@@ -12,7 +12,7 @@ import ToggleButton from "@/components/togglebutton";
 import { cityService } from "@/services/city.service";
 import { MapPin, Check, X } from "lucide-react";
 
-function updateCity() {
+function UpdateCity() {
   const router = useRouter();
   const isDark = useSelector((store: storeType) => store.DarkMode.isDarkMode);
   const [cityId, setCityId] = useState<string>("");
@@ -197,4 +197,4 @@ function updateCity() {
   );
 }
 
-export default updateCity;
+export default UpdateCity;

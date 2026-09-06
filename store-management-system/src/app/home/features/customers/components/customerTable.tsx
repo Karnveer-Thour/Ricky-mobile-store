@@ -114,21 +114,14 @@ const CustomerTable = ({ isDark = false }: { isDark?: boolean }) => {
     Actions: true,
   });
 
+  const colName = columnVisibility.Name;
+  const colEmail = columnVisibility.Email;
+  const mobileVisibility = columnVisibility["Mobile Number"];
+
   useEffect(() => {
-    let isAction = false;
-    for (let key in columnVisibility) {
-      if (key === "Actions") continue;
-      if (columnVisibility[key as ColumnKey] === true) {
-        isAction = true;
-        break;
-      }
-    }
+    const isAction = colName || colEmail || mobileVisibility;
     setColumnVisibility((prev) => ({ ...prev, Actions: isAction }));
-  }, [
-    columnVisibility.Name,
-    columnVisibility.Email,
-    columnVisibility["Mobile Number"],
-  ]);
+  }, [colName, colEmail, mobileVisibility]);
 
   return (
     <div className="w-full">

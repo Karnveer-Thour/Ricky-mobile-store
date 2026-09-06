@@ -8,7 +8,9 @@ export default function OffersPage() {
   const { products, wishlist, toggleWishlist, addToCart } = useApp();
 
   const dealProducts = products.filter((p) => p.discount > 0);
-  const maxDiscount = products.length ? Math.max(...products.map((p) => pct(p.price, p.discount))) : 0;
+  const maxDiscount = products.length
+    ? Math.max(...products.map((p) => pct(p.price, p.discount)))
+    : 0;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-16">
@@ -44,7 +46,8 @@ export default function OffersPage() {
             SAVE UP TO {maxDiscount}%
           </h2>
           <p className="text-gray-400 text-sm max-w-md">
-            Handpicked deals on flagship phones. All orders include free delivery, full warranty, and our 7-day return guarantee.
+            Handpicked deals on flagship phones. All orders include free
+            delivery, full warranty, and our 7-day return guarantee.
           </p>
         </div>
       </div>
@@ -52,12 +55,35 @@ export default function OffersPage() {
       {/* Deal categories */}
       <div className="grid sm:grid-cols-3 gap-4 mb-10">
         {[
-          { Icon: Zap,       title: "Flash Sales",  desc: "Lightning deals updated every 24h", color: "text-yellow-400", bg: "bg-yellow-400/8 border-yellow-400/15" },
-          { Icon: Tag,       title: "Best Prices",  desc: "Guaranteed lowest price on flagships", color: "text-[#00cfff]", bg: "bg-[#00cfff]/8 border-[#00cfff]/15" },
-          { Icon: RotateCcw, title: "Cashback",     desc: "Up to ₹3,000 cashback on UPI payments", color: "text-green-400", bg: "bg-green-400/8 border-green-400/15" },
+          {
+            Icon: Zap,
+            title: "Flash Sales",
+            desc: "Lightning deals updated every 24h",
+            color: "text-yellow-400",
+            bg: "bg-yellow-400/8 border-yellow-400/15",
+          },
+          {
+            Icon: Tag,
+            title: "Best Prices",
+            desc: "Guaranteed lowest price on flagships",
+            color: "text-[#00cfff]",
+            bg: "bg-[#00cfff]/8 border-[#00cfff]/15",
+          },
+          {
+            Icon: RotateCcw,
+            title: "Cashback",
+            desc: "Up to ₹3,000 cashback on UPI payments",
+            color: "text-green-400",
+            bg: "bg-green-400/8 border-green-400/15",
+          },
         ].map(({ Icon, title, desc, color, bg }) => (
-          <div key={title} className={`flex items-start gap-4 p-5 rounded-2xl border ${bg}`}>
-            <div className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 ${color}`}>
+          <div
+            key={title}
+            className={`flex items-start gap-4 p-5 rounded-2xl border ${bg}`}
+          >
+            <div
+              className={`w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 ${color}`}
+            >
               <Icon size={18} />
             </div>
             <div>
@@ -68,8 +94,17 @@ export default function OffersPage() {
         ))}
       </div>
 
-      <h2 style={{ fontFamily: "'Barlow Condensed', sans-serif" }} className="text-2xl font-extrabold text-white tracking-widest mb-5">
-        ALL DEALS <span className="text-gray-700 text-base font-normal" style={{ fontFamily: "'DM Mono', monospace" }}>({dealProducts.length} offers)</span>
+      <h2
+        style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+        className="text-2xl font-extrabold text-white tracking-widest mb-5"
+      >
+        ALL DEALS{" "}
+        <span
+          className="text-gray-700 text-base font-normal"
+          style={{ fontFamily: "'DM Mono', monospace" }}
+        >
+          ({dealProducts.length} offers)
+        </span>
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -77,26 +112,79 @@ export default function OffersPage() {
           const ep = product.price - product.discount;
           const productSlug = product.name.toLowerCase().replace(/ /g, "-");
           return (
-            <div key={product.id} className="group bg-[#0e0e1c] border border-white/5 rounded-3xl overflow-hidden hover:border-[#ff2d55]/15 hover:shadow-lg hover:shadow-[#ff2d55]/4 transition-all duration-300">
-              <div className="relative aspect-square overflow-hidden bg-[#141425] cursor-pointer" onClick={() => navigate(`/products/${productSlug}`)}>
-                <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div
+              key={product.id}
+              className="group bg-[#0e0e1c] border border-white/5 rounded-3xl overflow-hidden hover:border-[#ff2d55]/15 hover:shadow-lg hover:shadow-[#ff2d55]/4 transition-all duration-300"
+            >
+              <div
+                className="relative aspect-square overflow-hidden bg-[#141425] cursor-pointer"
+                onClick={() => navigate(`/products/${productSlug}`)}
+              >
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
                 <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-                  <span className="px-3 py-1.5 bg-[#ff2d55] text-white text-sm font-extrabold rounded-lg" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>-{pct(product.price, product.discount)}% OFF</span>
-                  {product.badge && <span className="px-2.5 py-1 bg-[#00cfff] text-[#07070f] text-xs font-bold rounded-lg">{product.badge}</span>}
+                  <span
+                    className="px-3 py-1.5 bg-[#ff2d55] text-white text-sm font-extrabold rounded-lg"
+                    style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                  >
+                    -{pct(product.price, product.discount)}% OFF
+                  </span>
+                  {product.badge && (
+                    <span className="px-2.5 py-1 bg-[#00cfff] text-[#07070f] text-xs font-bold rounded-lg">
+                      {product.badge}
+                    </span>
+                  )}
                 </div>
-                <button onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }} className="absolute top-3 right-3 w-9 h-9 rounded-xl bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all">
-                  <Heart size={15} className={wishlist.includes(product.id) ? "text-[#ff2d55] fill-[#ff2d55]" : "text-white"} />
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleWishlist(product.id);
+                  }}
+                  className="absolute top-3 right-3 w-9 h-9 rounded-xl bg-black/40 backdrop-blur-sm flex items-center justify-center hover:bg-black/60 transition-all"
+                >
+                  <Heart
+                    size={15}
+                    className={
+                      wishlist.includes(product.id)
+                        ? "text-[#ff2d55] fill-[#ff2d55]"
+                        : "text-white"
+                    }
+                  />
                 </button>
               </div>
               <div className="p-4">
-                <h3 className="font-semibold text-white text-[15px] leading-snug mb-2">{product.name}</h3>
+                <h3 className="font-semibold text-white text-[15px] leading-snug mb-2">
+                  {product.name}
+                </h3>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xl font-bold text-white" style={{ fontFamily: "'DM Mono', monospace" }}>{fmt(ep)}</span>
-                  <span className="text-sm text-gray-700 line-through" style={{ fontFamily: "'DM Mono', monospace" }}>{fmt(product.price)}</span>
+                  <span
+                    className="text-xl font-bold text-white"
+                    style={{ fontFamily: "'DM Mono', monospace" }}
+                  >
+                    {fmt(ep)}
+                  </span>
+                  <span
+                    className="text-sm text-gray-700 line-through"
+                    style={{ fontFamily: "'DM Mono', monospace" }}
+                  >
+                    {fmt(product.price)}
+                  </span>
                 </div>
-                <p className="text-xs text-green-400 font-semibold mb-3">You save {fmt(product.discount)}</p>
+                <p className="text-xs text-green-400 font-semibold mb-3">
+                  You save {fmt(product.discount)}
+                </p>
                 <button
-                  onClick={() => addToCart(product.id, product.colors[0].id, product.colors[0].colorName, 1)}
+                  onClick={() =>
+                    addToCart(
+                      product.id,
+                      product.colors[0].id,
+                      product.colors[0].colorName,
+                      1,
+                    )
+                  }
                   className="w-full py-2.5 bg-[#ff2d55] text-white font-bold rounded-xl text-sm hover:bg-[#ff2d55]/90 transition-all"
                 >
                   Grab Deal
