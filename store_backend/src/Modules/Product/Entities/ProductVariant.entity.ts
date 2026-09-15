@@ -1,5 +1,4 @@
 import { BaseEntity } from 'Common/Entities/Base.entity';
-import { BaseEntity } from 'Common/Entities/Base.entity';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { Product } from './Product.entity';
 

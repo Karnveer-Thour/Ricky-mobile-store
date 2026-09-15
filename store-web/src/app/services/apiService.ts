@@ -291,7 +291,7 @@ export const apiService = {
       return {
         success: true,
         token: resData.data?.token || resData.token,
-        user: resData.data?.user || resData.user,
+        user: resData.data?.user || resData.user || null,
       };
     } catch (err: any) {
       console.warn("Social login API failed", err);

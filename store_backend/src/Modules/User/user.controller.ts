@@ -19,6 +19,7 @@ export class UserController {
     return this.userService.register(user);
   }
 
+  @Public()
   @Post('login/social/:token')
   async loginWithSocialMedia(@Param('token') token: string): Promise<baseResponseDto> {
     return this.userService.loginWithSocialMedia(token);

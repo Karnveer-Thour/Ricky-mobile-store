@@ -64,7 +64,7 @@ export class UserService {
 
       const { uid, email, name, picture } = decoded;
 
-      const user = await this.userRepository.findOneBy({ email });
+      let user = await this.userRepository.findOneBy({ email });
 
       if (!user) {
         const parts = name?.trim().split(' ') ?? [];
@@ -76,19 +76,30 @@ export class UserService {
           lastName,
           pictureUrl: picture,
           password: '',
-          role: role.Admin,
+          role: role.Customer,
           mobileNumber: '',
           dateBirth: '',
           age: 0,
         };
-        await this.userRepository.save(newUser);
+        user = await this.userRepository.save(newUser);
       }
+
+      const jwtToken = await this.userToken(user.id, user.role);
 
       return {
         code: 200,
         status: true,
         data: {
-          token: token,
+          token: jwtToken,
+          user: {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            mobileNumber: user.mobileNumber,
+            pictureUrl: user.pictureUrl,
+            role: user.role,
+          },
         },
       };
     } catch (error) {

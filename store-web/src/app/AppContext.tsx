@@ -8,6 +8,7 @@ import {
 import { Product, CartItem, ChatMessage, CHAT_INIT } from "./data";
 import { DEFAULT_SUPPORT_REPLY } from "./constants";
 import { apiService } from "./services/apiService";
+import { signInWithGoogle, isFirebaseConfigured } from "./services/googleAuth";
 
 export interface UserProfile {
   id?: string;
@@ -277,54 +278,65 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   const loginWithGoogle = async (
-    credential?: any,
+    _credential?: any,
   ): Promise<{ success: boolean; message?: string }> => {
+    // Guard: check env config before touching Firebase
+    if (!isFirebaseConfigured()) {
+      return {
+        success: false,
+        message:
+          "Google Sign-In is not configured yet. " +
+          "Please add your VITE_FIREBASE_* keys to store-web/.env and restart the dev server.",
+      };
+    }
+
     try {
-      const tokenString =
-        typeof credential === "string"
-          ? credential
-          : "google-mock-token-" + Date.now();
-      const res = await apiService.loginWithSocial(tokenString);
-      if (res.success && res.user) {
+      // Step 1: Open Google OAuth popup and obtain a real Firebase ID token
+      const googleResult = await signInWithGoogle();
+
+      // Step 2: Send the real Firebase ID token to the backend for verification
+      const res = await apiService.loginWithSocial(googleResult.idToken);
+
+      if (res.success) {
+        // Step 3a: Backend verified the token — use real user data
         const googleUser: UserProfile = {
-          id: res.user.id || "u-google-" + Date.now(),
-          firstName: res.user.firstName || "Google",
-          lastName: res.user.lastName || "User",
-          email: res.user.email || "google.user@gmail.com",
-          mobileNumber: res.user.mobileNumber || "",
-          pictureUrl:
-            res.user.pictureUrl ||
-            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop&auto=format",
-          role: "Customer",
+          id: res.user?.id || "u-google-" + Date.now(),
+          firstName:
+            res.user?.firstName ||
+            googleResult.displayName?.split(" ")[0] ||
+            "Google",
+          lastName:
+            res.user?.lastName ||
+            googleResult.displayName?.split(" ").slice(1).join(" ") ||
+            "",
+          email: res.user?.email || googleResult.email || "",
+          mobileNumber: res.user?.mobileNumber || "",
+          pictureUrl: res.user?.pictureUrl || googleResult.photoURL || "",
+          role: res.user?.role || "Customer",
         };
         setUser(googleUser);
-        setToken(res.token || "google-token-" + Date.now());
+        setToken(res.token || googleResult.idToken);
         safeSetItem("rms_user", JSON.stringify(googleUser));
-        safeSetItem("rms_token", res.token || "google-token-" + Date.now());
+        safeSetItem("rms_token", res.token || googleResult.idToken);
         setIsAuthModalOpen(false);
         return { success: true };
       } else {
-        // High-fidelity instant Google Sign-In experience
-        const googleUser: UserProfile = {
-          id: "u-google-" + Date.now(),
-          firstName: "Ricky",
-          lastName: "Customer",
-          email: "customer.khanna@gmail.com",
-          mobileNumber: "+91 98765 43210",
-          pictureUrl: "https://lh3.googleusercontent.com/a/default-user=s96-c",
-          role: "Customer",
+        // Step 3b: Backend rejected the token
+        return {
+          success: false,
+          message: res.message || "Google Sign-In was rejected by the server.",
         };
-        setUser(googleUser);
-        setToken("mock-google-token-" + Date.now());
-        safeSetItem("rms_user", JSON.stringify(googleUser));
-        safeSetItem("rms_token", "mock-google-token-" + Date.now());
-        setIsAuthModalOpen(false);
-        return { success: true };
       }
     } catch (err: any) {
+      // Handle user-cancelled popup or network errors gracefully
+      const cancelled =
+        err?.code === "auth/popup-closed-by-user" ||
+        err?.code === "auth/cancelled-popup-request";
       return {
         success: false,
-        message: err.message || "Google Sign-In failed",
+        message: cancelled
+          ? "Sign-in cancelled. Please try again."
+          : err.message || "Google Sign-In failed.",
       };
     }
   };
