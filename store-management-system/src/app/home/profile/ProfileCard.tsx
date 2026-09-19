@@ -24,9 +24,8 @@ const ProfileCard = ({ formData, isDark = false }: ProfileCardProps) => {
       >
         <Image
           src={
-            !Loading
-              ? data.imageURL
-              : "https://res.cloudinary.com/dszgssbnh/image/upload/v1742290154/Marketplace/gvpccbc1jfzodruyussw.gif"
+            formData.imageURL ||
+            "https://res.cloudinary.com/dszgssbnh/image/upload/v1742290154/Marketplace/gvpccbc1jfzodruyussw.gif"
           }
           alt="Profile"
           width={200}

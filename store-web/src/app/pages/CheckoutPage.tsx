@@ -14,6 +14,7 @@ import {
 } from "../components/checkout";
 import { useToast } from "../hooks/useToast";
 import { apiService } from "../services/apiService";
+import { evaluatePincode } from "../components/DeliveryChecker";
 
 export default function CheckoutPage() {
   const [searchParams] = useSearchParams();
@@ -53,6 +54,12 @@ export default function CheckoutPage() {
     street: string;
     landmark: string;
   }) => {
+    const cleanPin = (data.pincode || "").trim().replace(/\D/g, "");
+    const dInfo = evaluatePincode(cleanPin);
+    if (!dInfo.isDeliverable) {
+      toast.delivery.unserviceable(cleanPin || "selected");
+      return;
+    }
     setName(data.name);
     setMobile(data.mobile);
     setPincode(data.pincode);

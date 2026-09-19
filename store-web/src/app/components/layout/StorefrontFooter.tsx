@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router";
 import { Smartphone, MapPin, Phone, MessageCircle } from "lucide-react";
+import GlobalCopyright from "./GlobalCopyright";
 
 const FOOTER_SECTIONS = [
   {
@@ -115,10 +116,7 @@ export default function StorefrontFooter() {
         ))}
       </div>
       <div className="max-w-7xl mx-auto pt-6 border-t border-white/5 flex flex-wrap justify-between items-center gap-3 text-xs text-gray-500">
-        <p>
-          © 2026 Ricky Mobile Store. Serving Khanna (141401), Ludhiana & Punjab
-          with Pride.
-        </p>
+        <GlobalCopyright />
         <p style={{ fontFamily: "'DM Mono', monospace" }}>
           Hyperlocal Delivery & Repair Certified
         </p>

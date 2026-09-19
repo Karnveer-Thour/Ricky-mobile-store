@@ -5,6 +5,7 @@ import {
   productReviewSchema,
   profileSchema,
 } from "../utils/validation.schemas";
+import { evaluatePincode } from "../components/DeliveryChecker";
 
 describe("Pincode Availability & Delivery Address API", () => {
   it("should validate a correct delivery address against deliveryAddressSchema", async () => {
@@ -75,6 +76,19 @@ describe("Pincode Availability & Delivery Address API", () => {
     const res = await apiService.checkPincodeAvailability("123");
     expect(res.isAvailable).toBe(false);
     expect(res.message).toContain("6-digit");
+  });
+
+  it("evaluatePincode should correctly flag deliverable vs undeliverable pincodes", () => {
+    // Deliverable zones
+    expect(evaluatePincode("141401").isDeliverable).toBe(true);
+    expect(evaluatePincode("141001").isDeliverable).toBe(true);
+    expect(evaluatePincode("160017").isDeliverable).toBe(true);
+
+    // Undeliverable zones (outside serviceable region)
+    expect(evaluatePincode("110001").isDeliverable).toBe(false);
+    expect(evaluatePincode("400001").isDeliverable).toBe(false);
+    expect(evaluatePincode("560001").isDeliverable).toBe(false);
+    expect(evaluatePincode("123").isDeliverable).toBe(false);
   });
 });
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -151,12 +151,41 @@ export default function CheckoutAddressStep({
       ? String(selectedAddress.address?.pincode || selectedAddress.pincode || "")
       : watchedPincode || pincode;
 
+  // Unified deliverability calculation
+  const cleanPin = (activePincode || "").trim().replace(/\D/g, "");
+  const dInfo = cleanPin.length === 6 ? evaluatePincode(cleanPin) : null;
+  const isDeliverable =
+    cleanPin.length === 6
+      ? backendCheck && backendCheck.backendVerified
+        ? backendCheck.isAccepting
+        : dInfo
+          ? dInfo.isDeliverable
+          : false
+      : false;
+
+  // Track last toasted undeliverable pincode to avoid duplicate toasts
+  const lastToastPinRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (cleanPin.length === 6) {
+      if (!isDeliverable) {
+        if (lastToastPinRef.current !== cleanPin) {
+          lastToastPinRef.current = cleanPin;
+          toast.delivery.unserviceable(cleanPin);
+        }
+      } else {
+        lastToastPinRef.current = null;
+      }
+    } else {
+      lastToastPinRef.current = null;
+    }
+  }, [cleanPin, isDeliverable, toast]);
+
   // Check pincode with backend API when 6 digits are available
   useEffect(() => {
     let isMounted = true;
-    const clean = (activePincode || "").trim().replace(/\D/g, "");
-    if (clean.length === 6) {
-      apiService.checkPincodeAvailability(clean).then((res) => {
+    if (cleanPin.length === 6) {
+      apiService.checkPincodeAvailability(cleanPin).then((res) => {
         if (isMounted) {
           setBackendCheck(res);
         }
@@ -167,7 +196,7 @@ export default function CheckoutAddressStep({
     return () => {
       isMounted = false;
     };
-  }, [activePincode]);
+  }, [cleanPin]);
 
   // Handle address deletion
   const handleDeleteAddress = async (id: string, e: React.MouseEvent) => {
@@ -210,6 +239,11 @@ export default function CheckoutAddressStep({
       return;
     }
 
+    if (!isDeliverable) {
+      toast.delivery.unserviceable(cleanPin || "selected");
+      return;
+    }
+
     const recipientName = getRecipient(selectedAddress, user, name);
     const contactMobile =
       selectedAddress.mobileNumber || user?.mobileNumber || mobile;
@@ -234,6 +268,11 @@ export default function CheckoutAddressStep({
 
   // Submit manual address form
   const handleManualFormSubmit = async (data: CheckoutAddressFormValues) => {
+    if (!isDeliverable) {
+      toast.delivery.unserviceable(cleanPin || data.pincode);
+      return;
+    }
+
     // Optionally persist to backend if logged in
     if (user?.id) {
       try {
@@ -266,15 +305,18 @@ export default function CheckoutAddressStep({
     }`;
 
   const renderServiceabilityBanner = () => {
-    const cleanPin = (activePincode || "").trim().replace(/\D/g, "");
-    if (cleanPin.length !== 6) return null;
+    if (cleanPin.length === 0) return null;
 
-    const dInfo = evaluatePincode(cleanPin);
-    const isDeliverable = backendCheck
-      ? backendCheck.isAccepting
-      : dInfo.isDeliverable;
+    if (cleanPin.length !== 6) {
+      return (
+        <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs text-amber-300 flex items-center gap-2">
+          <AlertTriangle size={15} className="shrink-0 text-amber-400" />
+          <span>Please enter a complete 6-digit Indian PIN code to verify delivery.</span>
+        </div>
+      );
+    }
 
-    return isDeliverable ? (
+    return isDeliverable && dInfo ? (
       <div
         className={`p-3 rounded-xl border text-xs flex items-center justify-between gap-2.5 transition-all ${
           dInfo.zone === "khanna"
@@ -305,8 +347,25 @@ export default function CheckoutAddressStep({
         )}
       </div>
     ) : (
-      <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-xs text-red-400 font-bold flex items-center gap-2">
-        <span>⚠️ {backendCheck?.message || "City not available for delivery"}</span>
+      <div className="p-4 bg-red-500/10 border-2 border-red-500/30 rounded-2xl text-red-400 flex items-start gap-3 shadow-lg shadow-red-500/5">
+        <div className="w-8 h-8 rounded-xl bg-red-500/20 flex items-center justify-center text-red-400 shrink-0 mt-0.5">
+          <AlertTriangle size={18} />
+        </div>
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-bold text-red-400">
+              Delivery Unavailable to {cleanPin}
+            </p>
+            <span className="px-2 py-0.5 bg-red-500/20 text-red-300 font-mono text-[9px] rounded uppercase font-bold">
+              Undeliverable
+            </span>
+          </div>
+          <p className="text-xs text-red-300/80 mt-1 leading-relaxed">
+            {backendCheck?.message && backendCheck.message !== "City not available for delivery"
+              ? backendCheck.message
+              : `Sorry, we currently do not deliver items to PIN code ${cleanPin}. Please choose or add an address in a serviceable location (e.g. Khanna, Ludhiana, or Punjab) to proceed with checkout.`}
+          </p>
+        </div>
       </div>
     );
   };
@@ -404,6 +463,12 @@ export default function CheckoutAddressStep({
                             Default
                           </span>
                         )}
+
+                        {pinStr && !evaluatePincode(String(pinStr).trim().replace(/\D/g, "")).isDeliverable && (
+                          <span className="text-[10px] bg-red-500/15 text-red-400 border border-red-500/30 px-1.5 py-0.5 rounded-md font-semibold">
+                            Undeliverable
+                          </span>
+                        )}
                       </div>
 
                       {/* Card action buttons: Edit & Delete */}
@@ -467,10 +532,17 @@ export default function CheckoutAddressStep({
             id="checkout-deliver-btn"
             type="button"
             onClick={handleProceedWithSavedAddress}
-            className="w-full py-4 bg-[#00cfff] text-[#07070f] font-extrabold rounded-2xl hover:bg-[#00cfff]/90 transition-all text-sm tracking-widest cursor-pointer shadow-lg shadow-[#00cfff]/20 flex items-center justify-center gap-2"
+            disabled={!isDeliverable}
+            className={`w-full py-4 font-extrabold rounded-2xl transition-all text-sm tracking-widest flex items-center justify-center gap-2 ${
+              !isDeliverable
+                ? "bg-gray-800 text-gray-500 border border-gray-700 cursor-not-allowed opacity-60"
+                : "bg-[#00cfff] text-[#07070f] hover:bg-[#00cfff]/90 cursor-pointer shadow-lg shadow-[#00cfff]/20"
+            }`}
             style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
           >
-            DELIVER TO THIS ADDRESS
+            {!isDeliverable
+              ? "UNDELIVERABLE ADDRESS — SELECT ANOTHER"
+              : "DELIVER TO THIS ADDRESS"}
           </button>
         </div>
       ) : (
@@ -605,14 +677,20 @@ export default function CheckoutAddressStep({
             <button
               id="checkout-continue"
               type="submit"
-              disabled={isSubmitting}
-              className="w-full py-3.5 bg-[#00cfff] text-[#07070f] font-extrabold rounded-2xl hover:bg-[#00cfff]/90 transition-all text-sm tracking-widest cursor-pointer disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-[#00cfff]/20"
+              disabled={!isDeliverable || isSubmitting}
+              className={`w-full py-3.5 font-extrabold rounded-2xl transition-all text-sm tracking-widest flex items-center justify-center gap-2 ${
+                !isDeliverable || isSubmitting
+                  ? "bg-gray-800 text-gray-500 border border-gray-700 cursor-not-allowed opacity-60"
+                  : "bg-[#00cfff] text-[#07070f] hover:bg-[#00cfff]/90 cursor-pointer shadow-lg shadow-[#00cfff]/20"
+              }`}
               style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
             >
               {isSubmitting ? (
                 <>
                   <Loader2 size={16} className="animate-spin" /> CONTINUING…
                 </>
+              ) : !isDeliverable ? (
+                "UNDELIVERABLE PINCODE — CANNOT PROCEED"
               ) : (
                 "CONTINUE TO PAYMENT"
               )}
