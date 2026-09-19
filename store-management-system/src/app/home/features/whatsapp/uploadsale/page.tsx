@@ -89,6 +89,7 @@ export default function UploadSale() {
   );
 
   // EMI calculation (0% interest scheme for Bajaj & Home Credit)
+  const isEmi = paymentMode === "Bajaj EMI" || paymentMode === "Home Credit EMI";
   const financedAmount = Math.max(0, totalAmount - downPayment);
   const monthlyEmi = emiTenure > 0 ? Math.round(financedAmount / emiTenure) : 0;
 

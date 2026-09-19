@@ -1,27 +1,41 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import { signInSchema, type SignInFormValues } from "../../utils/validation.schemas";
+import FieldError from "../ui/FieldError";
 
 interface SignInFormProps {
-  email: string;
-  setEmail: (val: string) => void;
-  password: string;
-  setPassword: (val: string) => void;
   isLoading: boolean;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (email: string, password: string) => void;
 }
 
-export default function SignInForm({
-  email,
-  setEmail,
-  password,
-  setPassword,
-  isLoading,
-  onSubmit,
-}: SignInFormProps) {
+export default function SignInForm({ isLoading, onSubmit }: SignInFormProps) {
   const [showPassword, setShowPassword] = useState(false);
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, touchedFields },
+  } = useForm<SignInFormValues>({
+    resolver: yupResolver(signInSchema),
+    mode: "onTouched",
+  });
+
+  const submit = (data: SignInFormValues) => {
+    onSubmit(data.email, data.password);
+  };
+
+  const inputClass = (hasError: boolean) =>
+    `w-full bg-white/4 border rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none transition-all ${
+      hasError
+        ? "border-red-500/60 focus:border-red-500/80"
+        : "border-white/8 focus:border-[#00cfff]/50"
+    }`;
+
   return (
-    <form onSubmit={onSubmit} className="space-y-3.5">
+    <form onSubmit={handleSubmit(submit)} className="space-y-3.5" noValidate>
+      {/* Email */}
       <div>
         <label className="block text-[11px] text-gray-400 uppercase tracking-wider mb-1 font-mono">
           Email Address
@@ -29,19 +43,21 @@ export default function SignInForm({
         <div className="relative">
           <Mail
             size={14}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500"
+            className={`absolute left-3.5 top-1/2 -translate-y-1/2 ${errors.email ? "text-red-400" : "text-gray-500"}`}
           />
           <input
+            id="signin-email"
             type="email"
-            required
+            autoComplete="email"
             placeholder="name@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-white/4 border border-white/8 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#00cfff]/50 transition-all"
+            {...register("email")}
+            className={inputClass(!!errors.email)}
           />
         </div>
+        <FieldError message={errors.email?.message} />
       </div>
 
+      {/* Password */}
       <div>
         <div className="flex items-center justify-between mb-1">
           <label className="text-[11px] text-gray-400 uppercase tracking-wider font-mono">
@@ -54,15 +70,15 @@ export default function SignInForm({
         <div className="relative">
           <Lock
             size={14}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500"
+            className={`absolute left-3.5 top-1/2 -translate-y-1/2 ${errors.password ? "text-red-400" : "text-gray-500"}`}
           />
           <input
+            id="signin-password"
             type={showPassword ? "text" : "password"}
-            required
+            autoComplete="current-password"
             placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-white/4 border border-white/8 rounded-xl pl-10 pr-10 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-[#00cfff]/50 transition-all"
+            {...register("password")}
+            className={`${inputClass(!!errors.password)} pr-10`}
           />
           <button
             type="button"
@@ -72,9 +88,11 @@ export default function SignInForm({
             {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
           </button>
         </div>
+        <FieldError message={errors.password?.message} />
       </div>
 
       <button
+        id="signin-submit"
         type="submit"
         disabled={isLoading}
         style={{ fontFamily: "'Barlow Condensed', sans-serif" }}

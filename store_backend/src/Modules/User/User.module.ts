@@ -7,6 +7,7 @@ import { User } from './Entities/User.entity';
 import { AddressRepository } from 'Modules/Address/Repositories/Address.repo';
 import { JwtModule } from '@nestjs/jwt';
 import { FirebaseService } from 'Core/Firebase/firebase.service';
+import { GoogleAuthService } from 'Core/Firebase/google-auth.service';
 import { JWT_DEFAULT_EXPIRY, ENV_CONFIG } from 'Common/constants';
 
 @Module({
@@ -18,6 +19,6 @@ import { JWT_DEFAULT_EXPIRY, ENV_CONFIG } from 'Common/constants';
     TypeOrmModule.forFeature([User]),
   ],
   controllers: [UserController],
-  providers: [UserService, UserRepository, AddressRepository, FirebaseService],
+  providers: [UserService, UserRepository, AddressRepository, FirebaseService, GoogleAuthService],
 })
 export class UserModule {}

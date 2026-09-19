@@ -148,7 +148,7 @@ export default function OffersPage() {
                   <Heart
                     size={15}
                     className={
-                      wishlist.includes(product.id)
+                      wishlist.some((id) => String(id) === String(product.id))
                         ? "text-[#ff2d55] fill-[#ff2d55]"
                         : "text-white"
                     }

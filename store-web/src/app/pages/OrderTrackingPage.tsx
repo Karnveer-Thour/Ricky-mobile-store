@@ -10,6 +10,7 @@ import {
   Shield,
 } from "lucide-react";
 import { fmt } from "../data";
+import { useToast } from "../hooks/useToast";
 
 // ─── Types & Config ─────────────────────────────────────────────────────────
 
@@ -26,6 +27,7 @@ export default function OrderTrackingPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { trackedOrderId, setTrackedOrderId } = useApp();
+  const toast = useToast();
 
   const [orderStatus, setOrderStatus] = useState<StepStatus>("SHIPPED");
   const [activeStep, setActiveStep] = useState(2); // In Transit
@@ -228,8 +230,9 @@ export default function OrderTrackingPage() {
       setHandoverSuccess(true);
       setOrderStatus("DELIVERED");
       setActiveStep(3);
+      toast.order.handoverSuccess();
     } else {
-      alert("Invalid Handover OTP! Hint: Use 1234");
+      toast.order.handoverError();
     }
   };
 

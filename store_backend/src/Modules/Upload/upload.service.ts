@@ -7,6 +7,8 @@ import {
 import { v2 as cloudinary, UploadApiResponse, UploadApiErrorResponse } from 'cloudinary';
 import { baseResponseDto } from 'Common/Dto/BaseResponse.dto';
 import { Readable } from 'stream';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class UploadService {
@@ -56,22 +58,70 @@ export class UploadService {
         throw new BadRequestException('File size exceeds maximum limit of 5MB');
       }
 
-      const uploadResult = (await this.uploadImageToCloudinary(file, folder)) as UploadApiResponse;
+      let uploadResult: any = null;
+      const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+      const apiKey = process.env.CLOUDINARY_API_KEY;
+      const apiSecret = process.env.CLOUDINARY_API_SECRET;
+      const isCloudinaryConfigured =
+        cloudName &&
+        cloudName !== 'ricky_mobile_store' &&
+        cloudName !== 'your_cloudinary_cloud_name' &&
+        apiKey &&
+        apiKey !== '123456789012345' &&
+        apiSecret &&
+        apiSecret !== 'ricky_mobile_store_cloudinary_secret';
+
+      if (isCloudinaryConfigured) {
+        try {
+          uploadResult = (await this.uploadImageToCloudinary(file, folder)) as UploadApiResponse;
+        } catch (cloudErr) {
+          console.warn('Cloudinary upload failed, falling back to local file storage:', cloudErr);
+        }
+      }
+
+      if (uploadResult && (uploadResult.secure_url || uploadResult.url)) {
+        return {
+          code: 201,
+          status: true,
+          data: {
+            url: uploadResult.secure_url || uploadResult.url,
+            public_id: uploadResult.public_id,
+            format: uploadResult.format,
+            bytes: uploadResult.bytes,
+          },
+        };
+      }
+
+      // Local storage fallback
+      const targetDir = path.resolve(process.cwd(), 'uploads', folder);
+      if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, { recursive: true });
+      }
+
+      const ext = path.extname(file.originalname) || '.jpg';
+      const cleanOriginal = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_');
+      const uniqueFilename = `${cleanOriginal}_${Date.now()}_${Math.random().toString(36).substring(2, 8)}${ext}`;
+      const filePath = path.join(targetDir, uniqueFilename);
+
+      fs.writeFileSync(filePath, file.buffer);
+
+      const serverPort = process.env.PORT || 8001;
+      const fileUrl = `http://localhost:${serverPort}/uploads/${folder}/${uniqueFilename}`;
 
       return {
         code: 201,
         status: true,
         data: {
-          url: uploadResult.secure_url || uploadResult.url,
-          public_id: uploadResult.public_id,
-          format: uploadResult.format,
-          bytes: uploadResult.bytes,
+          url: fileUrl,
+          public_id: `${folder}/${uniqueFilename}`,
+          format: ext.replace('.', ''),
+          bytes: file.size,
         },
       };
     } catch (error) {
       if (error instanceof HttpException) throw error;
-      console.error('Cloudinary upload error:', error);
-      throw new InternalServerErrorException('Failed to upload image to Cloudinary');
+      console.error('Upload error:', error);
+      throw new InternalServerErrorException('Failed to upload image');
     }
   }
 

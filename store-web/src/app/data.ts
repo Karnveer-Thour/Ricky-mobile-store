@@ -165,8 +165,9 @@ export const STATUS_CFG = {
 };
 
 export interface CartItem {
-  productId: number;
-  colorId: number;
+  id?: string;
+  productId: string | number;
+  colorId: string | number;
   colorName: string;
   qty: number;
 }

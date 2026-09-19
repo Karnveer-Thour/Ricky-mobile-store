@@ -2,10 +2,12 @@ import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import { useApp } from "../AppContext";
 import { ArrowLeft, Send } from "lucide-react";
+import { useToast } from "../hooks/useToast";
 
 export default function ChatPage() {
   const navigate = useNavigate();
   const { chatMsgs, chatInput, setChatInput, sendChat } = useApp();
+  const toast = useToast();
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,8 +61,8 @@ export default function ChatPage() {
                       ₹{m.amount.toLocaleString("en-IN")}
                     </span>
                     <button
-                      onClick={() => alert("Payment verified successfully!")}
-                      className="px-3 py-1 bg-green-500 text-white rounded-lg text-xs font-bold"
+                      onClick={() => toast.payment.verified()}
+                      className="px-3 py-1 bg-green-500 text-white rounded-lg text-xs font-bold cursor-pointer"
                     >
                       Pay Now
                     </button>

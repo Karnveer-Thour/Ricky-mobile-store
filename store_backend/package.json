@@ -39,6 +39,7 @@
     "fast-csv": "^5.0.2",
     "firebase": "^11.10.0",
     "firebase-admin": "^13.4.0",
+    "google-auth-library": "^11.1.0",
     "json2csv": "^6.0.0-alpha.2",
     "moment": "^2.30.1",
     "multer": "^2.0.2",

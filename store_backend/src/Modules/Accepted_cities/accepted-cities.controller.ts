@@ -6,7 +6,6 @@ import { UpdateAcceptedCitiesDto } from './Dtos/update-accepted-cities.dto';
 import { AcceptedCitiesPaginationQueryDto } from './Dtos/accepted-cities-pagination-query.dto';
 
 @Controller('accepted-cities')
-@Controller('accepted-cities')
 export class AcceptedCitiesController {
   constructor(private readonly acceptedCitiesService: AcceptedCitiesService) {}
 
@@ -29,6 +28,11 @@ export class AcceptedCitiesController {
     @Param('status') isAccepting: boolean,
   ): Promise<baseResponseDto> {
     return this.acceptedCitiesService.toggleStatus(id, isAccepting);
+  }
+
+  @Get('check/:pincode')
+  async checkAvailability(@Param('pincode') pincode: string): Promise<baseResponseDto> {
+    return this.acceptedCitiesService.checkAvailability(pincode);
   }
 
   @Get(':id')

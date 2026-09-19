@@ -1,4 +1,4 @@
-import { IsOptional, IsNumberString } from 'class-validator';
+import { IsOptional, IsNumberString, IsString } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class DeliveryAddressPaginationQueryDto {
@@ -11,4 +11,9 @@ export class DeliveryAddressPaginationQueryDto {
   @IsOptional()
   @IsNumberString()
   limit?: string;
+
+  @ApiPropertyOptional({ description: 'Customer / User ID' })
+  @IsOptional()
+  @IsString()
+  userId?: string;
 }

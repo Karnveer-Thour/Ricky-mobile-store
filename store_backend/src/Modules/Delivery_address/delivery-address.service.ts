@@ -3,6 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { DeliveryAddressRepository } from './Repositories/DeliveryAddress.repo';
 import { baseResponseDto } from 'Common/Dto/BaseResponse.dto';
@@ -128,28 +129,65 @@ export class DeliveryAddressService {
     deliveryAddressData: UpdateDeliveryAddressDto,
   ): Promise<baseResponseDto> {
     try {
-      const existingDeliveryAddress = await this.DeliveryAddressRepository.findOneBy({ id });
+      const existingDeliveryAddress = await this.DeliveryAddressRepository.findOne({
+        where: { id },
+        relations: ['address', 'customer'],
+      });
       if (!existingDeliveryAddress) {
-        throw new NotFoundException('Delivery address does not found!');
+        throw new NotFoundException('Delivery address not found!');
       }
-      if (deliveryAddressData.isDefault) {
-        await this.convertExistingAddressAsNotDefault(existingDeliveryAddress);
-      }
-      for (const key in existingDeliveryAddress) {
-        if (key === 'address') {
-          for (const key in existingDeliveryAddress.address) {
-            existingDeliveryAddress.address[key] =
-              deliveryAddressData[key] ?? existingDeliveryAddress[key];
-          }
-          continue;
+      if (deliveryAddressData.isDefault && !existingDeliveryAddress.isDefault) {
+        if (existingDeliveryAddress.customer?.id) {
+          await this.convertExistingAddressAsNotDefaultByUserId(existingDeliveryAddress.customer.id);
+        } else {
+          await this.convertExistingAddressAsNotDefault(existingDeliveryAddress);
         }
-        existingDeliveryAddress[key] = deliveryAddressData[key] ?? existingDeliveryAddress[key];
       }
+
+      if (existingDeliveryAddress.address) {
+        if (deliveryAddressData.houseNumber !== undefined) {
+          existingDeliveryAddress.address.houseNumber = deliveryAddressData.houseNumber;
+        }
+        if (deliveryAddressData.streetNumber !== undefined) {
+          existingDeliveryAddress.address.streetNumber = deliveryAddressData.streetNumber;
+        }
+        if (deliveryAddressData.areaName !== undefined) {
+          existingDeliveryAddress.address.areaName = deliveryAddressData.areaName;
+        }
+        if (deliveryAddressData.city !== undefined) {
+          existingDeliveryAddress.address.city = deliveryAddressData.city;
+        }
+        if (deliveryAddressData.pincode !== undefined) {
+          existingDeliveryAddress.address.pincode = Number(deliveryAddressData.pincode);
+        }
+        if (deliveryAddressData.district !== undefined) {
+          existingDeliveryAddress.address.district = deliveryAddressData.district;
+        }
+        if (deliveryAddressData.state !== undefined) {
+          existingDeliveryAddress.address.state = deliveryAddressData.state;
+        }
+      }
+
+      if (deliveryAddressData.label !== undefined) {
+        existingDeliveryAddress.label = deliveryAddressData.label;
+      }
+      if (deliveryAddressData.mobileNumber !== undefined) {
+        const cleanMobile = deliveryAddressData.mobileNumber.replace(/\D/g, '').slice(-10);
+        existingDeliveryAddress.mobileNumber = cleanMobile;
+      }
+      if (deliveryAddressData.countryCode !== undefined) {
+        existingDeliveryAddress.countryCode = deliveryAddressData.countryCode;
+      }
+      if (deliveryAddressData.isDefault !== undefined) {
+        existingDeliveryAddress.isDefault = deliveryAddressData.isDefault;
+      }
+
       await this.DeliveryAddressRepository.save(existingDeliveryAddress);
       return {
         status: true,
-        code: 204,
+        code: 200,
         data: {
+          deliveryAddress: existingDeliveryAddress,
           message: 'Delivery Address updated Successfully',
         },
       };
@@ -185,7 +223,7 @@ export class DeliveryAddressService {
     }
   }
 
-  async getAll(page: number, limit: number): Promise<baseResponseDto> {
+  async getAll(page: number, limit: number, userId?: string): Promise<baseResponseDto> {
     try {
       const pageNumber = Math.max(1, page || 1);
       const limitNumber = Math.max(1, limit || 10);
@@ -193,9 +231,13 @@ export class DeliveryAddressService {
       const query = this.DeliveryAddressRepository.createQueryBuilder('d_addresses')
         .leftJoinAndSelect('d_addresses.address', 'address')
         .leftJoinAndSelect('d_addresses.customer', 'customer')
-        .orderBy('d_addresses.createdAt', 'DESC')
-        .skip((pageNumber - 1) * limitNumber)
-        .take(limitNumber);
+        .orderBy('d_addresses.createdAt', 'DESC');
+
+      if (userId) {
+        query.andWhere('customer.id = :userId', { userId });
+      }
+
+      query.skip((pageNumber - 1) * limitNumber).take(limitNumber);
       const [deliveryAddresses, total] = await query.getManyAndCount();
       return {
         status: true,
@@ -235,10 +277,26 @@ export class DeliveryAddressService {
 
   async softDeleteById(id: string): Promise<baseResponseDto> {
     try {
-      const existingDeliveryAddress = await this.DeliveryAddressRepository.findOneBy({ id });
+      const existingDeliveryAddress = await this.DeliveryAddressRepository.findOne({
+        where: { id },
+        relations: ['customer'],
+      });
       if (!existingDeliveryAddress) {
         throw new NotFoundException('Delivery address does not exist!');
       }
+
+      // Enforce: user must keep at least one delivery address
+      if (existingDeliveryAddress.customer?.id) {
+        const remainingCount = await this.DeliveryAddressRepository.count({
+          where: {
+            customer: { id: existingDeliveryAddress.customer.id },
+          },
+        });
+        if (remainingCount <= 1) {
+          throw new BadRequestException('You must keep at least one delivery address.');
+        }
+      }
+
       if (existingDeliveryAddress.isDefault) {
         await this.convertExistingAddressAsDefault(existingDeliveryAddress);
       }
@@ -247,14 +305,16 @@ export class DeliveryAddressService {
       await this.DeliveryAddressRepository.save(existingDeliveryAddress);
       return {
         status: true,
-        code: 204,
+        code: 200,
         data: {
           message: 'Delivery address deleted successfully.',
         },
       };
     } catch (error) {
       if (error instanceof HttpException) throw error;
-      throw new InternalServerErrorException('Unable to delete a particular delivery address');
+      throw new InternalServerErrorException(
+        error.message || 'Unable to delete a particular delivery address',
+      );
     }
   }
 }

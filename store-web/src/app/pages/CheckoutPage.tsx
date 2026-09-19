@@ -12,11 +12,14 @@ import {
   CheckoutSuccessView,
   CheckoutOtpModal,
 } from "../components/checkout";
+import { useToast } from "../hooks/useToast";
+import { apiService } from "../services/apiService";
 
 export default function CheckoutPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { cart, clearCart, setTrackedOrderId, products, user } = useApp();
+  const toast = useToast();
 
   const [checkoutStep, setCheckoutStep] = useState(1);
   const [payMethod, setPayMethod] = useState("UPI");
@@ -39,10 +42,24 @@ export default function CheckoutPage() {
     user ? `${user.firstName} ${user.lastName}`.trim() : "Ricky Sharma",
   );
 
-  // OTP Verification state
   const [otp, setOtp] = useState("");
   const [showOtpVerification, setShowOtpVerification] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+
+  const handleAddressContinue = (data: {
+    name: string;
+    mobile: string;
+    pincode: string;
+    street: string;
+    landmark: string;
+  }) => {
+    setName(data.name);
+    setMobile(data.mobile);
+    setPincode(data.pincode);
+    setStreet(data.street);
+    setLandmark(data.landmark);
+    setCheckoutStep(2);
+  };
 
   // Handle URL parameters for EMI pre-fill
   const lenderParam = searchParams.get("lender");
@@ -93,31 +110,82 @@ export default function CheckoutPage() {
     setShowOtpVerification(true);
   };
 
-  const handleVerifyOtpAndSubmit = () => {
+  const handleVerifyOtpAndSubmit = async () => {
     if (otp !== "1234") {
-      alert("Invalid OTP! Hint: Use 1234");
+      toast.order.otpInvalid();
       return;
     }
 
+    toast.order.otpSuccess();
+
     // Process Order
     setIsVerifyingOtp(true);
-    setTimeout(() => {
+    let realOrderId = "RMS-" + Math.floor(Math.random() * 900000 + 100000);
+
+    try {
+      if (user?.id && !user.id.startsWith("u-demo-")) {
+        const orderRes = await apiService.createOrder({
+          buyerId: user.id,
+          items: checkoutItems.map((item) => {
+            const p = products.find(
+              (pr) => String(pr.id) === String(item.productId),
+            );
+            return {
+              productId: String(item.productId),
+              colorId: item.colorId ? String(item.colorId) : undefined,
+              quantity: item.qty,
+              price: p ? p.price : 0,
+              discount: p ? p.discount : 0,
+            };
+          }),
+          lender: lenderParam || undefined,
+          tenureMonths: tenureParam ? parseInt(tenureParam, 10) : undefined,
+          landmark,
+          deliveryOtp: otp,
+          payMethod,
+        });
+
+        if (orderRes.status && orderRes.data?.id) {
+          realOrderId = orderRes.data.id;
+        }
+
+        // Optionally save shipping address to backend delivery-address API
+        apiService
+          .createDeliveryAddress({
+            customerId: user.id,
+            houseNumber: "House",
+            streetNumber: street.slice(0, 25),
+            areaName: landmark || "Khanna Area",
+            city: "Khanna",
+            pincode: parseInt(pincode.replace(/\D/g, "") || "141401", 10),
+            district: "Ludhiana",
+            state: "Punjab",
+            mobileNumber: mobile,
+            label: "Home",
+            isDefault: true,
+          })
+          .catch((err) =>
+            console.warn("Failed to persist delivery address:", err),
+          );
+      }
+    } catch (err) {
+      console.warn("Backend order creation error, falling back:", err);
+    } finally {
       setIsVerifyingOtp(false);
       setShowOtpVerification(false);
       setOrderPlaced(true);
       clearCart();
 
-      const simulatedOrderId =
-        "RMS-" + Math.floor(Math.random() * 900000 + 100000);
-      setTrackedOrderId(simulatedOrderId);
+      setTrackedOrderId(realOrderId);
+      toast.order.placed(realOrderId);
 
-      // Save real placed order to localStorage
+      // Save order to localStorage for immediate UI continuity
       try {
         const existingOrders = JSON.parse(
           localStorage.getItem("placedOrders") || "[]",
         );
         const orderRecord = {
-          id: simulatedOrderId,
+          id: realOrderId,
           status: "PENDING",
           items: checkoutItems.map((item) => {
             const p = products.find(
@@ -150,9 +218,9 @@ export default function CheckoutPage() {
 
       setTimeout(() => {
         setOrderPlaced(false);
-        navigate(`/orders/${simulatedOrderId}/track`);
+        navigate(`/orders/${realOrderId}/track`);
       }, 2000);
-    }, 1500);
+    }
   };
 
   return (
@@ -196,16 +264,11 @@ export default function CheckoutPage() {
               {checkoutStep === 1 && (
                 <CheckoutAddressStep
                   name={name}
-                  setName={setName}
                   mobile={mobile}
-                  setMobile={setMobile}
                   pincode={pincode}
-                  setPincode={setPincode}
                   street={street}
-                  setStreet={setStreet}
                   landmark={landmark}
-                  setLandmark={setLandmark}
-                  onContinue={() => setCheckoutStep(2)}
+                  onContinue={handleAddressContinue}
                 />
               )}
 

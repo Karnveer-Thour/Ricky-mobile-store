@@ -47,11 +47,18 @@ export default function DeliveryStatusResult({
                 </span>
               </div>
             </div>
-            {info.zone === "khanna" && (
-              <span className="px-2 py-0.5 bg-[#00cfff] text-[#07070f] font-bold text-[9px] rounded-md tracking-wider uppercase shrink-0">
-                LOCAL KHANNA
-              </span>
-            )}
+            <div className="flex items-center gap-1.5 shrink-0">
+              {info.backendVerified && (
+                <span className="px-2 py-0.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-mono text-[9px] rounded-md tracking-wider uppercase flex items-center gap-1">
+                  <CheckCircle2 size={10} /> API VERIFIED
+                </span>
+              )}
+              {info.zone === "khanna" && (
+                <span className="px-2 py-0.5 bg-[#00cfff] text-[#07070f] font-bold text-[9px] rounded-md tracking-wider uppercase shrink-0">
+                  LOCAL KHANNA
+                </span>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center gap-3 pt-1 border-t border-white/5 text-[10px] text-gray-400 flex-wrap">
@@ -70,9 +77,18 @@ export default function DeliveryStatusResult({
           </div>
         </div>
       ) : (
-        <div className="flex items-center gap-2 text-red-400 text-xs">
-          <AlertCircle size={15} />
-          <span>{info.speedText}</span>
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 text-red-400 text-xs font-bold">
+            <AlertCircle size={15} className="shrink-0" />
+            <span>{info.speedText || "City not available for delivery"}</span>
+          </div>
+          <p className="text-[11px] text-gray-400 pl-6">
+            Delivery is currently not available for pincode{" "}
+            <span className="font-mono text-white font-semibold">
+              {info.pincode}
+            </span>
+            . Please check our top serviceable cities above.
+          </p>
         </div>
       )}
     </div>

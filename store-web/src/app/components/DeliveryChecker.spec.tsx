@@ -2,11 +2,11 @@ import { describe, it, expect } from "vitest";
 import { evaluatePincode } from "./DeliveryChecker";
 
 describe("evaluatePincode Engine", () => {
-  it("should evaluate Khanna hyperlocal pincodes (141401, 141417) with same-day express delivery", () => {
+  it("should evaluate Khanna hyperlocal pincodes (141401, 141417) as deliverable", () => {
     const res141401 = evaluatePincode("141401");
     expect(res141401.isDeliverable).toBe(true);
     expect(res141401.zone).toBe("khanna");
-    expect(res141401.speedText).toContain("Same-Day Express Delivery");
+    expect(res141401.speedText).toBe("Yes, it is available for delivery");
     expect(res141401.storePickupAvailable).toBe(true);
     expect(res141401.freeDelivery).toBe(true);
 
@@ -15,11 +15,11 @@ describe("evaluatePincode Engine", () => {
     expect(res141417.zone).toBe("khanna");
   });
 
-  it("should evaluate Ludhiana District & surrounding towns (141001, 141114, 147301) with next-day express delivery", () => {
+  it("should evaluate Ludhiana District & surrounding towns (141001, 141114, 147301) as deliverable", () => {
     const resLudhiana = evaluatePincode("141001");
     expect(resLudhiana.isDeliverable).toBe(true);
     expect(resLudhiana.zone).toBe("ludhiana");
-    expect(resLudhiana.speedText).toContain("Next-Day");
+    expect(resLudhiana.speedText).toBe("Yes, it is available for delivery");
 
     const resGobindgarh = evaluatePincode("147301");
     expect(resGobindgarh.isDeliverable).toBe(true);
@@ -31,18 +31,18 @@ describe("evaluatePincode Engine", () => {
     expect(resSamrala.zone).toBe("ludhiana");
   });
 
-  it("should evaluate other Punjab/Tricity pincodes with regional delivery", () => {
+  it("should evaluate other Punjab/Tricity pincodes as deliverable", () => {
     const resMohali = evaluatePincode("160055");
     expect(resMohali.isDeliverable).toBe(true);
     expect(resMohali.zone).toBe("punjab");
-    expect(resMohali.speedText).toContain("1–2 Business Days");
+    expect(resMohali.speedText).toBe("Yes, it is available for delivery");
   });
 
-  it("should evaluate Pan-India valid pincodes with national courier delivery", () => {
-    const resDelhi = evaluatePincode("110001");
-    expect(resDelhi.isDeliverable).toBe(true);
-    expect(resDelhi.zone).toBe("national");
-    expect(resDelhi.speedText).toContain("2–4 Business Days");
+  it("should mark unaccepted pincodes (e.g. 512202) as city not available", () => {
+    const resUnaccepted = evaluatePincode("512202");
+    expect(resUnaccepted.isDeliverable).toBe(false);
+    expect(resUnaccepted.zone).toBe("invalid");
+    expect(resUnaccepted.speedText).toBe("City not available for delivery");
   });
 
   it("should reject invalid pincodes", () => {

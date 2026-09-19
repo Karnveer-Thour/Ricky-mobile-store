@@ -1,3 +1,10 @@
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+import * as express from 'express';
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config({ path: path.resolve(process.cwd(), 'store_backend/.env') });
+dotenv.config();
+
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, Logger, ValidationPipe } from '@nestjs/common';
@@ -22,6 +29,8 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
+  app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
+  app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
   setupSwaggerConfig('/api-docs/v1', app);
   const port = ENV_CONFIG.SERVER.PORT;
   await app.listen(port);
@@ -29,4 +38,5 @@ async function bootstrap() {
   logger.log(`Swagger documentation available at: http://localhost:${port}/api-docs/v1`);
   logger.log(`AI connected successfully`);
 }
+
 bootstrap();

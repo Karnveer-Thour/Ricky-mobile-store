@@ -9,7 +9,7 @@ import { AcceptedCitiesRepository } from './Repositories/accepted-cities.Repo';
 import { AcceptedCitiesDto } from './Dtos/accepted-cities.dto';
 import { baseResponseDto } from 'Common/Dto/BaseResponse.dto';
 import { UpdateAcceptedCitiesDto } from './Dtos/update-accepted-cities.dto';
-import { ILike } from 'typeorm';
+import { ILike, IsNull } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 import { TransformAcceptedCitiesDto } from './Dtos/accepted-cities-response.dto';
 import { dateToUTC } from 'Common/Utils/Utils';
@@ -80,6 +80,58 @@ export class AcceptedCitiesService {
     } catch (error) {
       if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException('Unable to toggle a city');
+    }
+  }
+
+  async checkAvailability(pincode: string): Promise<baseResponseDto> {
+    try {
+      const cleanPin = parseInt(pincode.trim().replace(/\D/g, ''), 10);
+      if (isNaN(cleanPin) || pincode.trim().length !== 6) {
+        return {
+          status: false,
+          code: 400,
+          data: {
+            available: false,
+            message: 'Please enter a valid 6-digit pincode',
+          },
+        };
+      }
+
+      const city = await this.acceptedCitiesRepository.findOne({
+        where: {
+          cityPincode: cleanPin,
+          deletedAt: IsNull(),
+        },
+      });
+
+      if (!city || !city.isAccepting) {
+        return {
+          status: false,
+          code: 200,
+          data: {
+            available: false,
+            cityPincode: cleanPin,
+            cityName: city?.cityName,
+            message: 'City not available for delivery',
+          },
+        };
+      }
+
+      return {
+        status: true,
+        code: 200,
+        data: {
+          available: true,
+          cityName: city.cityName,
+          cityPincode: city.cityPincode,
+          district: city.district,
+          state: city.state,
+          message: 'Yes, it is available for delivery',
+        },
+      };
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new InternalServerErrorException('Unable to check pincode availability');
     }
   }
 

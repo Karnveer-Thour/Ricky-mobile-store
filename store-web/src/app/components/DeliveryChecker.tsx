@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Truck } from "lucide-react";
+import { Truck, Loader2 } from "lucide-react";
 import { DeliveryInfo, evaluatePincode } from "./delivery/pincodeEvaluator";
 import DeliveryInputBar from "./delivery/DeliveryInputBar";
 import PopularPincodes from "./delivery/PopularPincodes";
 import DeliveryStatusResult from "./delivery/DeliveryStatusResult";
+import { apiService } from "../services/apiService";
+import { useToast } from "../hooks/useToast";
 
 export { evaluatePincode };
 export type { DeliveryInfo };
@@ -20,6 +22,8 @@ export default function DeliveryChecker({
   showTitle = true,
   onPincodeValidated,
 }: DeliveryCheckerProps) {
+  const toast = useToast();
+  const [isChecking, setIsChecking] = useState(false);
   const [pincode, setPincode] = useState(() => {
     try {
       return typeof window !== "undefined"
@@ -34,24 +38,69 @@ export default function DeliveryChecker({
     evaluatePincode("141401"),
   );
 
-  const handleCheck = (inputPin: string) => {
-    const info = evaluatePincode(inputPin);
+  const handleCheck = async (inputPin: string, isManual = false) => {
+    const cleanPin = inputPin.trim().replace(/\D/g, "");
+    const info = evaluatePincode(cleanPin);
     setDeliveryInfo(info);
-    if (info.isDeliverable && typeof window !== "undefined") {
+
+    if (cleanPin.length === 6) {
+      setIsChecking(true);
       try {
-        localStorage.setItem("rms_pincode", info.pincode);
-      } catch {
-        // ignore storage errors
+        const res = await apiService.checkPincodeAvailability(cleanPin);
+        if (res.isAvailable) {
+          info.isDeliverable = true;
+          info.backendVerified = true;
+          info.cityName = res.cityName;
+          info.district = res.district;
+          info.state = res.state;
+          if (res.cityName) {
+            info.locationName = `${res.cityName}${res.district ? `, ${res.district}` : ""} (${res.state || "Punjab"})`;
+          }
+          info.speedText = res.message || "Yes, it is available for delivery";
+        } else {
+          info.isDeliverable = false;
+          info.backendVerified = true;
+          info.speedText = res.message || "City not available for delivery";
+        }
+        setDeliveryInfo({ ...info });
+
+        if (info.isDeliverable && typeof window !== "undefined") {
+          try {
+            localStorage.setItem("rms_pincode", cleanPin);
+          } catch {
+            // ignore
+          }
+        }
+        if (onPincodeValidated) {
+          onPincodeValidated(info);
+        }
+
+        if (isManual) {
+          if (info.isDeliverable) {
+            toast.delivery.serviceable(
+              info.locationName || cleanPin,
+              info.speedText,
+            );
+          } else {
+            toast.delivery.unserviceable(cleanPin);
+          }
+        }
+      } catch (e) {
+        console.warn("Pincode check error:", e);
+      } finally {
+        setIsChecking(false);
       }
-    }
-    if (onPincodeValidated) {
-      onPincodeValidated(info);
+    } else if (isManual && cleanPin.length > 0) {
+      toast.warning(
+        "Incomplete Pincode",
+        "Please enter a 6-digit Indian PIN code.",
+      );
     }
   };
 
   useEffect(() => {
     if (pincode.length === 6) {
-      handleCheck(pincode);
+      handleCheck(pincode, false);
     }
   }, []);
 
@@ -59,14 +108,15 @@ export default function DeliveryChecker({
     const val = e.target.value.replace(/\D/g, "").slice(0, 6);
     setPincode(val);
     if (val.length === 6) {
-      handleCheck(val);
+      handleCheck(val, false);
     }
   };
 
   const handleSelectPopular = (pin: string) => {
     setPincode(pin);
-    handleCheck(pin);
+    handleCheck(pin, true);
   };
+
 
   return (
     <div
@@ -93,8 +143,9 @@ export default function DeliveryChecker({
 
       <DeliveryInputBar
         pincode={pincode}
+        isChecking={isChecking}
         onInputChange={handleInputChange}
-        onSubmit={() => handleCheck(pincode)}
+        onSubmit={() => handleCheck(pincode, true)}
       />
 
       <PopularPincodes

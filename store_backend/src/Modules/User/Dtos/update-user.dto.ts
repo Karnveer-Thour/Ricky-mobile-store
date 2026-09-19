@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsEmail, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsDateString, IsEmail, IsNumber, IsOptional, IsString, MaxLength, ValidateIf } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { BaseDto } from 'Common/Dto/base.dto';
 
 export class updateUserDto extends BaseDto {
@@ -24,6 +25,7 @@ export class updateUserDto extends BaseDto {
   @ApiProperty({ example: '22.jpg', required: false })
   @IsString()
   @IsOptional()
+  @Transform(({ value }) => (value === '' || value === null ? undefined : value))
   pictureUrl?: string;
 
   @ApiProperty({ example: '9456862378', required: false })
@@ -33,6 +35,8 @@ export class updateUserDto extends BaseDto {
 
   @ApiProperty({ example: '1975-11-20', format: 'date', required: false })
   @IsOptional()
+  @Transform(({ value }) => (value === '' || value === null ? undefined : value))
+  @ValidateIf((o) => o.dateBirth !== '' && o.dateBirth !== undefined && o.dateBirth !== null)
   @IsDateString()
   dateBirth?: string;
 
@@ -92,8 +96,9 @@ export class updateUserDto extends BaseDto {
     type: 'number',
     required: false,
   })
-  @IsNumber()
   @IsOptional()
+  @Transform(({ value }) => (value === '' || value === null ? undefined : Number(value)))
+  @IsNumber()
   pincode?: number;
 
   @ApiProperty({

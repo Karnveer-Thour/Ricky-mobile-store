@@ -48,6 +48,12 @@ export class UserController {
     return this.userService.getAllCustomers(pageNumber, limitNumber, searchText);
   }
 
+  @Public()
+  @Get('auth/config')
+  async getAuthConfig(): Promise<baseResponseDto> {
+    return this.userService.getAuthConfig();
+  }
+
   @Get(':token')
   async getByToken(@Param('token') token: string): Promise<baseResponseDto> {
     return this.userService.getByToken(token);

@@ -1,6 +1,7 @@
 import { UserRepository } from './Repositories/User.repo';
 import { JwtService } from '@nestjs/jwt';
 import { FirebaseService } from 'Core/Firebase/firebase.service';
+import { GoogleAuthService } from 'Core/Firebase/google-auth.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 
@@ -17,6 +18,7 @@ describe('UserService', () => {
         },
         { provide: JwtService, useValue: { sign: jest.fn(), verify: jest.fn() } },
         { provide: FirebaseService, useValue: { verifyToken: jest.fn() } },
+        { provide: GoogleAuthService, useValue: { verifyIdToken: jest.fn() } },
       ],
     }).compile();
 

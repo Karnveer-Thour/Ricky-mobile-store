@@ -18,6 +18,7 @@ import { dateToUTC } from 'Common/Utils/Utils';
 import { CategoryRepository } from 'Modules/Category/Repositories/Category.repo';
 import { ProductCsvService } from './Services/product-csv.service';
 import { ProductEnrichmentService } from './Services/product-enrichment.service';
+import { ILike } from 'typeorm';
 
 @Injectable()
 export class ProductService {
@@ -328,10 +329,28 @@ export class ProductService {
 
   async getById(id: string): Promise<baseResponseDto> {
     try {
-      const existingProduct = await this.productRepository.findOne({
-        where: { id },
-        relations: ['category', 'colors', 'variants'],
-      });
+      const isUuid =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+          id,
+        );
+      let existingProduct: any = null;
+
+      if (isUuid) {
+        existingProduct = await this.productRepository.findOne({
+          where: { id },
+          relations: ['category', 'colors', 'variants'],
+        });
+      } else {
+        const decoded = decodeURIComponent(id).trim();
+        existingProduct = await this.productRepository.findOne({
+          where: [
+            { name: ILike(decoded) },
+            { name: ILike(decoded.replace(/-/g, ' ')) },
+          ],
+          relations: ['category', 'colors', 'variants'],
+        });
+      }
+
       if (!existingProduct) {
         throw new NotFoundException('Product does not exist');
       }

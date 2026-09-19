@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useToast } from "../hooks/useToast";
 import { useApp } from "../AppContext";
-import { CheckCircle2, AlertCircle } from "lucide-react";
 import AuthModalHeader from "./auth/AuthModalHeader";
 import SocialAuthButton from "./auth/SocialAuthButton";
 import SignInForm from "./auth/SignInForm";
@@ -17,16 +17,8 @@ export default function AuthModal() {
     loginWithGoogle,
   } = useApp();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [mobileNumber, setMobileNumber] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
+  const toast = useToast();
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -38,120 +30,70 @@ export default function AuthModal() {
 
   if (!isAuthModalOpen) return null;
 
-  const resetForm = () => {
-    setEmail("");
-    setPassword("");
-    setFirstName("");
-    setLastName("");
-    setMobileNumber("");
-    setConfirmPassword("");
-    setErrorMsg("");
-    setSuccessMsg("");
-  };
-
   const handleModeSwitch = (mode: "login" | "register") => {
-    resetForm();
     openAuthModal(mode);
   };
 
-  const handleLoginSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMsg("");
-    setSuccessMsg("");
-
-    if (!email.trim() || !password.trim()) {
-      setErrorMsg("Please enter both email and password.");
-      return;
-    }
-
+  // ── Sign In ─────────────────────────────────────────────────────────────
+  const handleLoginSubmit = async (email: string, password: string) => {
     setIsLoading(true);
-    const result = await login(email.trim(), password);
+    const id = toast.loading("Signing you in…");
+    const result = await login(email, password);
     setIsLoading(false);
 
-    if (result.success) {
-      setSuccessMsg("Signed in successfully! Welcome back.");
-      setTimeout(() => {
-        closeAuthModal();
-        resetForm();
-      }, 800);
-    } else {
-      setErrorMsg(
-        result.message || "Failed to sign in. Please verify your credentials.",
-      );
-    }
+    toast.resolve(
+      id,
+      result.success,
+      "Welcome back! 👋",
+      result.message || "Invalid email or password.",
+      "Check your credentials and try again.",
+    );
+    if (result.success) setTimeout(() => closeAuthModal(), 600);
   };
 
-  const handleRegisterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErrorMsg("");
-    setSuccessMsg("");
-
-    if (
-      !firstName.trim() ||
-      !email.trim() ||
-      !password.trim() ||
-      !mobileNumber.trim()
-    ) {
-      setErrorMsg("Please fill in all required fields.");
-      return;
-    }
-    if (password.length < 6) {
-      setErrorMsg("Password must be at least 6 characters long.");
-      return;
-    }
-    if (password !== confirmPassword) {
-      setErrorMsg("Passwords do not match.");
-      return;
-    }
-
+  // ── Register ────────────────────────────────────────────────────────────
+  const handleRegisterSubmit = async (userData: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    mobileNumber: string;
+    password: string;
+  }) => {
     setIsLoading(true);
-    const result = await register({
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      email: email.trim(),
-      mobileNumber: mobileNumber.trim(),
-      password,
-    });
+    const id = toast.loading("Creating your account…");
+    const result = await register(userData);
     setIsLoading(false);
 
-    if (result.success) {
-      setSuccessMsg(
-        "Account created successfully! Welcome to Ricky Mobile Store.",
-      );
-      setTimeout(() => {
-        closeAuthModal();
-        resetForm();
-      }, 800);
-    } else {
-      setErrorMsg(
-        result.message || "Account creation failed. Please try again.",
-      );
-    }
+    toast.resolve(
+      id,
+      result.success,
+      `Account created 🎉 Welcome, ${userData.firstName}!`,
+      result.message || "Account creation failed.",
+      "This email may already be registered.",
+    );
+    if (result.success) setTimeout(() => closeAuthModal(), 700);
   };
 
-  const handleGoogleSignIn = async () => {
+  // ── Google Sign-In ──────────────────────────────────────────────────────
+  const handleGoogleCredential = async (credential: string) => {
     setIsLoading(true);
-    setErrorMsg("");
-    const result = await loginWithGoogle();
+    const id = toast.loading("Verifying Google account…");
+    const result = await loginWithGoogle(credential);
     setIsLoading(false);
 
-    if (result.success) {
-      setSuccessMsg("Signed in with Google successfully!");
-      setTimeout(() => {
-        closeAuthModal();
-        resetForm();
-      }, 800);
-    } else {
-      setErrorMsg(result.message || "Google sign-in could not be completed.");
-    }
+    toast.resolve(
+      id,
+      result.success,
+      "Signed in with Google 🚀",
+      result.message || "Google sign-in failed.",
+      "Ensure VITE_GOOGLE_CLIENT_ID is configured.",
+    );
+    if (result.success) setTimeout(() => closeAuthModal(), 600);
   };
 
   return (
     <div
-      onClick={() => {
-        closeAuthModal();
-        resetForm();
-      }}
+      onClick={closeAuthModal}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md transition-opacity cursor-pointer"
     >
       <div
@@ -163,58 +105,19 @@ export default function AuthModal() {
 
         <AuthModalHeader
           mode={authModalMode}
-          onClose={() => {
-            closeAuthModal();
-            resetForm();
-          }}
+          onClose={closeAuthModal}
           onModeSwitch={handleModeSwitch}
         />
 
         <SocialAuthButton
-          onGoogleSignIn={handleGoogleSignIn}
+          onGoogleCredential={handleGoogleCredential}
           isLoading={isLoading}
         />
 
-        {errorMsg && (
-          <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs mb-4">
-            <AlertCircle size={15} className="shrink-0" />
-            <span>{errorMsg}</span>
-          </div>
-        )}
-
-        {successMsg && (
-          <div className="flex items-center gap-2 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-xs mb-4">
-            <CheckCircle2 size={15} className="shrink-0" />
-            <span>{successMsg}</span>
-          </div>
-        )}
-
         {authModalMode === "login" ? (
-          <SignInForm
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            isLoading={isLoading}
-            onSubmit={handleLoginSubmit}
-          />
+          <SignInForm isLoading={isLoading} onSubmit={handleLoginSubmit} />
         ) : (
-          <CreateAccountForm
-            firstName={firstName}
-            setFirstName={setFirstName}
-            lastName={lastName}
-            setLastName={setLastName}
-            mobileNumber={mobileNumber}
-            setMobileNumber={setMobileNumber}
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            confirmPassword={confirmPassword}
-            setConfirmPassword={setConfirmPassword}
-            isLoading={isLoading}
-            onSubmit={handleRegisterSubmit}
-          />
+          <CreateAccountForm isLoading={isLoading} onSubmit={handleRegisterSubmit} />
         )}
 
         <div className="mt-5 text-center text-xs text-gray-400">

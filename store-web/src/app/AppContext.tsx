@@ -8,7 +8,8 @@ import {
 import { Product, CartItem, ChatMessage, CHAT_INIT } from "./data";
 import { DEFAULT_SUPPORT_REPLY } from "./constants";
 import { apiService } from "./services/apiService";
-import { signInWithGoogle, isFirebaseConfigured } from "./services/googleAuth";
+import { isGoogleConfigured } from "./services/googleAuth";
+import { toastService } from "./services/toast";
 
 export interface UserProfile {
   id?: string;
@@ -37,14 +38,14 @@ interface AppContextType {
     colorId: string | number,
     colorName: string,
     quantity: number,
-  ) => void;
+  ) => void | Promise<void>;
   updateQty: (
     productId: string | number,
     colorId: string | number,
     delta: number,
-  ) => void;
-  clearCart: () => void;
-  toggleWishlist: (id: string | number) => void;
+  ) => void | Promise<void>;
+  clearCart: () => void | Promise<void>;
+  toggleWishlist: (id: string | number) => void | Promise<void>;
   trackedOrderId: string | null;
   setTrackedOrderId: (id: string | null) => void;
   chatMsgs: ChatMessage[];
@@ -86,10 +87,12 @@ interface AppContextType {
     password: string;
   }) => Promise<{ success: boolean; message?: string }>;
   loginWithGoogle: (
-    credential?: any,
+    credential: string,
   ) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
-  updateUserProfile: (data: Partial<UserProfile>) => void;
+  updateUserProfile: (
+    data: Partial<UserProfile>,
+  ) => Promise<{ success: boolean; message?: string }>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -278,65 +281,52 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   const loginWithGoogle = async (
-    _credential?: any,
+    credential: string,
   ): Promise<{ success: boolean; message?: string }> => {
-    // Guard: check env config before touching Firebase
-    if (!isFirebaseConfigured()) {
+    // Guard: check Google client ID is configured
+    if (!isGoogleConfigured()) {
       return {
         success: false,
         message:
           "Google Sign-In is not configured yet. " +
-          "Please add your VITE_FIREBASE_* keys to store-web/.env and restart the dev server.",
+          "Please add VITE_GOOGLE_CLIENT_ID to store-web/.env and restart the dev server.",
       };
     }
 
-    try {
-      // Step 1: Open Google OAuth popup and obtain a real Firebase ID token
-      const googleResult = await signInWithGoogle();
+    if (!credential) {
+      return { success: false, message: "No Google credential received. Please try again." };
+    }
 
-      // Step 2: Send the real Firebase ID token to the backend for verification
-      const res = await apiService.loginWithSocial(googleResult.idToken);
+    try {
+      // Send the Google credential JWT directly to the backend for verification
+      const res = await apiService.loginWithSocial(credential);
 
       if (res.success) {
-        // Step 3a: Backend verified the token — use real user data
         const googleUser: UserProfile = {
           id: res.user?.id || "u-google-" + Date.now(),
-          firstName:
-            res.user?.firstName ||
-            googleResult.displayName?.split(" ")[0] ||
-            "Google",
-          lastName:
-            res.user?.lastName ||
-            googleResult.displayName?.split(" ").slice(1).join(" ") ||
-            "",
-          email: res.user?.email || googleResult.email || "",
+          firstName: res.user?.firstName || "Google",
+          lastName: res.user?.lastName || "",
+          email: res.user?.email || "",
           mobileNumber: res.user?.mobileNumber || "",
-          pictureUrl: res.user?.pictureUrl || googleResult.photoURL || "",
+          pictureUrl: res.user?.pictureUrl || "",
           role: res.user?.role || "Customer",
         };
         setUser(googleUser);
-        setToken(res.token || googleResult.idToken);
+        setToken(res.token || "");
         safeSetItem("rms_user", JSON.stringify(googleUser));
-        safeSetItem("rms_token", res.token || googleResult.idToken);
+        if (res.token) safeSetItem("rms_token", res.token);
         setIsAuthModalOpen(false);
         return { success: true };
       } else {
-        // Step 3b: Backend rejected the token
         return {
           success: false,
           message: res.message || "Google Sign-In was rejected by the server.",
         };
       }
     } catch (err: any) {
-      // Handle user-cancelled popup or network errors gracefully
-      const cancelled =
-        err?.code === "auth/popup-closed-by-user" ||
-        err?.code === "auth/cancelled-popup-request";
       return {
         success: false,
-        message: cancelled
-          ? "Sign-in cancelled. Please try again."
-          : err.message || "Google Sign-In failed.",
+        message: err.message || "Google Sign-In failed.",
       };
     }
   };
@@ -344,25 +334,126 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setUser(null);
     setToken(null);
+    setCart([]);
+    setWishlist([]);
     safeRemoveItem("rms_user");
     safeRemoveItem("rms_token");
   };
 
-  const updateUserProfile = (data: Partial<UserProfile>) => {
-    setUser((prev) => {
-      if (!prev) return null;
-      const updated = { ...prev, ...data };
-      safeSetItem("rms_user", JSON.stringify(updated));
-      return updated;
-    });
+  const updateUserProfile = async (
+    data: Partial<UserProfile>,
+  ): Promise<{ success: boolean; message?: string }> => {
+    if (!user?.id) {
+      return { success: false, message: "User not logged in" };
+    }
+
+    const updated: UserProfile = { ...user, ...data };
+    setUser(updated);
+    safeSetItem("rms_user", JSON.stringify(updated));
+
+    if (!user.id.startsWith("u-demo-")) {
+      const res = await apiService.updateUserProfile(user.id, {
+        firstName: data.firstName ?? user.firstName,
+        lastName: data.lastName ?? user.lastName,
+        email: data.email ?? user.email,
+        mobileNumber: data.mobileNumber ?? user.mobileNumber,
+        pictureUrl: data.pictureUrl ?? user.pictureUrl,
+        dateBirth: data.dateBirth ?? user.dateBirth,
+      });
+
+      if (!res.status) {
+        return { success: false, message: res.message };
+      }
+    }
+
+    return { success: true };
   };
 
+  // Load remote cart and wishlist when user logs in
   useEffect(() => {
+    if (!user?.id || user.id.startsWith("u-demo-")) return;
+
+    let isMounted = true;
+
+    // Fetch Cart
+    apiService
+      .fetchCart(user.id)
+      .then((items) => {
+        if (!isMounted) return;
+        if (items && Array.isArray(items) && items.length > 0) {
+          const mappedCart: CartItem[] = items.map((item: any) => ({
+            id: item.id,
+            productId: item.product?.id || item.productId,
+            colorId: item.productColor?.id || item.colorId || 1,
+            colorName: item.productColor?.colorName || "Default",
+            qty: item.quantity || 1,
+          }));
+          setCart(mappedCart);
+        }
+      })
+      .catch((err) => console.warn("Could not sync remote cart:", err));
+
+    // Fetch Wishlist
+    apiService
+      .fetchWishlist(user.id)
+      .then((res) => {
+        if (!isMounted) return;
+        if (res && Array.isArray(res.productIds)) {
+          setWishlist(res.productIds);
+        }
+        if (res && Array.isArray(res.products) && res.products.length > 0) {
+          setProducts((prev) => {
+            const existingIds = new Set(prev.map((p) => String(p.id)));
+            const missing = res.products
+              .filter((p: any) => !existingIds.has(String(p.id)))
+              .map((p: any) => ({
+                id: p.id,
+                name: p.name || "Product",
+                price: Number(p.price) || 0,
+                discount: Number(p.discount) || 0,
+                description: p.description || "",
+                quantity: Number(p.quantity) || 10,
+                warranty: p.warranty || "1 Year Official Warranty",
+                specifications: p.specifications || "",
+                categoryId: p.categoryId || 1,
+                colors:
+                  p.colors && p.colors.length > 0
+                    ? p.colors
+                    : [
+                        {
+                          id: 1,
+                          colorName: "Default",
+                          quantity: 10,
+                          hex: "#000000",
+                        },
+                      ],
+                reviews: p.reviews || [],
+                image:
+                  p.image ||
+                  p.imageUrl ||
+                  "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop&auto=format",
+                badge: p.badge || null,
+              }));
+            return missing.length > 0 ? [...prev, ...missing] : prev;
+          });
+        }
+      })
+      .catch((err) => console.warn("Could not sync remote wishlist:", err));
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user?.id]);
+
+  useEffect(() => {
+    let isMounted = true;
+
     // Fetch live products from backend API
     setLoadingProducts(true);
     apiService
       .fetchProducts(1, 50)
       .then((liveProducts) => {
+        if (!isMounted) return;
         if (liveProducts && Array.isArray(liveProducts)) {
           const mappedProducts: Product[] = liveProducts.map(
             (p: any, idx: number) => ({
@@ -400,11 +491,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }
       })
       .catch((err) => {
+        if (!isMounted) return;
         console.warn("Failed to load products:", err);
+        toastService.error(
+          "Could not load products",
+          "Check that the backend server is running on port 8001.",
+        );
         setProducts([]);
       })
       .finally(() => {
-        setLoadingProducts(false);
+        if (isMounted) setLoadingProducts(false);
       });
 
     // Fetch live categories from backend API
@@ -412,6 +508,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     apiService
       .fetchCategories(1, 50)
       .then((liveCategories) => {
+        if (!isMounted) return;
         if (liveCategories && Array.isArray(liveCategories)) {
           const mappedCategories = liveCategories.map(
             (c: any, idx: number) => ({
@@ -425,12 +522,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }
       })
       .catch((err) => {
+        if (!isMounted) return;
         console.warn("Failed to load categories:", err);
+        toastService.warning(
+          "Could not load categories",
+          "Category filters may be unavailable.",
+        );
         setCategories([]);
       })
       .finally(() => {
-        setLoadingCategories(false);
+        if (isMounted) setLoadingCategories(false);
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
@@ -439,20 +545,83 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return p ? s + (p.price - p.discount) * i.qty : s;
   }, 0);
 
-  function addToCart(
+  async function addToCart(
     productId: string | number,
     colorId: string | number,
     colorName: string,
     quantity: number,
   ) {
+    // If logged in, call backend first. If error, don't show product in cart and show backend error message.
+    if (user?.id && !user.id.startsWith("u-demo-")) {
+      try {
+        const res = await apiService.addToCart(
+          {
+            productId,
+            colorId,
+            quantity,
+          },
+          user.id,
+        );
+
+        if (!res.status) {
+          toastService.error(
+            "Could not add to cart",
+            res.message || "Failed to add product to cart",
+          );
+          return;
+        }
+
+        // Success: update cart with backend item id
+        setCart((prev) => {
+          const ex = prev.find(
+            (i) =>
+              String(i.productId) === String(productId) &&
+              String(i.colorId) === String(colorId),
+          );
+          if (ex) {
+            toastService.cart.updated();
+            return prev.map((i) =>
+              i === ex
+                ? { ...i, qty: ex.qty + quantity, id: res.data?.id || ex.id }
+                : i,
+            );
+          }
+          toastService.cart.added(colorName, quantity);
+          return [
+            ...prev,
+            {
+              id: res.data?.id,
+              productId: productId as any,
+              colorId: colorId as any,
+              colorName,
+              qty: quantity,
+            },
+          ];
+        });
+        setCartOpen(true);
+      } catch (err: any) {
+        toastService.error(
+          "Could not add to cart",
+          err.message || "Network error while adding to cart",
+        );
+      }
+      return;
+    }
+
+    // Guest / offline fallback
     setCart((prev) => {
       const ex = prev.find(
-        (i) => i.productId === productId && i.colorId === colorId,
+        (i) =>
+          String(i.productId) === String(productId) &&
+          String(i.colorId) === String(colorId),
       );
-      if (ex)
+      if (ex) {
+        toastService.cart.updated();
         return prev.map((i) =>
           i === ex ? { ...i, qty: i.qty + quantity } : i,
         );
+      }
+      toastService.cart.added(colorName, quantity);
       return [
         ...prev,
         {
@@ -466,30 +635,107 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setCartOpen(true);
   }
 
-  function updateQty(
+  async function updateQty(
     productId: string | number,
     colorId: string | number,
     delta: number,
   ) {
+    const item = cart.find(
+      (i) =>
+        String(i.productId) === String(productId) &&
+        String(i.colorId) === String(colorId),
+    );
+    if (!item) return;
+
+    const previousCart = [...cart];
+    const newQty = item.qty + delta;
+
+    // Optimistically update
     setCart((prev) =>
       prev
         .map((i) =>
-          i.productId === productId && i.colorId === colorId
-            ? { ...i, qty: Math.max(0, i.qty + delta) }
+          String(i.productId) === String(productId) &&
+          String(i.colorId) === String(colorId)
+            ? { ...i, qty: Math.max(0, newQty) }
             : i,
         )
         .filter((i) => i.qty > 0),
     );
+
+    if (user?.id && !user.id.startsWith("u-demo-")) {
+      try {
+        const res =
+          newQty <= 0 && item.id
+            ? await apiService.removeCartItem(item.id, user.id)
+            : item.id
+            ? await apiService.updateCartItemQty(item.id, newQty, user.id)
+            : null;
+
+        if (res && !res.status) {
+          setCart(previousCart);
+          toastService.error(
+            "Update Cart Failed",
+            res.message || "Failed to update item quantity",
+          );
+        }
+      } catch (err: any) {
+        setCart(previousCart);
+        toastService.error("Update Cart Failed", err.message || "Network error");
+      }
+    }
   }
 
-  function clearCart() {
+  async function clearCart() {
+    const previousCart = [...cart];
     setCart([]);
+    if (user?.id && !user.id.startsWith("u-demo-")) {
+      try {
+        const res = await apiService.clearCart(user.id);
+        if (!res.status) {
+          setCart(previousCart);
+          toastService.error(
+            "Clear Cart Failed",
+            res.message || "Failed to clear cart",
+          );
+        }
+      } catch (err: any) {
+        setCart(previousCart);
+        toastService.error("Clear Cart Failed", err.message || "Network error");
+      }
+    }
   }
 
-  function toggleWishlist(id: string | number) {
+  async function toggleWishlist(id: string | number) {
+    const wasInWishlist = wishlist.some((w) => String(w) === String(id));
+    const previousWishlist = [...wishlist];
+
+    // Optimistic update
     setWishlist((prev) =>
-      prev.includes(id) ? prev.filter((w) => w !== id) : [...prev, id],
+      wasInWishlist
+        ? prev.filter((w) => String(w) !== String(id))
+        : [...prev, id],
     );
+    if (!wasInWishlist) {
+      toastService.wishlist.added();
+    } else {
+      toastService.wishlist.removed();
+    }
+
+    if (user?.id && !user.id.startsWith("u-demo-")) {
+      try {
+        const res = await apiService.toggleWishlist(id, user.id);
+        if (!res.status) {
+          setWishlist(previousWishlist);
+          toastService.error(
+            "Wishlist Update Failed",
+            res.message || "Failed to update wishlist",
+          );
+        }
+      } catch (err: any) {
+        setWishlist(previousWishlist);
+        toastService.error("Wishlist Update Failed", err.message || "Network error");
+      }
+    }
   }
 
   function sendChat() {

@@ -8,6 +8,10 @@ export interface DeliveryInfo {
   freeDelivery: boolean;
   codAvailable: boolean;
   storePickupAvailable: boolean;
+  backendVerified?: boolean;
+  cityName?: string;
+  district?: string;
+  state?: string;
 }
 
 export function evaluatePincode(pin: string): DeliveryInfo {
@@ -37,8 +41,8 @@ export function evaluatePincode(pin: string): DeliveryInfo {
       pincode: cleanPin,
       isDeliverable: true,
       zone: "khanna",
-      speedText: "Same-Day Express Delivery (Within 2–3 Hours)",
-      expectedDateText: "Today by 7:00 PM",
+      speedText: "Yes, it is available for delivery",
+      expectedDateText: "Today by 7:00 PM (Within 2–3 Hours)",
       locationName: "Khanna, District Ludhiana (Punjab)",
       freeDelivery: true,
       codAvailable: true,
@@ -59,7 +63,7 @@ export function evaluatePincode(pin: string): DeliveryInfo {
       pincode: cleanPin,
       isDeliverable: true,
       zone: "ludhiana",
-      speedText: "Next-Day Guaranteed Express Delivery",
+      speedText: "Yes, it is available for delivery",
       expectedDateText: "Tomorrow by 2:00 PM",
       locationName:
         cleanPin === "147301"
@@ -84,24 +88,9 @@ export function evaluatePincode(pin: string): DeliveryInfo {
       pincode: cleanPin,
       isDeliverable: true,
       zone: "punjab",
-      speedText: "Express Regional Delivery (1–2 Business Days)",
-      expectedDateText: "In 1–2 Days",
+      speedText: "Yes, it is available for delivery",
+      expectedDateText: "In 1–2 Business Days",
       locationName: "Punjab / Chandigarh Region",
-      freeDelivery: true,
-      codAvailable: true,
-      storePickupAvailable: false,
-    };
-  }
-
-  // Pan-India Valid Pincodes
-  if (/^[1-8][0-9]{5}$/.test(cleanPin)) {
-    return {
-      pincode: cleanPin,
-      isDeliverable: true,
-      zone: "national",
-      speedText: "Standard Air Courier (2–4 Business Days)",
-      expectedDateText: "In 2–4 Business Days",
-      locationName: "All-India Delivery Network",
       freeDelivery: true,
       codAvailable: true,
       storePickupAvailable: false,
@@ -112,7 +101,7 @@ export function evaluatePincode(pin: string): DeliveryInfo {
     pincode: cleanPin,
     isDeliverable: false,
     zone: "invalid",
-    speedText: "Delivery currently not serviceable to this pincode.",
+    speedText: "City not available for delivery",
     expectedDateText: "",
     locationName: "",
     freeDelivery: false,

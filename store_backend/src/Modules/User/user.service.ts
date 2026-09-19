@@ -18,6 +18,7 @@ import { TransformCustomerUserDto } from './Dtos/response-customer-user.dto';
 import { updateUserDto } from './Dtos/update-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { FirebaseService } from 'Core/Firebase/firebase.service';
+import { GoogleAuthService } from 'Core/Firebase/google-auth.service';
 import { dateToUTC } from 'Common/Utils/Utils';
 
 @Injectable()
@@ -26,6 +27,7 @@ export class UserService {
     private userRepository: UserRepository,
     private jwtService: JwtService,
     private firebaseService: FirebaseService,
+    private googleAuthService: GoogleAuthService,
   ) {}
 
   async userToken(userId: string, userRole: role): Promise<string> {
@@ -47,6 +49,23 @@ export class UserService {
     }
   }
 
+  async getAuthConfig(): Promise<baseResponseDto> {
+    const clientId = process.env.GOOGLE_CLIENT_ID || '';
+    const isConfigured = !!(
+      clientId &&
+      clientId.trim() &&
+      !clientId.includes('your-google')
+    );
+    return {
+      status: true,
+      code: 200,
+      data: {
+        googleClientId: isConfigured ? clientId : '',
+        isGoogleConfigured: isConfigured,
+      },
+    };
+  }
+
   async bycryptPassword(password: string): Promise<string> {
     try {
       const salt = await bcrypt.genSalt(10);
@@ -60,9 +79,35 @@ export class UserService {
 
   async loginWithSocialMedia(token: string): Promise<baseResponseDto> {
     try {
-      const decoded = await this.firebaseService.verifyToken(token);
+      let uid: string;
+      let email: string;
+      let name: string;
+      let picture: string;
 
-      const { uid, email, name, picture } = decoded;
+      // Strategy 1: Try Google Identity Services credential (google-auth-library)
+      // This is the preferred path — frontend uses @react-oauth/google, no Firebase SDK needed.
+      if (this.googleAuthService.isConfigured()) {
+        try {
+          const googlePayload = await this.googleAuthService.verifyGoogleCredential(token);
+          uid = googlePayload.uid;
+          email = googlePayload.email;
+          name = googlePayload.name;
+          picture = googlePayload.picture;
+        } catch {
+          // Fall through to Strategy 2
+          uid = null;
+        }
+      }
+
+      // Strategy 2: Fall back to Firebase Admin SDK token verification
+      // Kept for backward compatibility and admin login flows.
+      if (!uid) {
+        const decoded = await this.firebaseService.verifyToken(token);
+        uid = decoded.uid;
+        email = decoded.email;
+        name = decoded.name;
+        picture = decoded.picture;
+      }
 
       let user = await this.userRepository.findOneBy({ email });
 
@@ -104,7 +149,7 @@ export class UserService {
       };
     } catch (error) {
       if (error instanceof HttpException) throw error;
-      throw new InternalServerErrorException('Invalid firebase token');
+      throw new InternalServerErrorException('Invalid social login token');
     }
   }
 

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useApp } from "../AppContext";
 import { fmt } from "../data";
 import {
@@ -8,14 +10,21 @@ import {
   Minus,
   Plus,
   Shield,
-  CreditCard,
   Star,
-  Cpu,
-  Layers,
+  Loader2,
+  MessageSquarePlus,
+  Send,
 } from "lucide-react";
 import AffordabilityWidget from "../components/AffordabilityWidget";
 import ChatbotOverlay from "../components/ChatbotOverlay";
 import DeliveryChecker from "../components/DeliveryChecker";
+import { useToast } from "../hooks/useToast";
+import { apiService } from "../services/apiService";
+import {
+  productReviewSchema,
+  type ProductReviewFormValues,
+} from "../utils/validation.schemas";
+import FieldError from "../components/ui/FieldError";
 
 function StarRow({ rating, size = 13 }: { rating: number; size?: number }) {
   return (
@@ -36,18 +45,34 @@ function StarRow({ rating, size = 13 }: { rating: number; size?: number }) {
 export default function ProductDetailPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const { products, loadingProducts, wishlist, toggleWishlist, addToCart } =
-    useApp();
+  const {
+    user,
+    products,
+    loadingProducts,
+    wishlist,
+    toggleWishlist,
+    addToCart,
+  } = useApp();
   const [fetchedProduct, setFetchedProduct] = useState<any | null>(null);
   const [isFetching, setIsFetching] = useState(false);
 
-  // Find product by slug or id from state
-  const cachedProduct = products.find(
-    (p) =>
-      p.name.toLowerCase().replace(/ /g, "-") === slug ||
-      String(p.id) === slug ||
-      p.name.toLowerCase() === slug?.toLowerCase(),
-  );
+  // Find product by slug or id from state (handle decoding, hyphens, spaces, casing)
+  const decodedSlug = slug ? decodeURIComponent(slug).trim() : "";
+  const slugified = decodedSlug.toLowerCase().replace(/\s+/g, "-");
+
+  const cachedProduct = products.find((p) => {
+    const pName = (p.name || "").trim().toLowerCase();
+    const pSlug = pName.replace(/\s+/g, "-");
+    const pId = String(p.id);
+    return (
+      pId === slug ||
+      pId === decodedSlug ||
+      pName === decodedSlug.toLowerCase() ||
+      pSlug === slugified ||
+      pName === slug?.toLowerCase() ||
+      pSlug === slug?.toLowerCase()
+    );
+  });
 
   const sp = cachedProduct || fetchedProduct;
 
@@ -106,6 +131,74 @@ export default function ProductDetailPage() {
     "bajaj",
   );
 
+  // Reviews state
+  const [reviewsList, setReviewsList] = useState<any[]>([]);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [selectedRating, setSelectedRating] = useState(5);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const toast = useToast();
+
+  const {
+    register: reviewRegister,
+    handleSubmit: handleReviewSubmit,
+    setValue: setReviewValue,
+    reset: resetReviewForm,
+    formState: { errors: reviewErrors },
+  } = useForm<ProductReviewFormValues>({
+    resolver: yupResolver(productReviewSchema),
+    defaultValues: {
+      rating: 5,
+      userName: user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "",
+      reviewText: "",
+    },
+  });
+
+  const onReviewSubmit = async (data: ProductReviewFormValues) => {
+    if (!sp?.id) return;
+    setIsSubmittingReview(true);
+    const id = toast.loading("Submitting your review…");
+
+    const ok = await apiService.submitProductReview({
+      productId: String(sp.id),
+      rating: data.rating,
+      reviewText: data.reviewText,
+      userName: data.userName || (user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "Verified Buyer"),
+    });
+
+    setIsSubmittingReview(false);
+
+    if (ok) {
+      toast.resolve(
+        id,
+        true,
+        "Review submitted! ⭐",
+        "",
+        undefined,
+        "Thank you for sharing your feedback.",
+      );
+      setReviewsList((prev) => [
+        {
+          id: Date.now().toString(),
+          reviewerName: data.userName || (user ? `${user.firstName || ""} ${user.lastName || ""}`.trim() : "Verified Buyer"),
+          rating: data.rating,
+          comment: data.reviewText,
+          review: data.reviewText,
+        },
+        ...prev,
+      ]);
+      resetReviewForm();
+      setShowReviewForm(false);
+    } else {
+      toast.resolve(
+        id,
+        false,
+        "",
+        "Failed to submit review",
+        "Please try again later.",
+      );
+    }
+  };
+
   useEffect(() => {
     if (sp) {
       if (!activeImage) {
@@ -114,6 +207,7 @@ export default function ProductDetailPage() {
       if (!selColorId && sp.colors && sp.colors.length > 0) {
         setSelColorId(sp.colors[0].id);
       }
+      setReviewsList(sp.reviews || []);
     }
   }, [sp, activeImage, selColorId]);
 
@@ -420,7 +514,7 @@ export default function ProductDetailPage() {
               <Heart
                 size={17}
                 className={
-                  wishlist.includes(sp.id)
+                  wishlist.some((id) => String(id) === String(sp.id))
                     ? "text-[#ff2d55] fill-[#ff2d55]"
                     : "text-gray-500"
                 }
@@ -480,13 +574,125 @@ export default function ProductDetailPage() {
           )}
 
           {activeTab === "reviews" && (
-            <div className="space-y-3">
-              {(sp.reviews || []).length === 0 ? (
-                <p className="text-gray-500 text-sm py-4">
-                  No reviews yet. Be the first to review!
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-bold text-white">
+                    Customer Ratings & Reviews
+                  </h3>
+                  <p className="text-[11px] text-gray-400">
+                    {reviewsList.length} verified customer reviews
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowReviewForm((prev) => !prev)}
+                  style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                  className="px-3.5 py-1.5 bg-[#00cfff] text-[#07070f] font-extrabold text-xs tracking-wider rounded-xl hover:bg-[#00cfff]/90 transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-[#00cfff]/20"
+                >
+                  <MessageSquarePlus size={13} />
+                  {showReviewForm ? "CANCEL REVIEW" : "WRITE A REVIEW"}
+                </button>
+              </div>
+
+              {/* Expandable Review Form with Yup validation */}
+              {showReviewForm && (
+                <form
+                  onSubmit={handleReviewSubmit(onReviewSubmit)}
+                  noValidate
+                  className="p-5 bg-white/3 rounded-2xl border border-[#00cfff]/20 space-y-3.5"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-white">
+                      Your Rating <span className="text-red-400">*</span>
+                    </span>
+                    <div className="flex items-center gap-1">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => {
+                            setSelectedRating(s);
+                            setReviewValue("rating", s, { shouldValidate: true });
+                          }}
+                          className="p-1 hover:scale-110 transition-transform cursor-pointer"
+                        >
+                          <Star
+                            size={18}
+                            className={
+                              s <= selectedRating
+                                ? "text-yellow-400 fill-yellow-400"
+                                : "text-gray-600"
+                            }
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <FieldError message={reviewErrors.rating?.message} />
+
+                  <div>
+                    <label className="text-[11px] text-gray-400 font-mono block mb-1">
+                      Your Name (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder={
+                        user
+                          ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
+                          : "Verified Buyer"
+                      }
+                      {...reviewRegister("userName")}
+                      className="w-full bg-white/4 border border-white/10 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#00cfff]/50"
+                    />
+                    <FieldError message={reviewErrors.userName?.message} />
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] text-gray-400 font-mono block mb-1">
+                      Your Experience / Review <span className="text-red-400">*</span>
+                    </label>
+                    <textarea
+                      rows={3}
+                      placeholder="Share what you loved about this device, delivery speed in Punjab, etc."
+                      {...reviewRegister("reviewText")}
+                      className={`w-full bg-white/4 border rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none transition-all ${
+                        reviewErrors.reviewText
+                          ? "border-red-500/60 focus:border-red-500/80"
+                          : "border-white/10 focus:border-[#00cfff]/50"
+                      }`}
+                    />
+                    <FieldError message={reviewErrors.reviewText?.message} />
+                  </div>
+
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      disabled={isSubmittingReview}
+                      style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
+                      className="px-5 py-2 bg-[#00cfff] text-[#07070f] font-extrabold text-xs tracking-wider rounded-xl hover:bg-[#00cfff]/90 transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-[#00cfff]/20 disabled:opacity-50"
+                    >
+                      {isSubmittingReview ? (
+                        <>
+                          <Loader2 size={13} className="animate-spin" /> SUBMITTING…
+                        </>
+                      ) : (
+                        <>
+                          <Send size={13} /> SUBMIT REVIEW
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {/* Reviews List */}
+              {reviewsList.length === 0 ? (
+                <p className="text-gray-500 text-sm py-4 text-center">
+                  No reviews yet. Be the first to share your thoughts!
                 </p>
               ) : (
-                (sp.reviews || []).map((r: any) => (
+                reviewsList.map((r: any) => (
                   <div
                     key={r.id}
                     className="p-4 bg-white/3 rounded-2xl border border-white/5"

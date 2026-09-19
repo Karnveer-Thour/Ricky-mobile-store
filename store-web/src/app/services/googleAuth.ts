@@ -1,112 +1,45 @@
 /**
  * googleAuth.ts
- * Firebase Google Sign-In integration for store-web.
  *
- * This module initialises the Firebase client SDK (once) and exposes a
- * single helper – signInWithGoogle() – that opens the Google OAuth popup
- * and resolves with the Firebase ID token that the backend expects.
+ * Google Sign-In integration for store-web — powered by @react-oauth/google.
  *
- * To enable this in production:
- *   1. Go to Firebase Console → Project settings → Your apps → Web app
- *   2. Copy the firebaseConfig object values
- *   3. Paste them into store-web/.env as VITE_FIREBASE_* variables
- *   4. Restart the dev server
+ * This module no longer uses the Firebase Web SDK. Instead it relies on
+ * Google Identity Services (GIS) via the @react-oauth/google library.
+ *
+ * Flow:
+ *   1. <GoogleOAuthProvider clientId={...}> wraps the app in main.tsx
+ *   2. useGoogleLogin() / GoogleLogin component triggers the Google popup
+ *   3. On success, Google returns a { credential } JWT (ID token)
+ *   4. That credential is posted to POST /user/login/social/:token
+ *   5. Backend verifies via google-auth-library (no Firebase needed on frontend)
+ *
+ * Required env var (store-web/.env):
+ *   VITE_GOOGLE_CLIENT_ID=your-google-oauth-client-id.apps.googleusercontent.com
+ *
+ * Get the Client ID from:
+ *   https://console.cloud.google.com/apis/credentials
+ *   → Create OAuth 2.0 Client ID (Web application)
+ *   → Add Authorized JS Origin: http://localhost:5173
  */
 
-import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  type Auth,
-} from "firebase/auth";
+let dynamicGoogleClientId = '';
 
-// ---------------------------------------------------------------------------
-// Firebase web app config – reads from Vite env vars at build time
-// ---------------------------------------------------------------------------
-const firebaseWebConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string | undefined,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN as string | undefined,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID as string | undefined,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET as string | undefined,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID as string | undefined,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID as string | undefined,
-};
-
-/** Returns true only when all required Firebase web config keys are present. */
-export function isFirebaseConfigured(): boolean {
-  return !!(
-    firebaseWebConfig.apiKey &&
-    firebaseWebConfig.authDomain &&
-    firebaseWebConfig.projectId &&
-    firebaseWebConfig.appId
-  );
+export function setDynamicGoogleClientId(id: string) {
+  dynamicGoogleClientId = id;
 }
 
-// ---------------------------------------------------------------------------
-// Lazy singleton initialisation (safe to call multiple times)
-// ---------------------------------------------------------------------------
-let _app: FirebaseApp | null = null;
-let _auth: Auth | null = null;
-
-function getFirebaseAuth(): Auth | null {
-  if (!isFirebaseConfigured()) return null;
-
-  if (!_app) {
-    // Re-use an already-initialised app (hot-reload safe)
-    _app = getApps().length ? getApps()[0] : initializeApp(firebaseWebConfig);
-  }
-  if (!_auth) {
-    _auth = getAuth(_app);
-  }
-  return _auth;
+/** Returns true when the Google Client ID is configured (either in .env or via backend API). */
+export function isGoogleConfigured(): boolean {
+  const envId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
+  const clientId = dynamicGoogleClientId || envId;
+  return !!(clientId && clientId.trim() && !clientId.includes('your-google'));
 }
 
-// ---------------------------------------------------------------------------
-// Public API
-// ---------------------------------------------------------------------------
-
-export interface GoogleSignInResult {
-  /** Firebase ID token to pass to the backend */
-  idToken: string;
-  /** Display name from Google account */
-  displayName: string | null;
-  /** Email from Google account */
-  email: string | null;
-  /** Profile photo URL */
-  photoURL: string | null;
+/** The Google OAuth Client ID (from backend API or Vite env vars). */
+export function getGoogleClientId(): string {
+  const envId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
+  return dynamicGoogleClientId || envId || '';
 }
 
-/**
- * Opens the Google OAuth popup and returns the Firebase ID token.
- * Throws a descriptive Error when:
- *   - Firebase is not configured (env vars missing)
- *   - The user cancels the popup
- *   - Any network / OAuth error occurs
- */
-export async function signInWithGoogle(): Promise<GoogleSignInResult> {
-  const auth = getFirebaseAuth();
-
-  if (!auth) {
-    throw new Error(
-      "Google Sign-In is not configured yet. " +
-        "Please add the VITE_FIREBASE_* environment variables to store-web/.env and restart the dev server. " +
-        "See store-web/.env.example for the required variable names."
-    );
-  }
-
-  const provider = new GoogleAuthProvider();
-  // Request the user's email and profile so the backend can create an account
-  provider.addScope("email");
-  provider.addScope("profile");
-
-  const result = await signInWithPopup(auth, provider);
-  const idToken = await result.user.getIdToken();
-
-  return {
-    idToken,
-    displayName: result.user.displayName,
-    email: result.user.email,
-    photoURL: result.user.photoURL,
-  };
-}
+export const GOOGLE_CLIENT_ID: string =
+  (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined) ?? '';

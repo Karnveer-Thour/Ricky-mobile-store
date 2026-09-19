@@ -3,12 +3,14 @@ import { MapPin } from "lucide-react";
 
 interface DeliveryInputBarProps {
   pincode: string;
+  isChecking?: boolean;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: () => void;
 }
 
 export default function DeliveryInputBar({
   pincode,
+  isChecking = false,
   onInputChange,
   onSubmit,
 }: DeliveryInputBarProps) {
@@ -32,10 +34,11 @@ export default function DeliveryInputBar({
       <button
         type="button"
         onClick={onSubmit}
+        disabled={isChecking}
         style={{ fontFamily: "'Barlow Condensed', sans-serif" }}
-        className="px-5 py-2 bg-[#00cfff] hover:bg-[#00cfff]/90 text-[#07070f] text-xs font-extrabold rounded-xl transition-all tracking-wider shrink-0 cursor-pointer shadow-md shadow-[#00cfff]/20"
+        className="px-5 py-2 bg-[#00cfff] hover:bg-[#00cfff]/90 disabled:opacity-60 text-[#07070f] text-xs font-extrabold rounded-xl transition-all tracking-wider shrink-0 cursor-pointer shadow-md shadow-[#00cfff]/20 flex items-center justify-center gap-1.5 min-w-[75px]"
       >
-        CHECK
+        {isChecking ? "CHECKING..." : "CHECK"}
       </button>
     </div>
   );

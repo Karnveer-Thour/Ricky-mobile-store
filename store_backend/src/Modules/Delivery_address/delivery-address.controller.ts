@@ -36,7 +36,7 @@ export class DeliveryAddressController {
   async getAll(@Query() query: DeliveryAddressPaginationQueryDto): Promise<baseResponseDto> {
     const pageNumber = parseInt(query.page || '1');
     const limitNumber = parseInt(query.limit || '10');
-    return this.deliveryAddressService.getAll(pageNumber, limitNumber);
+    return this.deliveryAddressService.getAll(pageNumber, limitNumber, query.userId);
   }
 
   @Get(':id')

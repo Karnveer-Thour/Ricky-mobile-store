@@ -114,7 +114,7 @@ export default function CatalogProductGrid({
           {filtered.map((p) => {
             const netPrice = p.price - p.discount;
             const hasDiscount = p.discount > 0;
-            const isWish = wishlist.includes(p.id);
+            const isWish = wishlist.some((id) => String(id) === String(p.id));
 
             return (
               <div
