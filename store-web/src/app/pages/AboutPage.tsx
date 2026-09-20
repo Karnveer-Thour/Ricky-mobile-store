@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useApp } from "../AppContext";
 import { pct } from "../data";
+import SEOHead from "../components/seo/SEOHead";
 
 export default function AboutPage() {
   const navigate = useNavigate();
@@ -17,6 +18,11 @@ export default function AboutPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-24 pb-16">
+      <SEOHead
+        title="About Our Khanna Showroom & Mobile Repair Hub"
+        description="Learn about Ricky Mobile Store on G.T. Road Khanna, Punjab. Ludhiana district's #1 trusted destination for flagship smartphones, certified repairs, and 0% Bajaj EMI."
+        canonicalUrl="/about"
+      />
       <div className="flex items-center gap-4 mb-8">
         <button
           onClick={() => navigate("/")}

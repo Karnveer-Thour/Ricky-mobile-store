@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { fmt } from "../data";
 import { useToast } from "../hooks/useToast";
+import SEOHead from "../components/seo/SEOHead";
 
 // ─── Types & Config ─────────────────────────────────────────────────────────
 
@@ -238,6 +239,11 @@ export default function OrderTrackingPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-24 pb-16 space-y-8">
+      <SEOHead
+        title="Track Your Order & Live Delivery Status"
+        description="Track your smartphone order and live delivery status from Ricky Mobile Store Khanna."
+        canonicalUrl="/orders"
+      />
       {/* Header */}
       <div className="flex items-center justify-between border-b border-white/5 pb-4">
         <div>

@@ -82,7 +82,17 @@ export default function ChatSidebarList({
 
       {/* Chats list */}
       <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/60">
-        {filteredChats.map((chat) => {
+        {filteredChats.length === 0 ? (
+          <div className="p-6 text-center text-slate-400">
+            <p className="text-xs font-semibold">No conversations found</p>
+            <p className="text-[11px] text-slate-500 mt-1">
+              {searchQuery
+                ? "Try a different search term"
+                : "Customer inquiries will appear here"}
+            </p>
+          </div>
+        ) : (
+          filteredChats.map((chat) => {
           const isActive = chat.id === activeChatId;
           return (
             <div
@@ -175,7 +185,8 @@ export default function ChatSidebarList({
               </div>
             </div>
           );
-        })}
+        })
+      )}
       </div>
     </div>
   );

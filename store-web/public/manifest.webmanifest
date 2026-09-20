@@ -1,0 +1,73 @@
+{
+  "name": "Ricky Mobile Store Khanna",
+  "short_name": "Ricky Mobile",
+  "description": "Khanna & Ludhiana district's #1 trusted smartphone showroom, certified repairs, and 0% Bajaj Finserv EMI.",
+  "start_url": "/",
+  "id": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#07070f",
+  "theme_color": "#07070f",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "categories": ["shopping", "business", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/maskable-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Browse Phones",
+      "short_name": "Phones",
+      "description": "Explore latest smartphones and flagship deals",
+      "url": "/",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "0% EMI Offers",
+      "short_name": "EMI Offers",
+      "description": "Check Bajaj Finserv and Home Credit 0% EMI",
+      "url": "/offers",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Track Order",
+      "short_name": "Tracking",
+      "description": "Track your phone delivery status",
+      "url": "/orders",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Store & Repairs",
+      "short_name": "Showroom",
+      "description": "Khanna showroom visit, timings & repair center",
+      "url": "/about",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

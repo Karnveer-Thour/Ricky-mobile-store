@@ -7,6 +7,7 @@ import {
   ChevronDown,
   MessageCircle,
 } from "lucide-react";
+import SEOHead from "../components/seo/SEOHead";
 
 export default function FaqPage() {
   const navigate = useNavigate();
@@ -14,6 +15,23 @@ export default function FaqPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-24 pb-16">
+      <SEOHead
+        title="Frequently Asked Questions & Warranty Policy"
+        description="Find answers about phone delivery in Khanna, 0% Bajaj Finserv EMI, certified repairs, and genuine brand warranty at Ricky Mobile Store."
+        canonicalUrl="/faq"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: FAQS.map((faq) => ({
+            "@type": "Question",
+            name: faq.q,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: faq.a,
+            },
+          })),
+        }}
+      />
       <div className="flex items-center gap-4 mb-8">
         <button
           onClick={() => navigate("/")}

@@ -18,6 +18,7 @@ import {
 import AffordabilityWidget from "../components/AffordabilityWidget";
 import ChatbotOverlay from "../components/ChatbotOverlay";
 import DeliveryChecker from "../components/DeliveryChecker";
+import SEOHead from "../components/seo/SEOHead";
 import { useToast } from "../hooks/useToast";
 import { apiService } from "../services/apiService";
 import {
@@ -289,6 +290,43 @@ export default function ProductDetailPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-16">
+      <SEOHead
+        title={`${sp.name} Price in Khanna & Ludhiana`}
+        description={`Buy ${sp.name} at Ricky Mobile Store Khanna with 0% Bajaj Finserv EMI, same-day delivery in Khanna (141401), and genuine warranty. Price: ₹${sp.price}.`}
+        canonicalUrl={`/product/${encodeURIComponent(sp.name)}`}
+        ogType="product"
+        ogImage={sp.image}
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: sp.name,
+          image: imageList,
+          description: sp.description || `Buy ${sp.name} at Ricky Mobile Store Khanna.`,
+          brand: {
+            "@type": "Brand",
+            name: sp.brand || "Ricky Mobile Store",
+          },
+          offers: {
+            "@type": "Offer",
+            url: `https://rickymobilestore.in/product/${encodeURIComponent(sp.name)}`,
+            priceCurrency: "INR",
+            price: sp.price,
+            availability: (sp.stock ?? 1) > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            itemCondition: "https://schema.org/NewCondition",
+            seller: {
+              "@type": "Organization",
+              name: "Ricky Mobile Store Khanna",
+            },
+          },
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: sp.rating || "4.8",
+            reviewCount: (reviewsList && reviewsList.length > 0) ? reviewsList.length : 12,
+            bestRating: "5",
+            worstRating: "1",
+          },
+        }}
+      />
       <button
         onClick={() => navigate("/")}
         className="flex items-center gap-2 text-gray-400 hover:text-white transition-all mb-8 text-sm cursor-pointer"

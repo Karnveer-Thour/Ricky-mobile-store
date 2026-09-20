@@ -37,81 +37,29 @@ export default function ChatWorkspacePage() {
             (c: any, idx: number) => ({
               id: String(c.id || c._id || idx + 1),
               name: c.name || c.email || `Customer #${idx + 1}`,
-              phone: c.phone || "+91 98765 43210",
-              email: c.email || `customer${idx + 1}@gmail.com`,
+              phone: c.phone || c.mobileNumber || "",
+              email: c.email || "",
               avatar:
                 c.imageURL ||
                 c.avatar ||
                 `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(c.name || `Cust${idx}`)}`,
-              lastMessage:
-                idx === 0
-                  ? "Hello! Need assistance with Bajaj Finserv 6-month EMI options."
-                  : idx === 1
-                    ? "Is the iPhone 16 Pro Max ready for dispatch?"
-                    : "Payment query for recent order #BK-9021.",
-              totalOrders: (idx % 4) + 1,
-              totalSpent: 45000 + idx * 25000,
-              urgency: idx === 0 ? "high" : idx === 1 ? "medium" : "low",
-              messages: [
-                {
-                  sender: "user",
-                  text:
-                    idx === 0
-                      ? "Hello Ricky Store! I want to buy iPhone 16 Pro on Bajaj Finserv EMI. Can you check my cardless eligibility?"
-                      : "Hi! Can you confirm tracking status for my recent order?",
-                  time: "10:14 AM",
-                },
-              ],
+              lastMessage: "No recent messages",
+              totalOrders: c.totalOrders || 0,
+              totalSpent: c.totalSpent || 0,
+              urgency: "low",
+              messages: [],
             }),
           );
           setChats(loadedChats);
-          setActiveChatId(loadedChats[0].id);
+          setActiveChatId(loadedChats[0]?.id || "");
         } else {
-          // Fallback mock customer chats
-          const fallbackChats: CustomerChat[] = [
-            {
-              id: "cust-1",
-              name: "Karanveer Thour",
-              phone: "+91 98765 12345",
-              email: "karan@rickymobile.com",
-              avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Karan",
-              lastMessage:
-                "Need help with Bajaj Finserv cardless EMI verification",
-              totalOrders: 3,
-              totalSpent: 128999,
-              urgency: "high",
-              messages: [
-                {
-                  sender: "user",
-                  text: "Hello! I am trying to purchase the Galaxy S24 Ultra with Bajaj 0% EMI. What is the required down payment?",
-                  time: "11:20 AM",
-                },
-              ],
-            },
-            {
-              id: "cust-2",
-              name: "Rohit Sharma",
-              phone: "+91 98111 22334",
-              email: "rohit@gmail.com",
-              avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rohit",
-              lastMessage: "Is OnePlus 12 256GB in stock today?",
-              totalOrders: 1,
-              totalSpent: 64999,
-              urgency: "medium",
-              messages: [
-                {
-                  sender: "user",
-                  text: "Hi! Is OnePlus 12 Silky Black ready for instant delivery?",
-                  time: "11:05 AM",
-                },
-              ],
-            },
-          ];
-          setChats(fallbackChats);
-          setActiveChatId("cust-1");
+          setChats([]);
+          setActiveChatId("");
         }
       } catch (err) {
         console.error("Failed to load customer chats:", err);
+        setChats([]);
+        setActiveChatId("");
       } finally {
         setLoading(false);
       }
@@ -154,36 +102,6 @@ export default function ChatWorkspacePage() {
     );
 
     if (!textToSend) setInputText("");
-
-    // Simulate realistic customer reply after 2.5 seconds
-    setTimeout(() => {
-      setIsTyping(true);
-      setTimeout(() => {
-        setIsTyping(false);
-        setChats((prev) =>
-          prev.map((c) => {
-            if (c.id === activeChat.id) {
-              return {
-                ...c,
-                lastMessage: "Thank you for the quick support! Proceeding now.",
-                messages: [
-                  ...c.messages,
-                  {
-                    sender: "user",
-                    text: "Thank you! I received the link and authorization code. Proceeding with the checkout right away.",
-                    time: new Date().toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }),
-                  },
-                ],
-              };
-            }
-            return c;
-          }),
-        );
-      }, 2000);
-    }, 1200);
   };
 
   const filteredChats = chats.filter(

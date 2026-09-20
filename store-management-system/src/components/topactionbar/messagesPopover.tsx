@@ -20,14 +20,15 @@ interface MessagesPopoverProps {
   isOpen: boolean;
   onClose: () => void;
   isDark?: boolean;
-  _unreadCount?: number;
-  _setUnreadCount?: (count: number) => void;
+  unreadCount?: number;
+  setUnreadCount?: (count: number) => void;
 }
 
 export default function MessagesPopover({
   isOpen,
   onClose,
   isDark = true,
+  setUnreadCount,
 }: MessagesPopoverProps) {
   const [mounted, setMounted] = useState(false);
   const [messages, setMessages] = useState<MessagePreviewItem[]>([]);
@@ -44,7 +45,7 @@ export default function MessagesPopover({
     const unreadRemaining = messages.filter(
       (m) => m.id !== item.id && m.unread,
     ).length;
-    setUnreadCount(unreadRemaining);
+    setUnreadCount?.(unreadRemaining);
     router.push("/home/features/chat");
     onClose();
   };
@@ -88,48 +89,61 @@ export default function MessagesPopover({
 
           {/* Conversation Previews */}
           <div className="max-h-80 overflow-y-auto divide-y divide-white/5 p-1">
-            {messages.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => handleOpenThread(item)}
-                className={`p-3 rounded-xl cursor-pointer transition-all flex items-start gap-3 ${
-                  item.unread
-                    ? isDark
-                      ? "bg-cyan-500/5 hover:bg-cyan-500/10"
-                      : "bg-cyan-50 hover:bg-cyan-100/60"
-                    : "hover:bg-white/5 opacity-80 hover:opacity-100"
-                }`}
-              >
-                <Image
-                  src={item.avatar}
-                  alt={item.senderName}
-                  width={36}
-                  height={36}
-                  className="w-9 h-9 rounded-full object-cover bg-slate-800 shrink-0 mt-0.5"
+            {messages.length === 0 ? (
+              <div className="py-8 text-center text-slate-400">
+                <MessageCircle
+                  size={28}
+                  className="mx-auto mb-2 opacity-30 text-cyan-400"
                 />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-1">
-                    <p className="text-xs font-bold truncate text-slate-100">
-                      {item.senderName}
+                <p className="text-xs font-semibold">No active conversations</p>
+                <p className="text-[11px] text-slate-500 mt-0.5">
+                  Customer support inquiries will appear here.
+                </p>
+              </div>
+            ) : (
+              messages.map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => handleOpenThread(item)}
+                  className={`p-3 rounded-xl cursor-pointer transition-all flex items-start gap-3 ${
+                    item.unread
+                      ? isDark
+                        ? "bg-cyan-500/5 hover:bg-cyan-500/10"
+                        : "bg-cyan-50 hover:bg-cyan-100/60"
+                      : "hover:bg-white/5 opacity-80 hover:opacity-100"
+                  }`}
+                >
+                  <Image
+                    src={item.avatar}
+                    alt={item.senderName}
+                    width={36}
+                    height={36}
+                    className="w-9 h-9 rounded-full object-cover bg-slate-800 shrink-0 mt-0.5"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-1">
+                      <p className="text-xs font-bold truncate text-slate-100">
+                        {item.senderName}
+                      </p>
+                      <span className="text-[10px] text-slate-500 shrink-0">
+                        {item.time}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 line-clamp-1 mt-0.5">
+                      {item.lastMessage}
                     </p>
-                    <span className="text-[10px] text-slate-500 shrink-0">
-                      {item.time}
-                    </span>
+                    {item.tag && (
+                      <span className="inline-block mt-1 text-[9px] font-bold px-2 py-0.5 rounded-md bg-slate-800 text-cyan-400 border border-slate-700">
+                        {item.tag}
+                      </span>
+                    )}
                   </div>
-                  <p className="text-[11px] text-slate-400 line-clamp-1 mt-0.5">
-                    {item.lastMessage}
-                  </p>
-                  {item.tag && (
-                    <span className="inline-block mt-1 text-[9px] font-bold px-2 py-0.5 rounded-md bg-slate-800 text-cyan-400 border border-slate-700">
-                      {item.tag}
-                    </span>
+                  {item.unread && (
+                    <span className="w-2 h-2 rounded-full bg-cyan-400 shrink-0 mt-1.5 shadow-[0_0_8px_rgba(0,207,255,0.8)]" />
                   )}
                 </div>
-                {item.unread && (
-                  <span className="w-2 h-2 rounded-full bg-cyan-400 shrink-0 mt-1.5 shadow-[0_0_8px_rgba(0,207,255,0.8)]" />
-                )}
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
           {/* Footer Direct Jump */}

@@ -1,0 +1,16 @@
+# Robots.txt for Ricky Mobile Store Khanna (https://rickymobilestore.in/)
+User-agent: *
+Allow: /
+Allow: /product/
+Allow: /about
+Allow: /faq
+Allow: /offers
+
+# Protect private customer sessions and checkout
+Disallow: /checkout
+Disallow: /orders
+Disallow: /profile
+Disallow: /chat
+
+# Sitemaps
+Sitemap: https://rickymobilestore.in/sitemap.xml

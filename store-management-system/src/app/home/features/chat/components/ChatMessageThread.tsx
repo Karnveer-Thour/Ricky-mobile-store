@@ -1,5 +1,5 @@
 import React from "react";
-import { Phone, Mail, Clock } from "lucide-react";
+import { Phone, Mail, Clock, MessageSquare } from "lucide-react";
 import Image from "next/image";
 import { CustomerChat } from "./types";
 
@@ -77,7 +77,22 @@ export default function ChatMessageThread({
 
       {/* Message History Viewport */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {activeChat.messages.map((m, i) => {
+        {activeChat.messages.length === 0 ? (
+          <div className="h-full flex flex-col items-center justify-center text-center p-8 text-slate-400">
+            <MessageSquare
+              size={36}
+              className="mx-auto mb-2 opacity-30 text-cyan-400"
+            />
+            <p className="text-sm font-semibold">
+              No messages in this conversation yet
+            </p>
+            <p className="text-xs text-slate-500 max-w-xs mt-1">
+              Send an update, payment link, or EMI inquiry directly to{" "}
+              {activeChat.name}.
+            </p>
+          </div>
+        ) : (
+          activeChat.messages.map((m, i) => {
           const isSupport = m.sender === "support";
           return (
             <div
@@ -109,7 +124,8 @@ export default function ChatMessageThread({
               </span>
             </div>
           );
-        })}
+        })
+      )}
 
         {isTyping && (
           <div

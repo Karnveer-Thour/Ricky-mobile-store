@@ -74,7 +74,7 @@ export default function CustomerProfileDrawer({
           <span
             className={`font-bold ${isDark ? "text-white" : "text-slate-900"}`}
           >
-            {activeChat.totalOrders} Orders
+            {activeChat.totalOrders ?? 0} Orders
           </span>
         </div>
         <div
@@ -92,7 +92,7 @@ export default function CustomerProfileDrawer({
               isDark ? "text-cyan-300" : "text-cyan-700"
             }`}
           >
-            ₹{activeChat.totalSpent?.toLocaleString("en-IN")}
+            ₹{(activeChat.totalSpent ?? 0).toLocaleString("en-IN")}
           </span>
         </div>
         <div
@@ -115,7 +115,9 @@ export default function CustomerProfileDrawer({
               isDark ? "text-slate-300" : "text-slate-700"
             }`}
           >
-            Pre-approved for ₹1,50,000 on Bajaj Finserv Cardless 0% EMI scheme.
+            {activeChat.lender
+              ? `Eligible for 0% EMI financing via ${activeChat.lender}.`
+              : "Check EMI eligibility during order verification."}
           </p>
         </div>
       </div>

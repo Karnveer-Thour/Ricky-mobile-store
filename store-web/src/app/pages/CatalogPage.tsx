@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useApp } from "../AppContext";
+import SEOHead from "../components/seo/SEOHead";
 import {
   CatalogHeroSection,
   CatalogProductGrid,
@@ -41,6 +42,22 @@ export default function CatalogPage() {
 
   return (
     <div className="pt-20">
+      <SEOHead
+        title="Khanna's #1 Mobile Phone Shop & 0% Bajaj EMI"
+        description="Buy Apple iPhone, Samsung Galaxy, OnePlus & Vivo with 0% Bajaj Finserv EMI in Khanna (141401). Same-day delivery, certified repairs, and genuine warranty."
+        canonicalUrl="/"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Ricky Mobile Store",
+          url: "https://rickymobilestore.in/",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://rickymobilestore.in/?search={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        }}
+      />
       <CatalogHeroSection
         featuredProduct={featuredProduct}
         onExploreClick={scrollToProducts}

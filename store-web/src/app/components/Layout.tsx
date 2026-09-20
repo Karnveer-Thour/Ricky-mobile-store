@@ -28,7 +28,7 @@ export default function Layout() {
         onToggleMenu={() => setMenuOpen(!menuOpen)}
       />
 
-      <main className="flex-grow">
+      <main className="flex-grow pb-16">
         <Outlet />
       </main>
 

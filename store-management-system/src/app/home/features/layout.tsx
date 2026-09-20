@@ -17,8 +17,8 @@ function FeaturesLayout({
         {/* Mobile action buttons */}
         <div className="h-[2%] w-20 flex items-center justify-evenly ms-5 gap-5 sm:hidden">
           <Actionbuttons
-            unreadMessages={30}
-            unreadNotifications={12}
+            unreadMessages={0}
+            unreadNotifications={0}
             isDark={isDark}
           />
         </div>

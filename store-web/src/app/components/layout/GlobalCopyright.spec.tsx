@@ -7,12 +7,22 @@ import FooterCopyright from "./FooterCopyright";
 describe("GlobalCopyright Component", () => {
   const currentYear = new Date().getFullYear();
 
-  it("renders dynamic current year with correct text", () => {
+  it("renders dynamic current year with correct text and proper English grammar", () => {
     render(<GlobalCopyright />);
 
     const copyrightEl = screen.getByTestId("global-copyright");
     expect(copyrightEl).toBeInTheDocument();
-    expect(copyrightEl.textContent).toContain(`®️by ricky mobile store ${currentYear} and ©️ by devThour`);
+    expect(copyrightEl.textContent).toContain(`® Ricky Mobile Store ${currentYear}`);
+    expect(copyrightEl.textContent).toContain("© by devThour");
+  });
+
+  it("renders matching vector icons for Registered (®) and Copyright (©)", () => {
+    render(<GlobalCopyright />);
+
+    const registeredIcon = screen.getByTestId("registered-icon");
+    const copyrightIcon = screen.getByTestId("copyright-icon");
+    expect(registeredIcon).toBeInTheDocument();
+    expect(copyrightIcon).toBeInTheDocument();
   });
 
   it("contains devThour link redirecting to thour-portfolio.netlify.app", () => {
@@ -25,11 +35,11 @@ describe("GlobalCopyright Component", () => {
     expect(link).toHaveAttribute("rel", "noopener noreferrer");
   });
 
-  it("supports spaced prop for typography flexibility", () => {
-    render(<GlobalCopyright spaced />);
+  it("supports custom separator for typography flexibility", () => {
+    render(<GlobalCopyright separator="|" />);
 
     const copyrightEl = screen.getByTestId("global-copyright");
-    expect(copyrightEl.textContent).toContain(`®️ by ricky mobile store ${currentYear} and ©️ by devThour`);
+    expect(copyrightEl.textContent).toContain("|");
   });
 
   it("calculates current year dynamically when year changes", () => {
@@ -59,4 +69,19 @@ describe("GlobalCopyright Component", () => {
     const link = screen.getByRole("link", { name: "devThour" });
     expect(link).toHaveAttribute("href", "https://thour-portfolio.netlify.app");
   });
+
+  it("renders the official verified store icon by default", () => {
+    render(<GlobalCopyright />);
+
+    const icon = screen.getByTestId("official-store-icon");
+    expect(icon).toBeInTheDocument();
+  });
+
+  it("can hide the official verified store icon when showOfficialIcon is false", () => {
+    render(<GlobalCopyright showOfficialIcon={false} />);
+
+    const icon = screen.queryByTestId("official-store-icon");
+    expect(icon).not.toBeInTheDocument();
+  });
 });
+
