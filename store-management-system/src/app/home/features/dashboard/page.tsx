@@ -206,10 +206,11 @@ function Page() {
           </p>
           <h1
             className={cn(
-              "text-2xl font-bold tracking-tight",
+              "text-2xl font-bold tracking-tight flex items-center gap-2.5",
               isDark ? "text-white" : "text-slate-900",
             )}
           >
+            <BarChart3 size={24} className="text-cyan-400 shrink-0" />
             Dashboard
           </h1>
           <p

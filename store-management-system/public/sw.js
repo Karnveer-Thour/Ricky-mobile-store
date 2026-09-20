@@ -2,6 +2,7 @@
 const CACHE_NAME = "rms-cms-cache-v3";
 const STATIC_ASSETS = [
   "/favicon.ico",
+  "/favicon.svg",
   "/icon-192.png",
   "/icon-512.png",
   "/apple-touch-icon.png",
